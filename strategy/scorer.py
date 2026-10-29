@@ -59,19 +59,19 @@ def select_holdings(scores: pd.DataFrame, top_n: int = 8) -> pd.DataFrame:
     return ordered.head(int(top_n)).reset_index(drop=True)
 
 
-def score_holdings(
+def score_candidates(
     provider: object,
     asof: pd.Timestamp,
-    top_n: int = 8,
     config: object | None = None,
 ) -> pd.DataFrame:
+    """排雷后的全部候选和综合分，按综合分从高到低。打分公式与 select 之前相同。"""
     from core.provider import recent_period_ends
     from core.universe import build_universe
 
     asof = pd.Timestamp(asof).normalize()
     cleaned = build_universe(provider, asof, config)
     if cleaned.kept.empty:
-        return select_holdings(pd.DataFrame(columns=["ts_code", "composite"]), top_n)
+        return pd.DataFrame(columns=["ts_code", "composite"])
 
     instruments = provider.get_instruments(asof)
     universe = cleaned.kept.copy()
@@ -81,7 +81,7 @@ def score_holdings(
         universe = universe.merge(industry.drop_duplicates("ts_code"), on="ts_code", how="left")
 
     periods = recent_period_ends(asof, n=12)
-    scored = score_cross_section(
+    return score_cross_section(
         asof,
         universe,
         provider.get_daily_basic(asof),
@@ -90,7 +90,15 @@ def score_holdings(
         provider.get_dividends(universe["ts_code"].astype(str).tolist()),
         provider.get_daily_prices(asof - pd.Timedelta(days=160), asof),
     )
-    return select_holdings(scored, top_n)
+
+
+def score_holdings(
+    provider: object,
+    asof: pd.Timestamp,
+    top_n: int = 8,
+    config: object | None = None,
+) -> pd.DataFrame:
+    return select_holdings(score_candidates(provider, asof, config), top_n)
 
 
 def assemble_factors(
