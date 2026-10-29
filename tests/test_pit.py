@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from core.pit import latest_visible, resolve_names
+from core.pit import latest_visible, resolve_names, visible_history
 
 
 def test_report_announced_after_asof_is_invisible():
@@ -114,6 +114,20 @@ def test_resolve_names_uses_inclusive_intervals():
     )
     assert resolve_names(history, "20070513").iloc[0]["name"] == "ST自仪"
     assert resolve_names(history, "20070514").iloc[0]["name"] == "自仪股份"
+
+
+def test_visible_history_keeps_older_quarters():
+    reports = pd.DataFrame(
+        {
+            "ts_code": ["000001.SZ", "000001.SZ", "000001.SZ"],
+            "ann_date": ["2024-04-20", "2024-08-20", "2024-10-30"],
+            "end_date": ["2023-12-31", "2024-06-30", "2024-09-30"],
+            "q_dtprofit": [10.0, 12.0, 99.0],
+        }
+    )
+    history = visible_history(reports, "2024-09-01")
+    assert set(history["end_date"]) == {pd.Timestamp("2023-12-31"), pd.Timestamp("2024-06-30")}
+    assert list(latest_visible(reports, "2024-09-01")["q_dtprofit"]) == [12.0]
 
 
 def test_resolve_names_empty_history():

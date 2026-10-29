@@ -13,17 +13,25 @@ import pandas as pd
 from core.provider import (
     BALANCE_COLUMNS,
     BAR_COLUMNS,
+    DAILY_BASIC_COLUMNS,
+    DIVIDEND_COLUMNS,
+    FACTOR_INDICATOR_COLUMNS,
     INDICATOR_COLUMNS,
     INSTRUMENT_COLUMNS,
     NAME_COLUMNS,
+    PRICE_COLUMNS,
     SUSPEND_COLUMNS,
     annual_indicators,
     filter_periods,
     normalize_balance_sheet,
     normalize_bars,
+    normalize_daily_basic,
+    normalize_dividends,
+    normalize_factor_indicator,
     normalize_indicator,
     normalize_instruments,
     normalize_name_history,
+    normalize_prices,
     normalize_suspensions,
     select_index_snapshot,
 )
@@ -35,6 +43,10 @@ _BALANCE_FIELDS = (
     "goodwill,total_hldr_eqy_exc_min_int,total_assets,total_liab"
 )
 _INDICATOR_FIELDS = "ts_code,ann_date,end_date,profit_dedt"
+_FACTOR_INDICATOR_FIELDS = (
+    "ts_code,ann_date,end_date,q_dtprofit,q_sales_yoy,roe,roic,grossprofit_margin"
+)
+_DIVIDEND_FIELDS = "ts_code,ex_date,cash_div_tax,div_proc"
 _PERMISSION_MARKERS = ("权限", "积分")
 _RATE_MARKERS = ("每分钟", "最多访问", "访问频率", "too many", "timeout", "超时")
 
@@ -151,6 +163,65 @@ class TushareProvider:
         )
         return annual_indicators(frame)
 
+    def get_factor_indicators(self, periods: Sequence[str]) -> pd.DataFrame:
+        return self._financials(
+            periods,
+            vip_api="fina_indicator_vip",
+            code_api="fina_indicator",
+            fields=_FACTOR_INDICATOR_FIELDS,
+            cache_name="fina_factor",
+            normalize=normalize_factor_indicator,
+            columns=FACTOR_INDICATOR_COLUMNS,
+        )
+
+    def get_daily_basic(self, asof: pd.Timestamp) -> pd.DataFrame:
+        asof = pd.Timestamp(asof).normalize()
+        sessions = self._open_dates(asof - pd.Timedelta(days=15), asof)
+        if not sessions:
+            return pd.DataFrame(columns=DAILY_BASIC_COLUMNS)
+        key = pd.Timestamp(sessions[-1]).strftime("%Y%m%d")
+        path = self.cache_dir / "daily_basic" / f"{key}.parquet"
+        cached = _read(path)
+        if cached is not None:
+            return cached
+        raw = self._query("daily_basic", trade_date=key, fields="ts_code,trade_date,close,total_mv")
+        frame = normalize_daily_basic(raw)
+        _write(frame, path)
+        return frame
+
+    def get_dividends(self, ts_codes: Sequence[str]) -> pd.DataFrame:
+        codes = list(dict.fromkeys(str(code) for code in ts_codes))
+        frames: list[pd.DataFrame] = []
+        folder = self.cache_dir / "dividend" / "by_code"
+        for index, code in enumerate(codes, start=1):
+            path = folder / f"{code}.parquet"
+            cached = _read(path)
+            if cached is None:
+                raw = self._query("dividend", ts_code=code, fields=_DIVIDEND_FIELDS)
+                cached = normalize_dividends(raw)
+                _write(cached, path)
+                time.sleep(self.pause_seconds)
+            frames.append(cached)
+            if codes and (index % 200 == 0 or index == len(codes)):
+                logger.info("dividend 已覆盖 %s/%s", index, len(codes))
+        return _concat(frames, DIVIDEND_COLUMNS)
+
+    def get_daily_prices(self, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+        start = pd.Timestamp(start).normalize()
+        end = pd.Timestamp(end).normalize()
+        frames: list[pd.DataFrame] = []
+        for trade_date in self._open_dates(start, end):
+            key = pd.Timestamp(trade_date).strftime("%Y%m%d")
+            path = self.cache_dir / "daily_price" / f"{key}.parquet"
+            cached = _read(path)
+            if cached is None:
+                raw = self._query("daily", trade_date=key, fields="ts_code,trade_date,open,pre_close")
+                cached = normalize_prices(raw)
+                _write(cached, path)
+                time.sleep(self.pause_seconds)
+            frames.append(cached)
+        return _concat(frames, PRICE_COLUMNS)
+
     def _financials(
         self,
         periods: Sequence[str],
@@ -210,7 +281,7 @@ class TushareProvider:
     def _stock_basic(self) -> pd.DataFrame:
         path = self.cache_dir / "stock_basic.parquet"
         cached = _read_fresh(path, max_age_days=1)
-        if cached is not None:
+        if cached is not None and "industry" in cached.columns:
             return cached
         frames: list[pd.DataFrame] = []
         for status in ("L", "D", "P"):
@@ -218,7 +289,7 @@ class TushareProvider:
                 "stock_basic",
                 exchange="",
                 list_status=status,
-                fields="ts_code,list_date,delist_date,list_status",
+                fields="ts_code,list_date,delist_date,list_status,industry",
             )
             if not raw.empty:
                 frames.append(raw)

@@ -6,7 +6,11 @@ from core.pit import latest_visible
 from core.provider import (
     annual_indicators,
     normalize_balance_sheet,
+    normalize_daily_basic,
+    normalize_dividends,
+    normalize_factor_indicator,
     normalize_indicator,
+    normalize_instruments,
     recent_period_ends,
     select_index_snapshot,
 )
@@ -48,6 +52,68 @@ def test_annual_indicators_drop_interim_reports():
     annual = annual_indicators(normalize_indicator(raw))
     assert list(annual["end_date"]) == [pd.Timestamp("2023-12-31")]
     assert list(annual["profit_dedt"]) == [-1.0]
+
+
+def test_daily_basic_market_value_is_stored_in_yuan():
+    raw = pd.DataFrame(
+        {
+            "ts_code": ["000001.SZ"],
+            "trade_date": ["20241231"],
+            "close": [10.0],
+            "total_mv": [1.5],
+            "pe_ttm": [5.0],
+        }
+    )
+    out = normalize_daily_basic(raw)
+    assert out.loc[0, "total_mv"] == 15000
+    assert "pe_ttm" not in out.columns
+
+
+def test_factor_indicators_keep_quarterly_rows():
+    raw = pd.DataFrame(
+        {
+            "ts_code": ["000001.SZ"],
+            "ann_date": ["20241030"],
+            "end_date": ["20240930"],
+            "q_dtprofit": [8.0],
+            "q_sales_yoy": [12.0],
+            "roe": [9.0],
+            "roic": [7.0],
+            "grossprofit_margin": [30.0],
+        }
+    )
+    out = normalize_factor_indicator(raw)
+    assert list(out["end_date"]) == [pd.Timestamp("2024-09-30")]
+    assert list(out["q_dtprofit"]) == [8.0]
+
+
+def test_dividends_keep_implemented_cash_with_ex_date():
+    raw = pd.DataFrame(
+        {
+            "ts_code": ["000001.SZ", "000001.SZ", "000002.SZ"],
+            "div_proc": ["预案", "实施", "实施"],
+            "ex_date": ["20240601", "20240620", None],
+            "cash_div_tax": [0.2, 0.5, 0.4],
+        }
+    )
+    out = normalize_dividends(raw)
+    assert list(out["ts_code"]) == ["000001.SZ"]
+    assert out.loc[0, "cash_div_tax"] == 0.5
+    assert out.loc[0, "ex_date"] == pd.Timestamp("2024-06-20")
+
+
+def test_instruments_keep_industry():
+    raw = pd.DataFrame(
+        {
+            "ts_code": ["000001.SZ"],
+            "list_date": ["19910403"],
+            "delist_date": [None],
+            "list_status": ["L"],
+            "industry": ["银行"],
+        }
+    )
+    out = normalize_instruments(raw)
+    assert out.loc[0, "industry"] == "银行"
 
 
 def test_recent_period_ends_stop_at_asof():

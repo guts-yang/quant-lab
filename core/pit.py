@@ -12,7 +12,7 @@ import pandas as pd
 from core.provider import _code
 
 
-def latest_visible(
+def visible_history(
     reports: pd.DataFrame | None,
     asof: pd.Timestamp,
     *,
@@ -23,10 +23,9 @@ def latest_visible(
     report_type_col: str = "report_type",
     allowed_report_types: set[str] | None = None,
 ) -> pd.DataFrame:
-    """每个股票留一条截面日已经公告、且报告期最新的记录。
+    """截面日已经公告的全部报告期。同一报告期只留可用日最新的一条。
 
-    同一报告期有多条时，留可用日最新的那条。不预先过滤 update_flag，
-    否则「今天的最新修订」会泄漏进历史截面。
+    不预先过滤 update_flag，否则「今天的最新修订」会泄漏进历史截面。
     """
     if reports is None or reports.empty:
         return reports.iloc[0:0].copy() if isinstance(reports, pd.DataFrame) else pd.DataFrame()
@@ -50,11 +49,39 @@ def latest_visible(
         frame = frame.loc[types.isin(allowed_report_types)]
 
     if frame.empty:
-        return frame.drop(columns=["_available"])
+        return frame.drop(columns=["_available"]).reset_index(drop=True)
 
     frame = frame.sort_values([code_col, end_col, "_available"], kind="mergesort")
-    frame = frame.drop_duplicates(code_col, keep="last")
+    frame = frame.drop_duplicates([code_col, end_col], keep="last")
     return frame.drop(columns=["_available"]).reset_index(drop=True)
+
+
+def latest_visible(
+    reports: pd.DataFrame | None,
+    asof: pd.Timestamp,
+    *,
+    code_col: str = "ts_code",
+    ann_col: str = "ann_date",
+    f_ann_col: str = "f_ann_date",
+    end_col: str = "end_date",
+    report_type_col: str = "report_type",
+    allowed_report_types: set[str] | None = None,
+) -> pd.DataFrame:
+    """每个股票留一条截面日已经公告、且报告期最新的记录。"""
+    history = visible_history(
+        reports,
+        asof,
+        code_col=code_col,
+        ann_col=ann_col,
+        f_ann_col=f_ann_col,
+        end_col=end_col,
+        report_type_col=report_type_col,
+        allowed_report_types=allowed_report_types,
+    )
+    if history.empty:
+        return history
+    history = history.sort_values([code_col, end_col], kind="mergesort")
+    return history.drop_duplicates(code_col, keep="last").reset_index(drop=True)
 
 
 def resolve_names(name_history: pd.DataFrame | None, asof: pd.Timestamp) -> pd.DataFrame:

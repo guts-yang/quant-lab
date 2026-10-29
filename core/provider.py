@@ -21,8 +21,22 @@ BALANCE_COLUMNS = [
     "comp_type",
 ]
 INDICATOR_COLUMNS = ["ts_code", "ann_date", "end_date", "profit_dedt"]
+FACTOR_INDICATOR_COLUMNS = [
+    "ts_code",
+    "ann_date",
+    "end_date",
+    "q_dtprofit",
+    "q_sales_yoy",
+    "roe",
+    "roic",
+    "grossprofit_margin",
+]
 BAR_COLUMNS = ["ts_code", "trade_date", "amount"]
-INSTRUMENT_COLUMNS = ["ts_code", "list_date", "delist_date", "list_status"]
+PRICE_COLUMNS = ["ts_code", "trade_date", "open", "pre_close"]
+# total_mv 已换成元。Tushare daily_basic 原始单位是万元。
+DAILY_BASIC_COLUMNS = ["ts_code", "trade_date", "close", "total_mv"]
+DIVIDEND_COLUMNS = ["ts_code", "ex_date", "cash_div_tax"]
+INSTRUMENT_COLUMNS = ["ts_code", "list_date", "delist_date", "list_status", "industry"]
 NAME_COLUMNS = ["ts_code", "name", "start_date", "end_date"]
 SUSPEND_COLUMNS = ["ts_code", "trade_date", "suspend_timing", "suspend_type"]
 INDEX_MEMBER_COLUMNS = ["index_code", "ts_code", "trade_date", "weight"]
@@ -105,6 +119,73 @@ def normalize_indicator(raw: pd.DataFrame | None) -> pd.DataFrame:
     return out.reset_index(drop=True)
 
 
+def normalize_factor_indicator(raw: pd.DataFrame | None) -> pd.DataFrame:
+    """季度财务指标。不过滤年报，缓存目录也和排雷用的 fina_indicator 分开。"""
+    if raw is None or raw.empty:
+        return _blank_frame(FACTOR_INDICATOR_COLUMNS)
+    out = pd.DataFrame(
+        {
+            "ts_code": raw["ts_code"].astype(str),
+            "ann_date": _availability(raw),
+            "end_date": _to_datetime(raw["end_date"]),
+            "q_dtprofit": _number_column(raw, "q_dtprofit"),
+            "q_sales_yoy": _number_column(raw, "q_sales_yoy"),
+            "roe": _number_column(raw, "roe"),
+            "roic": _number_column(raw, "roic"),
+            "grossprofit_margin": _number_column(raw, "grossprofit_margin"),
+        }
+    )
+    return out.reset_index(drop=True)
+
+
+def normalize_daily_basic(raw: pd.DataFrame | None) -> pd.DataFrame:
+    """总市值从万元换成元，后面 EP、BP 直接用利润和净资产相除。"""
+    if raw is None or raw.empty:
+        return _blank_frame(DAILY_BASIC_COLUMNS)
+    return pd.DataFrame(
+        {
+            "ts_code": raw["ts_code"].astype(str),
+            "trade_date": _to_datetime(raw["trade_date"]),
+            "close": _number_column(raw, "close"),
+            "total_mv": _number_column(raw, "total_mv") * 10000,
+        }
+    ).reset_index(drop=True)
+
+
+def normalize_dividends(raw: pd.DataFrame | None) -> pd.DataFrame:
+    """只留已经实施、并且有除息日的现金分红，避免预案和实施各算一次。"""
+    if raw is None or raw.empty:
+        return _blank_frame(DIVIDEND_COLUMNS)
+    frame = raw.copy()
+    if "div_proc" in frame.columns:
+        progress = frame["div_proc"].astype("string")
+        frame = frame.loc[progress.str.contains("实施", na=False)]
+    if frame.empty:
+        return _blank_frame(DIVIDEND_COLUMNS)
+    out = pd.DataFrame(
+        {
+            "ts_code": frame["ts_code"].astype(str),
+            "ex_date": _to_datetime(frame["ex_date"]),
+            "cash_div_tax": _number_column(frame, "cash_div_tax"),
+        }
+    )
+    out = out.dropna(subset=["ex_date"])
+    return out.reset_index(drop=True)
+
+
+def normalize_prices(raw: pd.DataFrame | None) -> pd.DataFrame:
+    if raw is None or raw.empty:
+        return _blank_frame(PRICE_COLUMNS)
+    return pd.DataFrame(
+        {
+            "ts_code": raw["ts_code"].astype(str),
+            "trade_date": _to_datetime(raw["trade_date"]),
+            "open": _number_column(raw, "open"),
+            "pre_close": _number_column(raw, "pre_close"),
+        }
+    ).reset_index(drop=True)
+
+
 def annual_indicators(frame: pd.DataFrame) -> pd.DataFrame:
     """只留 12 月 31 日报告期，作为「最近一年扣非净利润」。"""
     if frame is None or frame.empty:
@@ -131,12 +212,17 @@ def normalize_instruments(raw: pd.DataFrame | None) -> pd.DataFrame:
         return _blank_frame(INSTRUMENT_COLUMNS)
     delist = raw["delist_date"] if "delist_date" in raw.columns else pd.Series(pd.NaT, index=raw.index)
     status = raw["list_status"] if "list_status" in raw.columns else pd.Series(pd.NA, index=raw.index)
+    if "industry" in raw.columns:
+        industry = raw["industry"].astype("string").str.strip()
+    else:
+        industry = pd.Series(pd.NA, index=raw.index, dtype="string")
     return pd.DataFrame(
         {
             "ts_code": raw["ts_code"].astype(str),
             "list_date": _to_datetime(raw["list_date"]),
             "delist_date": _to_datetime(delist),
             "list_status": status.map(_code),
+            "industry": industry,
         }
     ).reset_index(drop=True)
 
@@ -222,7 +308,7 @@ def filter_periods(frame: pd.DataFrame, periods: Sequence[str]) -> pd.DataFrame:
 
 class DataProvider(Protocol):
     def get_instruments(self, asof: pd.Timestamp) -> pd.DataFrame:
-        """ts_code、list_date、delist_date。不含当前证券简称。"""
+        """ts_code、list_date、delist_date、industry。不含当前证券简称。"""
         ...
 
     def get_name_history(self) -> pd.DataFrame:
@@ -247,4 +333,20 @@ class DataProvider(Protocol):
 
     def get_indicators(self, periods: Sequence[str]) -> pd.DataFrame:
         """已公告年报的扣非净利润。"""
+        ...
+
+    def get_factor_indicators(self, periods: Sequence[str]) -> pd.DataFrame:
+        """季度财务指标，供截面因子使用。不替代 get_indicators。"""
+        ...
+
+    def get_daily_basic(self, asof: pd.Timestamp) -> pd.DataFrame:
+        """不晚于 asof 的最近交易日市值和收盘价。total_mv 单位是元。"""
+        ...
+
+    def get_dividends(self, ts_codes: Sequence[str]) -> pd.DataFrame:
+        """每股税后现金分红和除息日。"""
+        ...
+
+    def get_daily_prices(self, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+        """开盘价和昨收，用于财报披露后的跳空。"""
         ...
