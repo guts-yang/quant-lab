@@ -44,7 +44,7 @@ sx.set_token(os.environ["SXSC_TUSHARE_TOKEN"])
 pro = sx.get_api(env="prd")
 ```
 
-本机和仿真只用 `prd`。`qa` 是生产客户端内网，本机连不上。
+调用方式以 [通过 Python SDK 获取](http://221.204.19.233:7173/document/1?doc_id=131) 为准。本机和仿真只用 `prd`。`qa` 是生产客户端内网，本机连不上。
 
 股票池、财报和行情缓存走 `core.tushare_provider.TushareProvider`，不要另写一套缓存。截面打分仍用 `python -m strategy.scorer`，本 skill 不负责分析。
 

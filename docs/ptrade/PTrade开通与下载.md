@@ -15,7 +15,7 @@
 | 仿真系统登录账号 | `.env` 的 `PTRADE_SIM_ACCOUNT` |
 | 仿真系统登录及交易密码 | `.env` 的 `PTRADE_SIM_PASSWORD`（身份证后 6 位数字，不含字母） |
 
-本地 Python 调 `sxsc_tushare` 使用 `env=prd`。生产客户端里的 `env=qa` 走终端内网，本机连不上。接口只有 T-1 日历史，没有实时行情。
+本地 Python 和仿真客户端调 `sxsc_tushare` 使用 `env=prd`。生产客户端使用 `env=qa`，那个地址在终端内网，本机连不上。调用方式以 [通过 Python SDK 获取](http://221.204.19.233:7173/document/1?doc_id=131) 为准。接口只有 T-1 日历史，没有实时行情。安装说明和官方包在 `docs/tushare/`。
 
 ## 客户端下载
 
@@ -39,7 +39,8 @@
 3. 系统使用资料见邮件附件。本目录已有：
    - `1.PTrade交易系统操作手册V202301-00（山证）.pdf`
    - `PTrade新版API帮助文档.pdf`
-   - `Tushare数据库使用.pdf`
+
+   Tushare 数据库说明在 `docs/tushare/Tushare数据库使用.pdf`。
 4. 山西证券 PTrade 生产交易系统 API：<https://ptrade.i618.com.cn:7766/hub/help/api>
 5. 山西证券 PTrade 仿真交易系统 API：<https://ptrade-fz.i618.com.cn:7766/hub/help/api>
 
