@@ -1,95 +1,34 @@
 # quant-lab
 
-A 股研究仓库。当前做到两件事：按公告日筛出可交易股票池，再在这张池子里做价值、质量、成长打分，取出综合分最高的 5–8 只。还没有回测和 PTrade。
+按公告日排雷，再按质量 0.4、价值 0.3、成长 0.3 取出综合分最高的 5–8 只。没有回测，也不下单。
 
-## 布局
-
-- `core/`：数据契约、山西证券 sxsc_tushare 适配、公告日对齐、`UniverseCleaner`
-- `factors/`：基本面因子和去极值、行业填充、标准化
-- `strategy/`：截面秩打分
-- `backtest/`、`ptrade/`：后续阶段的空包
-- `site/`：只读研究结果页，读取已经保存的截面
-
-## 安装
+## 命令
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev,web]"
+python -m core.universe --asof YYYYMMDD
+python -m strategy.scorer --asof YYYYMMDD --top 8
+python -m strategy.publish --asof YYYYMMDD --top 8
+streamlit run web/app.py
 ```
 
-数据来自山西证券 Tushare，不使用公开版 Tushare。公开版 token 在券商接口上无效。官方 wheel 不在 PyPI，PTrade 安装包里也没有。本仓库的 `sxsc_tushare` 实现同一套 `set_token` / `get_api(env="prd")`，请求发到山西证券 Python 网关。
+Streamlit Community Cloud 的入口是 `web/app.py`，依赖用 `requirements.txt`，不配置 Secrets。把 `web/snapshots/` 里的新日期推上去，网站才会更新。
 
-Token 放在环境变量或项目根目录的 `.env`（可从 `.env.example` 复制）。`SXSC_TUSHARE_TOKEN` 是山西证券网关；`TUSHARE_TOKEN` 是公开版，2026-10-29 登记为 2100 积分、有效期至 2026-11-03，两边不通用。不要把 token 写进代码或提交到 git。本地和仿真使用 `env=prd`。生产客户端才用 `env=qa`，那个地址在终端内网，本机连不上。接口只有 T-1 日历史，没有实时行情。
+## 数据
 
-取数约定在 `.cursor/skills/shanxi-securities-tushare/SKILL.md`。
+用 `SXSC_TUSHARE_TOKEN` 打山西证券网关，本机 `env=prd`。公开版 token 不能打这个网关。Token 只放 `.env`。接口只有 T-1，缓存写在 `data/cache/`。
 
-## 跑一次截面
+## 目录
 
-```bash
-python -m core.universe --asof 20251231
-```
+- `sxsc_tushare`：券商 HTTP 客户端
+- `core`：契约、缓存、公告日、排雷
+- `factors`、`strategy`：因子和打分
+- `web`：只读页面，读 `web/snapshots/`
+- `docs/ptrade`：终端手册和开通说明
+- `backtest`、`ptrade`：尚未实现
 
-行情、停牌、曾用名和财报会缓存在 `data/cache/`。这个目录已被 gitignore。财务接口优先用 `balancesheet_vip` 和 `fina_indicator_vip`。券商返回无权限、接口不存在或未知数据源时，按股票代码调用普通接口，每只股票一个缓存文件，中断后可以接着跑。`namechange`、`suspend_d`、`dividend`、`daily_basic`、`index_weight` 没有第二条路径，接口缺失会直接报错。调用频率大约每分钟 600 次，默认每次间隔 0.35 秒。
+## 规则
 
-## 排雷规则
+可用日用 `f_ann_date`，否则 `ann_date`。晚于截面日的报表不可见。阈值在 `CleanerConfig`。名称来自 `namechange`，不用今天的简称。EP、BP 用截面日总市值，不用现成 PE、PB。毛利率波动越低越好。
 
-默认阈值在 `CleanerConfig`：
-
-- 上市未满 180 个自然日，或没有上市日
-- 退市日不晚于截面日
-- 截面日当天的证券名称含 `ST`，或含「退」。名称来自 `namechange` 的生效区间，不用今天的简称。从未改名的股票不会出现在曾用名里，也不会被这条误伤
-- 全天停牌。`suspend_timing` 有盘中时段（例如 `09:30-10:00`）的不算
-- 截面日之前 20 个交易日里，有效成交不足 10 天；其余股票里，日均成交额处于全市场后 10%。分位数含 ST 和次新，不会先把它们剔掉再重算
-- 没有已公告且能核对的资产负债表；净资产小于等于 0；商誉 / 净资产大于 30%（商誉缺失当 0）
-- 资产负债率大于 80%，用负债合计 / 资产总计，不用 Tushare 的百分数口径 `debt_to_assets`。银行、保险、券商通常会高于这条线。`apply_leverage_filter_to_financials=False` 时，公司类型 2/3/4 跳过负债率规则
-- 最近一份已公告年报的扣非净利润小于 0。截面日之前还没有年报的，不因这条剔除
-
-`rejected.reasons` 会列出全部命中原因。
-
-## 公告日
-
-法定截止日（一季报 4 月 30 日、半年报 8 月 31 日、三季报 10 月 31 日、年报次年 4 月 30 日）只作对照，不会拿来充当可用日。
-
-可用日优先用 `f_ann_date`，没有时用 `ann_date`。晚于截面日的报表不可见；可用日早于报告期的记录丢弃。资产负债表只保留合并报表（类型 1）和调整前合并报表（类型 5），并且不会先按 `update_flag == 1` 过滤。
-
-残留限制：如果 Tushare 在不修改公告日的情况下覆盖了报表类型 1 的数值，点时对齐无法发现这次修订。
-
-## 打分
-
-```bash
-python -m strategy.scorer --asof 20251231 --top 8
-```
-
-只在排雷后的股票里打分。`EP_TTM` 和 `BP` 用截面日总市值，不用 Tushare 现成的 PE、PB。财务数字仍然要等实际公告日。综合分是 `0.4 * 质量 + 0.3 * 价值 + 0.3 * 成长`。
-
-行业中位数用的是 `stock_basic.industry`，也就是当前行业分类。拿它去填历史截面时，行业变更会带来一点偏差。
-
-毛利率方差越小越好。净利润断层这一阶段没有一致预期：最近 120 天内最新一份已公告财报，只有单季扣非同比为正时，才记录披露日后第一个交易日的开盘跳空。
-
-## 网站
-
-研究结果页只读 `site/snapshots/`，不在服务器上安装 `sxsc_tushare`，也不读取 token。
-
-本机先算出一天的截面：
-
-```bash
-python -m strategy.publish --asof 20251231 --top 8
-```
-
-把 `site/snapshots/` 里新的日期目录提交并推送，网站上的日期列表才会更新。有真实截面之后，示例日期不再出现。
-
-在 [Streamlit Community Cloud](https://streamlit.io/cloud) 连接这个仓库，入口文件填 `site/app.py`。不需要配置 Secrets。依赖写在 `requirements.txt`。
-
-本机预览：
-
-```bash
-pip install -e ".[site]"
-streamlit run site/app.py
-```
-
-## 测试
-
-```bash
-pytest
-```
-
-测试使用合成数据，不会访问 Tushare。
+网站不读 token。有真实快照后，示例日不再出现。`pytest` 不访问网络。
