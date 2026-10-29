@@ -346,7 +346,7 @@ class TushareProvider:
                 import sxsc_tushare as sx
             except ImportError as exc:
                 raise RuntimeError(
-                    "未安装 sxsc_tushare。该包由山西证券发放，可从 PTrade 终端获取，或致电客服 95573，不是 pip install tushare。"
+                    "未安装 sxsc_tushare。在仓库根目录执行 pip install -e . 。这不是公开版 tushare。"
                 ) from exc
             sx.set_token(token)
             self._pro = sx.get_api(env=self._env)

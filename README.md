@@ -16,9 +16,11 @@ A 股研究仓库。当前做到两件事：按公告日筛出可交易股票池
 pip install -e ".[dev]"
 ```
 
-数据来自山西证券 `sxsc_tushare`，不使用公开版 Tushare。公开版 token 在券商接口上无效。该包不在 PyPI，由山西证券发放，可从 PTrade 终端获取，或致电客服 95573。
+数据来自山西证券 Tushare，不使用公开版 Tushare。公开版 token 在券商接口上无效。官方 wheel 不在 PyPI，PTrade 安装包里也没有。本仓库的 `sxsc_tushare` 实现同一套 `set_token` / `get_api(env="prd")`，请求发到山西证券 Python 网关。
 
-Token 放在环境变量 `SXSC_TUSHARE_TOKEN`，或项目根目录的 `.env`（可从 `.env.example` 复制）。不要把 token 写进代码或提交到 git。本地和仿真使用 `env=prd`。生产客户端才用 `env=qa`，那个地址在终端内网，本机连不上。接口只有 T-1 日历史，没有实时行情。
+Token 放在环境变量或项目根目录的 `.env`（可从 `.env.example` 复制）。`SXSC_TUSHARE_TOKEN` 是山西证券网关；`TUSHARE_TOKEN` 是公开版，2026-10-29 登记为 2100 积分、有效期至 2026-11-03，两边不通用。不要把 token 写进代码或提交到 git。本地和仿真使用 `env=prd`。生产客户端才用 `env=qa`，那个地址在终端内网，本机连不上。接口只有 T-1 日历史，没有实时行情。
+
+取数约定在 `.cursor/skills/shanxi-securities-tushare/SKILL.md`。
 
 ## 跑一次截面
 
