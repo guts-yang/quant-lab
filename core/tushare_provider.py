@@ -19,6 +19,8 @@ from core.provider import (
     INDICATOR_COLUMNS,
     INSTRUMENT_COLUMNS,
     NAME_COLUMNS,
+    INDEX_DAILY_COLUMNS,
+    OHLC_COLUMNS,
     PRICE_COLUMNS,
     SUSPEND_COLUMNS,
     annual_indicators,
@@ -28,9 +30,11 @@ from core.provider import (
     normalize_daily_basic,
     normalize_dividends,
     normalize_factor_indicator,
+    normalize_index_daily,
     normalize_indicator,
     normalize_instruments,
     normalize_name_history,
+    normalize_ohlc,
     normalize_prices,
     normalize_suspensions,
     select_index_snapshot,
@@ -223,6 +227,40 @@ class TushareProvider:
                 time.sleep(self.pause_seconds)
             frames.append(cached)
         return _concat(frames, PRICE_COLUMNS)
+
+    def get_ohlc(self, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+        start = pd.Timestamp(start).normalize()
+        end = pd.Timestamp(end).normalize()
+        frames: list[pd.DataFrame] = []
+        for trade_date in self._open_dates(start, end):
+            key = pd.Timestamp(trade_date).strftime("%Y%m%d")
+            path = self.cache_dir / "ohlc" / f"{key}.parquet"
+            cached = _read(path)
+            if cached is None:
+                raw = self._query("daily", trade_date=key, fields="ts_code,trade_date,open,high,low,close")
+                cached = normalize_ohlc(raw)
+                _write(cached, path)
+                time.sleep(self.pause_seconds)
+            frames.append(cached)
+        return _concat(frames, OHLC_COLUMNS)
+
+    def get_index_daily(self, index_code: str, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+        start = pd.Timestamp(start).normalize()
+        end = pd.Timestamp(end).normalize()
+        path = self.cache_dir / "index_daily" / f"{index_code}_{start:%Y%m%d}_{end:%Y%m%d}.parquet"
+        cached = _read(path)
+        if cached is not None:
+            return cached
+        raw = self._query(
+            "index_daily",
+            ts_code=index_code,
+            start_date=start.strftime("%Y%m%d"),
+            end_date=end.strftime("%Y%m%d"),
+            fields="ts_code,trade_date,close",
+        )
+        frame = normalize_index_daily(raw)
+        _write(frame, path)
+        return frame
 
     def _financials(
         self,

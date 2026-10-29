@@ -33,6 +33,8 @@ FACTOR_INDICATOR_COLUMNS = [
 ]
 BAR_COLUMNS = ["ts_code", "trade_date", "amount"]
 PRICE_COLUMNS = ["ts_code", "trade_date", "open", "pre_close"]
+OHLC_COLUMNS = ["ts_code", "trade_date", "open", "high", "low", "close"]
+INDEX_DAILY_COLUMNS = ["ts_code", "trade_date", "close"]
 # total_mv 已换成元。Tushare daily_basic 原始单位是万元。
 DAILY_BASIC_COLUMNS = ["ts_code", "trade_date", "close", "total_mv"]
 DIVIDEND_COLUMNS = ["ts_code", "ex_date", "cash_div_tax"]
@@ -171,6 +173,34 @@ def normalize_dividends(raw: pd.DataFrame | None) -> pd.DataFrame:
     )
     out = out.dropna(subset=["ex_date"])
     return out.reset_index(drop=True)
+
+
+def normalize_ohlc(raw: pd.DataFrame | None) -> pd.DataFrame:
+    """高低收用于 ATR。开盘价用来处理跳空跌破止损。"""
+    if raw is None or raw.empty:
+        return _blank_frame(OHLC_COLUMNS)
+    return pd.DataFrame(
+        {
+            "ts_code": raw["ts_code"].astype(str),
+            "trade_date": _to_datetime(raw["trade_date"]),
+            "open": _number_column(raw, "open"),
+            "high": _number_column(raw, "high"),
+            "low": _number_column(raw, "low"),
+            "close": _number_column(raw, "close"),
+        }
+    ).reset_index(drop=True)
+
+
+def normalize_index_daily(raw: pd.DataFrame | None) -> pd.DataFrame:
+    if raw is None or raw.empty:
+        return _blank_frame(INDEX_DAILY_COLUMNS)
+    return pd.DataFrame(
+        {
+            "ts_code": raw["ts_code"].astype(str),
+            "trade_date": _to_datetime(raw["trade_date"]),
+            "close": _number_column(raw, "close"),
+        }
+    ).reset_index(drop=True)
 
 
 def normalize_prices(raw: pd.DataFrame | None) -> pd.DataFrame:
@@ -349,4 +379,12 @@ class DataProvider(Protocol):
 
     def get_daily_prices(self, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
         """开盘价和昨收，用于财报披露后的跳空。"""
+        ...
+
+    def get_ohlc(self, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+        """开高低收。供 ATR 和止损，不替代成交额。"""
+        ...
+
+    def get_index_daily(self, index_code: str, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+        """指数收盘价，供均线仓位。"""
         ...
