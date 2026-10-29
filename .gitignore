@@ -1,5 +1,12 @@
+# 密钥和本机配置
 .env
 .cursor/mcp.json
+.workbuddy/
+.agent/
+.vscode/
+.claude/
+
+# 虚拟环境、缓存和打包产物
 .venv/
 venv/
 __pycache__/
@@ -9,4 +16,6 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+
+# 行情缓存
 data/
