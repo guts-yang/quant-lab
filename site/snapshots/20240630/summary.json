@@ -1,0 +1,16 @@
+{
+  "asof": "20240630",
+  "kept": 6,
+  "rejected": 2,
+  "reasons": {
+    "st": 1,
+    "listed_lt_180": 1
+  },
+  "top_n": 5,
+  "weights": {
+    "quality": 0.4,
+    "value": 0.3,
+    "growth": 0.3
+  },
+  "sample": true
+}

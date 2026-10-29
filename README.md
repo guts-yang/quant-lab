@@ -8,6 +8,7 @@ A 股研究仓库。当前做到两件事：按公告日筛出可交易股票池
 - `factors/`：基本面因子和去极值、行业填充、标准化
 - `strategy/`：截面秩打分
 - `backtest/`、`ptrade/`：后续阶段的空包
+- `site/`：只读研究结果页，读取已经保存的截面
 
 ## 安装
 
@@ -61,6 +62,27 @@ python -m strategy.scorer --asof 20251231 --top 8
 行业中位数用的是 `stock_basic.industry`，也就是当前行业分类。拿它去填历史截面时，行业变更会带来一点偏差。
 
 毛利率方差越小越好。净利润断层这一阶段没有一致预期：最近 120 天内最新一份已公告财报，只有单季扣非同比为正时，才记录披露日后第一个交易日的开盘跳空。
+
+## 网站
+
+研究结果页只读 `site/snapshots/`，不在服务器上安装 `sxsc_tushare`，也不读取 token。
+
+本机先算出一天的截面：
+
+```bash
+python -m strategy.publish --asof 20251231 --top 8
+```
+
+把 `site/snapshots/` 里新的日期目录提交并推送，网站上的日期列表才会更新。有真实截面之后，示例日期不再出现。
+
+在 [Streamlit Community Cloud](https://streamlit.io/cloud) 连接这个仓库，入口文件填 `site/app.py`。不需要配置 Secrets。依赖写在 `requirements.txt`。
+
+本机预览：
+
+```bash
+pip install -e ".[site]"
+streamlit run site/app.py
+```
 
 ## 测试
 
