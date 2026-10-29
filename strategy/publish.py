@@ -27,7 +27,7 @@ REJECTED_COLUMNS = ["ts_code", "name", "reasons"]
 
 
 def default_snapshot_root() -> Path:
-    return Path(__file__).resolve().parents[1] / "site" / "snapshots"
+    return Path(__file__).resolve().parents[1] / "web" / "snapshots"
 
 
 def publish(
@@ -160,7 +160,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="把排雷和打分写成网站快照")
     parser.add_argument("--asof", required=True, help="截面日期，YYYYMMDD")
     parser.add_argument("--top", type=int, default=8, help="综合分最高的股票数，5 到 8")
-    parser.add_argument("--out", default=None, help="快照根目录，默认 site/snapshots")
+    parser.add_argument("--out", default=None, help="快照根目录，默认 web/snapshots")
     args = parser.parse_args(list(argv) if argv is not None else None)
 
     from core.tushare_provider import TushareProvider

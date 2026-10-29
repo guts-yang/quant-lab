@@ -1,4 +1,4 @@
-"""只读研究结果页。运行：streamlit run site/app.py"""
+"""只读研究结果页。运行：streamlit run web/app.py"""
 
 from __future__ import annotations
 
@@ -131,7 +131,7 @@ snapshots = visible_snapshots()
 if not snapshots:
     st.info(
         "还没有可展示的截面。在本机运行 python -m strategy.publish --asof YYYYMMDD --top 8，"
-        "把 site/snapshots 里的新日期推送到仓库后，这里会出现结果。"
+        "把 web/snapshots 里的新日期推送到仓库后，这里会出现结果。"
     )
     st.stop()
 

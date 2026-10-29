@@ -15,8 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def _load(name: str):
-    path = ROOT / "site" / f"{name}.py"
-    spec = importlib.util.spec_from_file_location(f"quantlab_site_{name}", path)
+    path = ROOT / "web" / f"{name}.py"
+    spec = importlib.util.spec_from_file_location(f"quantlab_web_{name}", path)
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     sys.modules[spec.name] = module
@@ -63,7 +63,7 @@ def test_loader_reads_snapshot_without_broker_sdk(monkeypatch, tmp_path):
 
 
 def test_committed_example_is_marked_as_sample():
-    summary = json.loads((ROOT / "site" / "snapshots" / "20240630" / "summary.json").read_text(encoding="utf-8"))
+    summary = json.loads((ROOT / "web" / "snapshots" / "20240630" / "summary.json").read_text(encoding="utf-8"))
     assert summary["sample"] is True
 
 
