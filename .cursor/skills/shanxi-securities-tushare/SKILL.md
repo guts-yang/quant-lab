@@ -30,6 +30,8 @@ python .cursor/skills/shanxi-securities-tushare/scripts/check_env.py
 
 `TUSHARE_TOKEN` 在 2026-10-29 登记为 **2100 积分，有效期至 2026-11-03**。到期前不要用它做全市场或多年批量拉取。只有用户明确要公开版数据时才用它。已核对：`stock_basic`、`daily`、`stk_mins` 可调；`fina_indicator_vip` 无权限。
 
+公开版的远程 MCP 在 `.cursor/mcp.json`，服务名 `tushareMcp`，传输是 SSE / Streamable HTTP。这个文件含 token，已被 gitignore。调用它会消耗上面的 2100 积分。研究数据仍然走券商客户端。
+
 券商账户积分以 `.env` 的 `SXSC_TUSHARE_POINTS` 为准，不要和 2100 混用。
 
 ## 取数

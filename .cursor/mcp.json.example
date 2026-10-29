@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "tushareMcp": {
+      "url": "https://api.tushare.pro/mcp/?token=${env:TUSHARE_TOKEN}"
+    }
+  }
+}
