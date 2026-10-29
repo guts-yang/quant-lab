@@ -1,8 +1,7 @@
 # 密钥和本机配置
 .env
-.cursor/mcp.json
+.cursor/
 .workbuddy/
-.agent/
 .vscode/
 .claude/
 

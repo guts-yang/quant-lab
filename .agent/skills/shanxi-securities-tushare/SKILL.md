@@ -16,7 +16,7 @@ description: >-
 ## 先确认环境
 
 ```bash
-python .cursor/skills/shanxi-securities-tushare/scripts/check_env.py
+python .agent/skills/shanxi-securities-tushare/scripts/check_env.py
 ```
 
 `SXSC_TUSHARE_TOKEN` 缺失时停止，不要取数，也不要编造数据。Token 只放在根目录 `.env` 或环境变量里，不要写进代码、日志或 git。
