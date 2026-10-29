@@ -1,6 +1,17 @@
 # quant-lab
 
-按公告日排雷，再按质量 0.4、价值 0.3、成长 0.3 取出综合分最高的 5–8 只。没有回测，也不下单。
+A 股截面选股。做到取数、排雷、打分和展示。没有回测，也不下单。
+
+## 已实现
+
+- **取数。** 山西证券网关的 T-1 历史，客户端是 `sxsc_tushare`。Token 用 `SXSC_TUSHARE_TOKEN`，本机 `env=prd`，只放 `.env`。公开版 token 不能打这个网关。结果缓存在 `data/cache/`。
+- **排雷。** 财务数字按实际公告日进入股票池：优先 `f_ann_date`，否则 `ann_date`。去掉次新、已退市、ST、全天停牌、成交不足、没有可用资产负债表、净资产不为正、商誉过高、负债率过高、最近年报扣非为负。名称用 `namechange` 在截面日的简称。阈值在 `CleanerConfig`。
+- **打分。** 只在排雷后的股票里做。质量 0.4（扣非 ROE、ROIC、毛利率波动），价值 0.3（扣非利润/市值、净资产/市值、股息率），成长 0.3（单季扣非同比、单季营收同比、披露后开盘跳空）。毛利率波动越低越好。EP、BP 用截面日总市值。取出综合分最高的 5–8 只。
+- **展示。** `strategy.publish` 把一天的结果写进 `web/snapshots/`。Streamlit 只读这些文件，不读 token。有真实快照后，示例日不再出现。
+
+## 还没有
+
+`backtest/` 回测和 `ptrade/` 下单都是空目录。终端手册在 `docs/ptrade/`。数据 SDK 在 `docs/tushare/`。
 
 ## 命令
 
@@ -12,23 +23,4 @@ python -m strategy.publish --asof YYYYMMDD --top 8
 streamlit run web/app.py
 ```
 
-Streamlit Community Cloud 的入口是 `web/app.py`，依赖用 `requirements.txt`，不配置 Secrets。把 `web/snapshots/` 里的新日期推上去，网站才会更新。
-
-## 数据
-
-用 `SXSC_TUSHARE_TOKEN` 打山西证券网关，本机 `env=prd`。公开版 token 不能打这个网关。Token 只放 `.env`。接口只有 T-1，缓存写在 `data/cache/`。
-
-## 目录
-
-- `sxsc_tushare`：券商 HTTP 客户端
-- `core`：契约、缓存、公告日、排雷
-- `factors`、`strategy`：因子和打分
-- `web`：只读页面，读 `web/snapshots/`
-- `docs/ptrade`：终端手册和开通说明
-- `backtest`、`ptrade`：尚未实现
-
-## 规则
-
-可用日用 `f_ann_date`，否则 `ann_date`。晚于截面日的报表不可见。阈值在 `CleanerConfig`。名称来自 `namechange`，不用今天的简称。EP、BP 用截面日总市值，不用现成 PE、PB。毛利率波动越低越好。
-
-网站不读 token。有真实快照后，示例日不再出现。`pytest` 不访问网络。
+Cloud 入口是 `web/app.py`，依赖用 `requirements.txt`，不配置 Secrets。`pytest` 使用合成数据，不访问网络。
