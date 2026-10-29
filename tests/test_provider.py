@@ -1,6 +1,9 @@
-"""字段归一、指数成分时点、以及不访问 Tushare 的缓存降级。"""
+"""字段归一、指数成分时点、以及不访问券商接口的缓存降级。"""
+
+import builtins
 
 import pandas as pd
+import pytest
 
 from core.pit import latest_visible
 from core.provider import (
@@ -14,7 +17,7 @@ from core.provider import (
     recent_period_ends,
     select_index_snapshot,
 )
-from core.tushare_provider import TushareProvider
+from core.tushare_provider import TushareProvider, _is_permission
 
 
 def test_balance_sheet_uses_actual_announcement_and_parent_equity():
@@ -172,6 +175,36 @@ class _FakePro:
                 "list_status": ["L", "L"],
             }
         )
+
+
+def test_missing_token_names_sxsc_env(monkeypatch):
+    monkeypatch.delenv("SXSC_TUSHARE_TOKEN", raising=False)
+    monkeypatch.setattr("core.tushare_provider._load_dotenv", lambda: None)
+    provider = TushareProvider()
+    with pytest.raises(RuntimeError, match="SXSC_TUSHARE_TOKEN"):
+        provider._api()
+
+
+def test_injected_pro_skips_sdk_import(monkeypatch):
+    real_import = builtins.__import__
+
+    def guarded(name, *args, **kwargs):
+        if name == "sxsc_tushare":
+            raise AssertionError("injected pro should not import sxsc_tushare")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", guarded)
+    sentinel = object()
+    provider = TushareProvider(pro=sentinel)
+    assert provider._api() is sentinel
+
+
+@pytest.mark.parametrize(
+    "message",
+    ["没有接口访问权限", "接口不存在", "未知的数据源", "抱歉，您输入的TOKEN无效"],
+)
+def test_broker_refusal_is_permission(message):
+    assert _is_permission(message)
 
 
 def test_balance_sheet_vip_permission_falls_back_to_cached_per_code(tmp_path):

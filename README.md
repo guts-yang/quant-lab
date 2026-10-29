@@ -4,7 +4,7 @@ A 股研究仓库。当前做到两件事：按公告日筛出可交易股票池
 
 ## 布局
 
-- `core/`：数据契约、Tushare 适配、公告日对齐、`UniverseCleaner`
+- `core/`：数据契约、山西证券 sxsc_tushare 适配、公告日对齐、`UniverseCleaner`
 - `factors/`：基本面因子和去极值、行业填充、标准化
 - `strategy/`：截面秩打分
 - `backtest/`、`ptrade/`：后续阶段的空包
@@ -15,7 +15,9 @@ A 股研究仓库。当前做到两件事：按公告日筛出可交易股票池
 pip install -e ".[dev]"
 ```
 
-Token 放在环境变量 `TUSHARE_TOKEN`，或项目根目录的 `.env`（可从 `.env.example` 复制）。不要把 token 写进代码或提交到 git。
+数据来自山西证券 `sxsc_tushare`，不使用公开版 Tushare。公开版 token 在券商接口上无效。该包不在 PyPI，由山西证券发放，可从 PTrade 终端获取，或致电客服 95573。
+
+Token 放在环境变量 `SXSC_TUSHARE_TOKEN`，或项目根目录的 `.env`（可从 `.env.example` 复制）。不要把 token 写进代码或提交到 git。本地和仿真使用 `env=prd`。生产客户端才用 `env=qa`，那个地址在终端内网，本机连不上。接口只有 T-1 日历史，没有实时行情。
 
 ## 跑一次截面
 
@@ -23,7 +25,7 @@ Token 放在环境变量 `TUSHARE_TOKEN`，或项目根目录的 `.env`（可从
 python -m core.universe --asof 20251231
 ```
 
-行情、停牌、曾用名和财报会缓存在 `data/cache/`。这个目录已被 gitignore。财务接口优先用 `balancesheet_vip` 和 `fina_indicator_vip`（大约 5000 积分，一个报告期一次全市场）。没有 vip 权限时，按股票代码调用普通接口，每只股票一个缓存文件，中断后可以接着跑。日线和 `stock_basic` 在 2000 积分即可。`fina_indicator` 单次最多约 100 行，覆盖最近几年的年报，够「最近一年扣非」使用。
+行情、停牌、曾用名和财报会缓存在 `data/cache/`。这个目录已被 gitignore。财务接口优先用 `balancesheet_vip` 和 `fina_indicator_vip`。券商返回无权限、接口不存在或未知数据源时，按股票代码调用普通接口，每只股票一个缓存文件，中断后可以接着跑。`namechange`、`suspend_d`、`dividend`、`daily_basic`、`index_weight` 没有第二条路径，接口缺失会直接报错。调用频率大约每分钟 600 次，默认每次间隔 0.35 秒。
 
 ## 排雷规则
 

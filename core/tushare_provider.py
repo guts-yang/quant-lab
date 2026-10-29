@@ -1,4 +1,4 @@
-"""Tushare Pro 适配。拉取结果写入 data/cache，重复运行不重复扣积分。"""
+"""山西证券 sxsc_tushare 适配。拉取结果写入 data/cache，重复运行不重复请求。"""
 
 from __future__ import annotations
 
@@ -47,12 +47,12 @@ _FACTOR_INDICATOR_FIELDS = (
     "ts_code,ann_date,end_date,q_dtprofit,q_sales_yoy,roe,roic,grossprofit_margin"
 )
 _DIVIDEND_FIELDS = "ts_code,ex_date,cash_div_tax,div_proc"
-_PERMISSION_MARKERS = ("权限", "积分")
+_PERMISSION_MARKERS = ("权限", "积分", "接口不存在", "未知的数据源", "TOKEN无效")
 _RATE_MARKERS = ("每分钟", "最多访问", "访问频率", "too many", "timeout", "超时")
 
 
 class TusharePermissionError(PermissionError):
-    """当前积分调不了 vip 接口。"""
+    """券商拒绝了该接口。"""
 
 
 class TushareProvider:
@@ -62,11 +62,13 @@ class TushareProvider:
         cache_dir: str | Path = "data/cache",
         pause_seconds: float = 0.35,
         pro: object | None = None,
+        env: str = "prd",
     ) -> None:
         self._token = token
         self.cache_dir = Path(cache_dir)
         self.pause_seconds = pause_seconds
         self._pro = pro
+        self._env = env
 
     def get_instruments(self, asof: pd.Timestamp) -> pd.DataFrame:
         asof = pd.Timestamp(asof).normalize()
@@ -335,12 +337,19 @@ class TushareProvider:
     def _api(self) -> object:
         if self._pro is None:
             _load_dotenv()
-            token = self._token or os.environ.get("TUSHARE_TOKEN", "")
+            token = self._token or os.environ.get("SXSC_TUSHARE_TOKEN", "")
             if not token:
-                raise RuntimeError("缺少 TUSHARE_TOKEN。复制 .env.example 为 .env 后填入，或直接设置环境变量。")
-            import tushare as ts
-
-            self._pro = ts.pro_api(token)
+                raise RuntimeError(
+                    "缺少 SXSC_TUSHARE_TOKEN。复制 .env.example 为 .env 后填入山西证券 token，或直接设置环境变量。"
+                )
+            try:
+                import sxsc_tushare as sx
+            except ImportError as exc:
+                raise RuntimeError(
+                    "未安装 sxsc_tushare。该包由山西证券发放，可从 PTrade 终端获取，或致电客服 95573，不是 pip install tushare。"
+                ) from exc
+            sx.set_token(token)
+            self._pro = sx.get_api(env=self._env)
         return self._pro
 
     def _query(self, api_name: str, **kwargs: object) -> pd.DataFrame:
