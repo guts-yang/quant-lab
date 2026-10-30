@@ -2,17 +2,17 @@
 
 ## 📖 【核心理论与量化直觉】
 
-横截面策略的问题不是“今天能看到什么数据”，而是“在历史中的当日，交易者当时能看到什么数据”。这叫 Point-in-Time（PIT）约束。对一条财报记录，仓库采用可得日：
+横截面策略的问题不是“今天能看到什么数据”，而是“在历史中的当日，交易者当时能看到什么数据”。这叫 Point-in-Time（PIT）约束。对一条财报记录，仓库采用可得日 $t^{\mathrm{avail}}$。$t^{\mathrm{f}}$ 对应 `f_ann_date`，$t^{\mathrm{ann}}$ 对应 `ann_date`：
 
 $$
-\text{available\_date}=
+t^{\mathrm{avail}}=
 \begin{cases}
-\text{f\_ann\_date}, & \text{若 f\_ann\_date 存在} \\
-\text{ann\_date}, & \text{否则}
+t^{\mathrm{f}}, & \text{若 } t^{\mathrm{f}} \text{ 存在} \\
+t^{\mathrm{ann}}, & \text{否则}
 \end{cases}
 $$
 
-在截面日 $t$ 只保留 $\text{available\_date}\le t$ 的记录，并从同一股票的可见报告中选择最新报告期。`core/pit.py` 的 `latest_visible` 实现这条边界；它防止把日后才披露的年报带回过去。
+在截面日 $t$ 只保留 $t^{\mathrm{avail}}\le t$ 的记录，并从同一股票的可见报告中选择最新报告期。`core/pit.py` 的 `latest_visible` 实现这条边界；它防止把日后才披露的年报带回过去。
 
 股票池不是收益来源，却决定尾部风险。`UniverseCleaner` 先删除结构上不适合小资金持有的对象：上市不足 180 日、退市、ST/退市风险、全天停牌、流动性历史不足、流动性后 10%、不可用资产负债表、非正净资产、商誉/净资产过高、负债/资产过高和最近年报扣非利润为负。排雷是可解释的布尔规则，拒绝原因按 `REASON_ORDER` 留痕。
 
