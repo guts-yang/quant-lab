@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 from collections.abc import Sequence
 from datetime import datetime
 from pathlib import Path
@@ -20,8 +21,8 @@ from research.walkforward import persist_walkforward, run_walkforward
 def run_research(provider: object, config: ResearchConfig, root: str | Path) -> dict[str, pd.DataFrame | str]:
     """运行一次不可覆盖的研究。调用方负责选择独立的 run_id 目录。"""
     root = Path(root)
-    if root.exists() and any(root.iterdir()):
-        raise FileExistsError(f"研究目录已存在且非空：{root}")
+    if (root / "report.md").exists():
+        raise FileExistsError(f"研究报告已存在：{root / 'report.md'}")
     root.mkdir(parents=True, exist_ok=True)
     snapshot_index = freeze_snapshots(provider, config, root)
     snapshots = load_snapshots(root)
@@ -157,6 +158,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser.add_argument("--out", default="data/research", help="研究结果根目录")
     parser.add_argument("--run-id", default=datetime.now().strftime("%Y%m%d_%H%M%S"), help="不可覆盖的运行编号")
     args = parser.parse_args(list(argv) if argv is not None else None)
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     from core.tushare_provider import TushareProvider
 
     config = make_config(args.start, args.development_end, args.validation_end, args.end)

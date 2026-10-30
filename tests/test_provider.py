@@ -17,7 +17,7 @@ from core.provider import (
     recent_period_ends,
     select_index_snapshot,
 )
-from core.tushare_provider import TushareProvider, _is_permission
+from core.tushare_provider import TushareProvider, _is_permission, _is_rate_limit
 
 
 def test_balance_sheet_uses_actual_announcement_and_parent_equity():
@@ -205,6 +205,12 @@ def test_injected_pro_skips_sdk_import(monkeypatch):
 )
 def test_broker_refusal_is_permission(message):
     assert _is_permission(message)
+
+
+def test_hourly_cap_is_a_rate_limit():
+    message = "抱歉，您每小时最多访问该接口4000次，权限的具体详情访问：https://tushare.pro/document/1?doc_id=108。"
+    assert _is_rate_limit(message)
+    assert not _is_permission(message)
 
 
 def test_balance_sheet_vip_permission_falls_back_to_cached_per_code(tmp_path):

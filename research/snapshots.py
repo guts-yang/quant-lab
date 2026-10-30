@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from collections.abc import Callable
 from pathlib import Path
 
@@ -12,6 +13,7 @@ from research.config import ResearchConfig
 
 
 SnapshotBuilder = Callable[[object, pd.Timestamp, int], tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, object]]]
+logger = logging.getLogger(__name__)
 
 
 def month_end_dates(bars: pd.DataFrame, start: pd.Timestamp, end: pd.Timestamp) -> list[pd.Timestamp]:
@@ -43,7 +45,22 @@ def freeze_snapshots(
     dates = month_end_dates(bars, config.start, config.end)
     records: list[dict[str, object]] = []
     for asof in dates:
+        logger.info("冻结截面 %s", f"{asof:%Y%m%d}")
         directory = root / "snapshots" / f"{asof:%Y%m%d}"
+        if all((directory / name).exists() for name in ("holdings.parquet", "scores.parquet", "rejected.parquet", "metadata.json")):
+            holdings = pd.read_parquet(directory / "holdings.parquet")
+            scores = pd.read_parquet(directory / "scores.parquet")
+            rejected = pd.read_parquet(directory / "rejected.parquet")
+            records.append(
+                {
+                    "asof": asof,
+                    "directory": str(directory),
+                    "candidates": int(len(scores)),
+                    "holdings": int(len(holdings)),
+                    "rejected": int(len(rejected)),
+                }
+            )
+            continue
         directory.mkdir(parents=True, exist_ok=True)
         holdings, scores, rejected, summary = build(provider, asof, config.scenario.top_n)
         holdings.to_parquet(directory / "holdings.parquet", index=False)

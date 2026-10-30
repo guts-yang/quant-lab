@@ -53,6 +53,7 @@ _FACTOR_INDICATOR_FIELDS = (
 _DIVIDEND_FIELDS = "ts_code,ex_date,cash_div_tax,div_proc"
 _PERMISSION_MARKERS = ("权限", "积分", "接口不存在", "未知的数据源", "TOKEN无效")
 _RATE_MARKERS = ("每分钟", "最多访问", "访问频率", "too many", "timeout", "超时")
+_TRANSIENT_MARKERS = ("502", "503", "504", "bad gateway", "connection", "timed out")
 
 
 class TusharePermissionError(PermissionError):
@@ -199,14 +200,21 @@ class TushareProvider:
         codes = list(dict.fromkeys(str(code) for code in ts_codes))
         frames: list[pd.DataFrame] = []
         folder = self.cache_dir / "dividend" / "by_code"
+        memory = getattr(self, "_dividend_memory", None)
+        if memory is None:
+            memory = {}
+            self._dividend_memory = memory
         for index, code in enumerate(codes, start=1):
             path = folder / f"{code}.parquet"
-            cached = _read(path)
+            cached = memory.get(code)
+            if cached is None:
+                cached = _read(path)
             if cached is None:
                 raw = self._query("dividend", ts_code=code, fields=_DIVIDEND_FIELDS)
                 cached = normalize_dividends(raw)
                 _write(cached, path)
                 time.sleep(self.pause_seconds)
+            memory[code] = cached
             frames.append(cached)
             if codes and (index % 200 == 0 or index == len(codes)):
                 logger.info("dividend 已覆盖 %s/%s", index, len(codes))
@@ -399,26 +407,39 @@ class TushareProvider:
                 raise
             except Exception as exc:
                 text = str(exc)
-                if _is_permission(text):
-                    raise TusharePermissionError(text) from exc
-                if _is_rate_limit(text) and attempt < 5:
+                hourly = "每小时" in text
+                if hourly and attempt < 2:
+                    logger.warning("%s 达到每小时上限，65 分钟后继续", api_name)
+                    time.sleep(3900)
+                    last_error = exc
+                    continue
+                if (_is_rate_limit(text) or _is_transient(text)) and attempt < 5:
                     time.sleep(min(60.0, 2**attempt + self.pause_seconds))
                     last_error = exc
                     continue
+                if _is_permission(text):
+                    raise TusharePermissionError(text) from exc
                 raise
             if result is None:
                 return pd.DataFrame()
             return result
-        raise RuntimeError(f"{api_name} 连续触发频控") from last_error
+        raise RuntimeError(f"{api_name} 连续请求失败") from last_error
 
 
 def _is_permission(message: str) -> bool:
+    if _is_rate_limit(message):
+        return False
     return any(marker in message for marker in _PERMISSION_MARKERS)
 
 
 def _is_rate_limit(message: str) -> bool:
     lowered = message.lower()
     return any(marker in message or marker in lowered for marker in _RATE_MARKERS)
+
+
+def _is_transient(message: str) -> bool:
+    lowered = message.lower()
+    return any(marker in message or marker in lowered for marker in _TRANSIENT_MARKERS)
 
 
 def _load_dotenv() -> None:
