@@ -1,0 +1,26 @@
+{
+  "asof": "20261029",
+  "kept": 3232,
+  "rejected": 2688,
+  "reasons": {
+    "listed_lt_180": 83,
+    "delisted": 343,
+    "st": 316,
+    "delisting": 155,
+    "suspended": 7,
+    "illiquid_history": 350,
+    "illiquid": 557,
+    "missing_balance_sheet": 126,
+    "non_positive_equity": 143,
+    "goodwill": 130,
+    "leverage": 460,
+    "negative_deducted_profit": 1887
+  },
+  "top_n": 8,
+  "weights": {
+    "quality": 0.4,
+    "value": 0.3,
+    "growth": 0.3
+  },
+  "sample": false
+}
