@@ -13,7 +13,7 @@ if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
 from labels import FACTOR_LABELS, MISSING, factor_rows, format_score, holdings_view, pool_view, reason_label, rejected_view
-from load import Snapshot, filter_rows, outside_holdings, visible_snapshots
+from load import Snapshot, filter_rows, list_backtests, outside_holdings, visible_snapshots
 
 
 def _render_holdings(snapshot: Snapshot) -> None:
@@ -95,6 +95,54 @@ def _render_rejections(snapshot: Snapshot) -> None:
         st.dataframe(pool_view(pool), width="stretch", hide_index=True)
 
 
+def _render_backtest() -> None:
+    runs = list_backtests()
+    if not runs:
+        st.info("还没有回测结果。研究侧运行 python -m backtest.engine 后，把净值写到 web/backtests。")
+        return
+    labels = {item.name: item.label for item in runs}
+    selected = st.selectbox("回测区间", options=[item.name for item in runs], format_func=lambda key: labels[key])
+    run = next(item for item in runs if item.name == selected)
+    if run.sample:
+        st.warning(str(run.summary.get("note") or "当前是合成价格示例，不是历史业绩。"))
+    summary = run.summary
+    cagr, drawdown, sharpe, calmar = st.columns(4)
+    cagr.metric("年化", _percent(summary.get("cagr")))
+    drawdown.metric("最大回撤", _percent(summary.get("max_drawdown")))
+    sharpe.metric("夏普", _number(summary.get("sharpe")))
+    calmar.metric("卡玛", _number(summary.get("calmar")))
+    st.caption(
+        "初始资金 %s 元，目标持仓 %s 只。卖出印花税、最低 5 元佣金和 0.1%% 滑点已计入。"
+        "价格收益不含分红复权。"
+        % (summary.get("capital", 40000), summary.get("top_n", 8))
+    )
+    if not run.equity.empty:
+        curve = run.equity.copy()
+        curve["trade_date"] = pd.to_datetime(curve["trade_date"])
+        st.line_chart(curve.set_index("trade_date")["equity"])
+    if run.trades.empty:
+        st.caption("这段区间没有成交。")
+        return
+    view = run.trades.copy()
+    view["trade_date"] = pd.to_datetime(view["trade_date"]).dt.strftime("%Y-%m-%d")
+    rename = {"trade_date": "日期", "ts_code": "代码", "side": "方向", "shares": "股数", "price": "价格", "reason": "原因"}
+    view["side"] = view["side"].map({"buy": "买入", "sell": "卖出"}).fillna(view["side"])
+    view["reason"] = view["reason"].map({"stop": "止损", "rebalance": "调仓"}).fillna(view["reason"])
+    st.dataframe(view.rename(columns=rename), width="stretch", hide_index=True)
+
+
+def _percent(value: object) -> str:
+    if value is None or (isinstance(value, float) and pd.isna(value)):
+        return MISSING
+    return f"{float(value) * 100:.1f}%"
+
+
+def _number(value: object) -> str:
+    if value is None or (isinstance(value, float) and pd.isna(value)):
+        return MISSING
+    return f"{float(value):.2f}"
+
+
 def _render_about(snapshot: Snapshot) -> None:
     weights = snapshot.summary.get("weights") or {"quality": 0.4, "value": 0.3, "growth": 0.3}
     quality = int(round(float(weights.get("quality", 0.4)) * 100))
@@ -146,10 +194,12 @@ snapshot = next(item for item in snapshots if item.asof == selected)
 if snapshot.sample:
     st.warning("当前是示例数据，用来看页面长什么样。发布真实截面后，这个日期会从列表里消失。")
 
-holding_tab, reject_tab, about_tab = st.tabs(["候选持仓", "为什么没入选", "这些数字怎么来的"])
+holding_tab, reject_tab, backtest_tab, about_tab = st.tabs(["候选持仓", "为什么没入选", "回测", "这些数字怎么来的"])
 with holding_tab:
     _render_holdings(snapshot)
 with reject_tab:
     _render_rejections(snapshot)
+with backtest_tab:
+    _render_backtest()
 with about_tab:
     _render_about(snapshot)

@@ -12,7 +12,7 @@ A 股截面选股。做到取数、排雷、打分、回测和展示。不下单
 
 ## 还没有
 
-`ptrade/` 下单还是空目录。终端手册在 `docs/ptrade/`。数据 SDK 在 `docs/tushare/`。
+`ptrade/fundamental_low_turnover.py` 是放到 PTrade 客户端里的日线脚本，本机研究进程不下单。终端手册在 `docs/ptrade/`。数据 SDK 在 `docs/tushare/`。
 
 ## 命令
 

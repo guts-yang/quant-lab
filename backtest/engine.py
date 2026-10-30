@@ -28,6 +28,19 @@ SLIPPAGE = 0.001
 LOT_SIZE = 100
 
 
+@dataclass(frozen=True)
+class TradingCosts:
+    """成交成本。默认值与当前 A 股本地回测基线一致。"""
+
+    commission_rate: float = COMMISSION_RATE
+    min_commission: float = MIN_COMMISSION
+    stamp_tax: float = STAMP_TAX
+    slippage: float = SLIPPAGE
+
+
+DEFAULT_COSTS = TradingCosts()
+
+
 @dataclass
 class _Position:
     shares: int
@@ -42,30 +55,30 @@ class BacktestResult:
     metrics: dict[str, float] = field(default_factory=dict)
 
 
-def commission(amount: float) -> float:
+def commission(amount: float, costs: TradingCosts = DEFAULT_COSTS) -> float:
     """双向佣金。成交额的 0.025% 不足 5 元时按 5 元。"""
-    return max(MIN_COMMISSION, abs(float(amount)) * COMMISSION_RATE)
+    return max(costs.min_commission, abs(float(amount)) * costs.commission_rate)
 
 
-def execution_price(price: float, side: str) -> float:
+def execution_price(price: float, side: str, costs: TradingCosts = DEFAULT_COSTS) -> float:
     if side == "buy":
-        return float(price) * (1.0 + SLIPPAGE)
+        return float(price) * (1.0 + costs.slippage)
     if side == "sell":
-        return float(price) * (1.0 - SLIPPAGE)
+        return float(price) * (1.0 - costs.slippage)
     raise ValueError(f"未知方向 {side}")
 
 
-def sell_cash(price: float, shares: int) -> float:
-    fill = execution_price(price, "sell")
+def sell_cash(price: float, shares: int, costs: TradingCosts = DEFAULT_COSTS) -> float:
+    fill = execution_price(price, "sell", costs)
     gross = fill * int(shares)
-    return gross - commission(gross) - gross * STAMP_TAX
+    return gross - commission(gross, costs) - gross * costs.stamp_tax
 
 
-def buy_cash(price: float, shares: int) -> tuple[float, float]:
+def buy_cash(price: float, shares: int, costs: TradingCosts = DEFAULT_COSTS) -> tuple[float, float]:
     """返回 (现金支出, 成交价)。"""
-    fill = execution_price(price, "buy")
+    fill = execution_price(price, "buy", costs)
     gross = fill * int(shares)
-    return gross + commission(gross), fill
+    return gross + commission(gross, costs), fill
 
 
 def simulate(
@@ -76,6 +89,8 @@ def simulate(
     end: pd.Timestamp,
     capital: float = INITIAL_CAPITAL,
     top_n: int = 8,
+    exit_rank: int = 15,
+    costs: TradingCosts = DEFAULT_COSTS,
 ) -> BacktestResult:
     """bars 含 ts_code、trade_date、open、high、low、close。scores_at 只在月末调用。"""
     start = pd.Timestamp(start).normalize()
@@ -99,14 +114,14 @@ def simulate(
 
     for day in window:
         today = _day_bars(bars, day)
-        cash, positions, day_trades = _apply_stops(day, today, atr, cash, positions)
+        cash, positions, day_trades = _apply_stops(day, today, atr, cash, positions, costs)
         trades.extend(day_trades)
         if day in month_ends:
             cash, positions, rebalance_trades = _rebalance(
-                day, today, cash, positions, scores_at(day), index_bars, top_n
+                day, today, cash, positions, scores_at(day), index_bars, top_n, exit_rank, costs
             )
             trades.extend(rebalance_trades)
-        curve.append({"trade_date": day, "equity": cash + _market_value(positions, today)})
+        curve.append({"trade_date": day, "cash": cash, "equity": cash + _market_value(positions, today)})
 
     equity = pd.DataFrame(curve)
     return BacktestResult(equity, pd.DataFrame(trades), performance(equity))
@@ -118,6 +133,8 @@ def run_backtest(
     end: pd.Timestamp,
     capital: float = INITIAL_CAPITAL,
     top_n: int = 8,
+    exit_rank: int = 15,
+    costs: TradingCosts = DEFAULT_COSTS,
 ) -> BacktestResult:
     from strategy.scorer import score_candidates
 
@@ -130,7 +147,17 @@ def run_backtest(
     def scores_at(asof: pd.Timestamp) -> pd.DataFrame:
         return score_candidates(provider, asof)
 
-    return simulate(bars, index_bars, scores_at, start, end, capital=capital, top_n=top_n)
+    return simulate(
+        bars,
+        index_bars,
+        scores_at,
+        start,
+        end,
+        capital=capital,
+        top_n=top_n,
+        exit_rank=exit_rank,
+        costs=costs,
+    )
 
 
 def _apply_stops(
@@ -139,6 +166,7 @@ def _apply_stops(
     atr: pd.DataFrame,
     cash: float,
     positions: dict[str, _Position],
+    costs: TradingCosts,
 ) -> tuple[float, dict[str, _Position], list[dict[str, object]]]:
     trades: list[dict[str, object]] = []
     for code in list(positions):
@@ -154,7 +182,7 @@ def _apply_stops(
             if pd.notna(high):
                 position.peak = max(position.peak, float(high))
             continue
-        cash += sell_cash(raw, position.shares)
+        cash += sell_cash(raw, position.shares, costs)
         trades.append(_trade(day, code, "sell", position.shares, raw, "stop"))
         del positions[code]
     return cash, positions, trades
@@ -168,8 +196,10 @@ def _rebalance(
     scores: pd.DataFrame,
     index_bars: pd.DataFrame | None,
     top_n: int,
+    exit_rank: int,
+    costs: TradingCosts,
 ) -> tuple[float, dict[str, _Position], list[dict[str, object]]]:
-    book = month_end_book(scores, list(positions), top_n=top_n)
+    book = month_end_book(scores, list(positions), top_n=top_n, exit_rank=exit_rank)
     exposure = index_exposure(index_bars, day)
     trades: list[dict[str, object]] = []
     for code in list(positions):
@@ -182,7 +212,7 @@ def _rebalance(
         if pd.isna(price) or float(price) <= 0:
             continue
         shares = positions[code].shares
-        cash += sell_cash(float(price), shares)
+        cash += sell_cash(float(price), shares, costs)
         trades.append(_trade(day, code, "sell", shares, float(price), "rebalance"))
         del positions[code]
 
@@ -192,10 +222,10 @@ def _rebalance(
     for code in list(positions):
         if code not in book:
             continue
-        cash, sold = _resize_down(day, code, today, positions, target_value, cash)
+        cash, sold = _resize_down(day, code, today, positions, target_value, cash, costs)
         trades.extend(sold)
     for code in book:
-        cash, bought = _resize_up(day, code, today, positions, target_value, cash)
+        cash, bought = _resize_up(day, code, today, positions, target_value, cash, costs)
         trades.extend(bought)
     return cash, positions, trades
 
@@ -207,6 +237,7 @@ def _resize_down(
     positions: dict[str, _Position],
     target_value: float,
     cash: float,
+    costs: TradingCosts,
 ) -> tuple[float, list[dict[str, object]]]:
     row = _row(today, code)
     if row is None or code not in positions:
@@ -220,7 +251,7 @@ def _resize_down(
     if sell_shares < LOT_SIZE:
         return cash, []
     sell_shares = _lots(sell_shares)
-    cash += sell_cash(float(price), sell_shares)
+    cash += sell_cash(float(price), sell_shares, costs)
     left = held - sell_shares
     if left <= 0:
         del positions[code]
@@ -236,6 +267,7 @@ def _resize_up(
     positions: dict[str, _Position],
     target_value: float,
     cash: float,
+    costs: TradingCosts,
 ) -> tuple[float, list[dict[str, object]]]:
     row = _row(today, code)
     if row is None:
@@ -244,12 +276,12 @@ def _resize_up(
     if pd.isna(price) or float(price) <= 0:
         return cash, []
     held = positions[code].shares if code in positions else 0
-    target_shares = _lots(target_value / execution_price(float(price), "buy"))
+    target_shares = _lots(target_value / execution_price(float(price), "buy", costs))
     buy_shares = target_shares - held
     if buy_shares < LOT_SIZE:
         return cash, []
     while buy_shares >= LOT_SIZE:
-        spent, fill = buy_cash(float(price), buy_shares)
+        spent, fill = buy_cash(float(price), buy_shares, costs)
         if spent <= cash + 1e-9:
             cash -= spent
             _add_shares(positions, code, buy_shares, fill, _number(row, "high"))

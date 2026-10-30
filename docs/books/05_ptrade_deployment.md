@@ -1,6 +1,6 @@
 # 05：PTrade 事件驱动部署设计
 
-> 阶段四设计手册。当前 `ptrade/` 只有占位文件，仓库没有订单 API 封装、事件脚本或真实下单实现。本章给出落地边界、状态机和验收标准，不能据此直接实盘交易。
+> 日线脚本在 `ptrade/fundamental_low_turnover.py`。它按 PTrade 的 `initialize`、`before_trading_start`、`handle_data` 和 `after_trading_end` 执行，盘前读取研究侧导出的排名。研究进程不下单。本章的状态机和验收清单仍然用于上线前检查。
 
 ## 📖 【核心理论与量化直觉】
 

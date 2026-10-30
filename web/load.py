@@ -35,6 +35,10 @@ def snapshot_root() -> Path:
     return Path(__file__).resolve().parent / "snapshots"
 
 
+def backtest_root() -> Path:
+    return Path(__file__).resolve().parent / "backtests"
+
+
 def list_snapshots(root: str | Path | None = None) -> list[Snapshot]:
     base = Path(root) if root is not None else snapshot_root()
     if not base.exists():
@@ -77,6 +81,44 @@ def outside_holdings(snapshot: Snapshot) -> pd.DataFrame:
     scores = snapshot.scores.copy()
     scores["ts_code"] = scores["ts_code"].astype(str)
     return scores.loc[~scores["ts_code"].isin(chosen)].reset_index(drop=True)
+
+
+@dataclass(frozen=True)
+class BacktestView:
+    name: str
+    summary: dict
+    equity: pd.DataFrame
+    trades: pd.DataFrame
+
+    @property
+    def sample(self) -> bool:
+        return bool(self.summary.get("sample"))
+
+    @property
+    def label(self) -> str:
+        start = str(self.summary.get("start") or "")
+        end = str(self.summary.get("end") or self.name)
+        text = f"{start}–{end}" if start else self.name
+        if self.sample:
+            return f"{text}（示例）"
+        return text
+
+
+def list_backtests(root: str | Path | None = None) -> list[BacktestView]:
+    base = Path(root) if root is not None else backtest_root()
+    if not base.exists():
+        return []
+    found: list[BacktestView] = []
+    for directory in sorted(path for path in base.iterdir() if path.is_dir()):
+        summary_path = directory / "summary.json"
+        if not summary_path.exists():
+            continue
+        summary = json.loads(summary_path.read_text(encoding="utf-8"))
+        equity = pd.read_parquet(directory / "equity.parquet") if (directory / "equity.parquet").exists() else pd.DataFrame()
+        trades = pd.read_parquet(directory / "trades.parquet") if (directory / "trades.parquet").exists() else pd.DataFrame()
+        found.append(BacktestView(directory.name, summary, equity, trades))
+    real = [item for item in found if not item.sample]
+    return real or found
 
 
 def filter_rows(frame: pd.DataFrame, query: str) -> pd.DataFrame:

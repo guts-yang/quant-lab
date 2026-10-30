@@ -65,6 +65,20 @@ def test_loader_reads_snapshot_without_broker_sdk(monkeypatch, tmp_path):
 def test_committed_example_is_marked_as_sample():
     summary = json.loads((ROOT / "web" / "snapshots" / "20240630" / "summary.json").read_text(encoding="utf-8"))
     assert summary["sample"] is True
+    backtest = json.loads((ROOT / "web" / "backtests" / "sample" / "summary.json").read_text(encoding="utf-8"))
+    assert backtest["sample"] is True
+
+
+def test_real_backtest_hides_the_sample(tmp_path):
+    load = _load("load")
+    sample = tmp_path / "sample"
+    real = tmp_path / "2024"
+    sample.mkdir()
+    real.mkdir()
+    (sample / "summary.json").write_text(json.dumps({"sample": True, "start": "20240102", "end": "20241218"}), encoding="utf-8")
+    (real / "summary.json").write_text(json.dumps({"sample": False, "start": "20200101", "end": "20241231"}), encoding="utf-8")
+    visible = load.list_backtests(tmp_path)
+    assert [item.name for item in visible] == ["2024"]
 
 
 def _write_example(directory: Path, sample: bool) -> None:
