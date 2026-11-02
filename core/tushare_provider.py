@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import time
+from collections import deque
 from collections.abc import Callable, Sequence
 from pathlib import Path
 
@@ -54,6 +56,10 @@ _DIVIDEND_FIELDS = "ts_code,ex_date,cash_div_tax,div_proc"
 _PERMISSION_MARKERS = ("权限", "积分", "接口不存在", "未知的数据源", "TOKEN无效")
 _RATE_MARKERS = ("每分钟", "最多访问", "访问频率", "too many", "timeout", "超时")
 _TRANSIENT_MARKERS = ("502", "503", "504", "bad gateway", "connection", "timed out")
+# 券商网关对单个接口的上限是每小时 4000 次。提前停在 3200，给重试和其他进程留余量。
+HOURLY_CALL_CAP = 4000
+HOURLY_CALL_BUDGET = 3200
+_HOURLY_WINDOW_SECONDS = 3600.0
 
 
 class TusharePermissionError(PermissionError):
@@ -68,12 +74,18 @@ class TushareProvider:
         pause_seconds: float = 0.35,
         pro: object | None = None,
         env: str = "prd",
+        hourly_call_budget: int = HOURLY_CALL_BUDGET,
+        hourly_window_seconds: float = _HOURLY_WINDOW_SECONDS,
     ) -> None:
         self._token = token
         self.cache_dir = Path(cache_dir)
         self.pause_seconds = pause_seconds
         self._pro = pro
         self._env = env
+        self.hourly_call_budget = hourly_call_budget
+        self.hourly_window_seconds = hourly_window_seconds
+        self._hourly_history: dict[str, deque[float]] = {}
+        self._load_hourly_history()
 
     def get_instruments(self, asof: pd.Timestamp) -> pd.DataFrame:
         asof = pd.Timestamp(asof).normalize()
@@ -398,9 +410,69 @@ class TushareProvider:
             self._pro = sx.get_api(env=self._env)
         return self._pro
 
+    def _hourly_path(self) -> Path:
+        return self.cache_dir / "hourly_calls.json"
+
+    def _load_hourly_history(self) -> None:
+        path = self._hourly_path()
+        if not path.exists():
+            return
+        try:
+            raw = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return
+        now = time.time()
+        window = self.hourly_window_seconds
+        for api, stamps in raw.items():
+            history: deque[float] = deque()
+            for stamp in stamps:
+                try:
+                    value = float(stamp)
+                except (TypeError, ValueError):
+                    continue
+                if now - value < window:
+                    history.append(value)
+            if history:
+                self._hourly_history[str(api)] = history
+
+    def _save_hourly_history(self) -> None:
+        path = self._hourly_path()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        payload = {api: list(stamps) for api, stamps in self._hourly_history.items() if stamps}
+        path.write_text(json.dumps(payload), encoding="utf-8")
+
+    def _reserve_hourly_call(self, api_name: str) -> None:
+        """同一接口在滚动一小时内达到阈值后先等待，避免触发券商的 4000 次上限。"""
+        budget = self.hourly_call_budget
+        if budget <= 0:
+            return
+        window = self.hourly_window_seconds
+        now = time.time()
+        history = self._hourly_history.setdefault(api_name, deque())
+        while history and now - history[0] >= window:
+            history.popleft()
+        if len(history) >= budget:
+            wait = window - (now - history[0])
+            if wait > 0:
+                logger.warning(
+                    "%s 已到每小时阈值 %s/%s，暂停 %.0f 秒",
+                    api_name,
+                    budget,
+                    HOURLY_CALL_CAP,
+                    wait,
+                )
+                started = now
+                time.sleep(wait)
+                now = max(time.time(), started + wait)
+            while history and now - history[0] >= window:
+                history.popleft()
+        history.append(now)
+        self._save_hourly_history()
+
     def _query(self, api_name: str, **kwargs: object) -> pd.DataFrame:
         last_error: Exception | None = None
         for attempt in range(6):
+            self._reserve_hourly_call(api_name)
             try:
                 result = getattr(self._api(), api_name)(**kwargs)
             except (TusharePermissionError, AttributeError):

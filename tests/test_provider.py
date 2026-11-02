@@ -213,6 +213,39 @@ def test_hourly_cap_is_a_rate_limit():
     assert not _is_permission(message)
 
 
+def test_hourly_budget_pauses_before_the_gateway_cap(monkeypatch, tmp_path):
+    sleeps: list[float] = []
+    clock = {"now": 1_000_000.0}
+    monkeypatch.setattr("core.tushare_provider.time.sleep", lambda seconds: sleeps.append(seconds))
+    monkeypatch.setattr("core.tushare_provider.time.time", lambda: clock["now"])
+
+    class _Pro:
+        def daily(self, **kwargs: object) -> pd.DataFrame:
+            return pd.DataFrame()
+
+    provider = TushareProvider(
+        cache_dir=tmp_path,
+        pause_seconds=0,
+        pro=_Pro(),
+        hourly_call_budget=2,
+        hourly_window_seconds=3600,
+    )
+    provider._query("daily")
+    clock["now"] += 1
+    provider._query("daily")
+    reloaded = TushareProvider(
+        cache_dir=tmp_path,
+        pause_seconds=0,
+        pro=_Pro(),
+        hourly_call_budget=2,
+        hourly_window_seconds=3600,
+    )
+    assert len(reloaded._hourly_history["daily"]) == 2
+    clock["now"] += 10
+    provider._query("daily")
+    assert sleeps == [pytest.approx(3589.0)]
+
+
 def test_balance_sheet_vip_permission_falls_back_to_cached_per_code(tmp_path):
     pro = _FakePro()
     provider = TushareProvider(cache_dir=tmp_path, pause_seconds=0, pro=pro)
