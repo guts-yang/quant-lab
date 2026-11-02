@@ -7,7 +7,23 @@ from research.config import CostScenario, make_config
 from research.diagnostics import forward_labels, ic_summary, quantile_returns, rank_ic
 from research.report import decision_gate
 from research.snapshots import freeze_snapshots, load_snapshots, month_end_dates
+from research.walkforward import holdings_from_trades
 from research.stress import default_scenarios
+
+
+def test_holdings_from_trades_accepts_a_date_series():
+    trades = pd.DataFrame(
+        {
+            "trade_date": ["2024-01-31", "2024-02-29"],
+            "ts_code": ["000001.SZ", "000001.SZ"],
+            "side": ["buy", "sell"],
+            "shares": [100, 100],
+        }
+    )
+    dates = pd.Series(pd.to_datetime(["2024-01-31", "2024-02-01", "2024-02-29"]))
+    held = holdings_from_trades(trades, dates)
+    assert list(held["trade_date"]) == [pd.Timestamp("2024-01-31")]
+    assert int(held["shares"].iloc[0]) == 100
 
 
 def test_config_requires_strictly_ordered_periods():

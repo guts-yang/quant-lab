@@ -85,7 +85,8 @@ def holdings_from_trades(trades: pd.DataFrame, dates: pd.Series | None = None) -
     daily = frame.groupby(["trade_date", "ts_code"], as_index=False)["signed"].sum().sort_values("trade_date")
     wide = daily.pivot(index="trade_date", columns="ts_code", values="signed").fillna(0)
     if dates is not None:
-        sessions = pd.DatetimeIndex(pd.to_datetime(dates, errors="coerce").dropna().normalize().drop_duplicates()).sort_values()
+        parsed = pd.Series(pd.to_datetime(dates, errors="coerce")).dropna().dt.normalize()
+        sessions = pd.DatetimeIndex(parsed.drop_duplicates()).sort_values()
         wide = wide.reindex(sessions, fill_value=0)
     wide = wide.cumsum()
     monthly = wide.groupby(wide.index.to_period("M")).tail(1)
