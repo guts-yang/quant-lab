@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A-share research lab: point-in-time universe cleaning"
 requires-python = ">=3.11"
 dependencies = [
+    "chan-lun-core==1.2.2",
     "pandas>=2.2",
     "pyarrow>=15",
     "requests>=2.28",
