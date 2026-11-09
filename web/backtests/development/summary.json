@@ -1,0 +1,12 @@
+{
+  "sample": false,
+  "start": "20180101",
+  "end": "20211231",
+  "capital": 40000,
+  "top_n": 8,
+  "cagr": 0.03918442105562314,
+  "max_drawdown": -0.11373252023751712,
+  "sharpe": 0.4940774127400189,
+  "calmar": 0.34453137039248793,
+  "note": "价格收益，不含分红复权。研究结论见 data/research/baseline_v1/report.md。"
+}
