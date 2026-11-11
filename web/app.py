@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -13,7 +14,17 @@ if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
 from labels import FACTOR_LABELS, MISSING, factor_rows, format_score, holdings_view, pool_view, reason_label, rejected_view
-from load import Snapshot, filter_rows, list_backtests, outside_holdings, visible_snapshots
+from load import (
+    Snapshot,
+    filter_rows,
+    list_backtests,
+    list_books,
+    list_chan,
+    list_research,
+    list_valuations,
+    outside_holdings,
+    visible_snapshots,
+)
 
 
 def _render_holdings(snapshot: Snapshot) -> None:
@@ -98,7 +109,7 @@ def _render_rejections(snapshot: Snapshot) -> None:
 def _render_backtest() -> None:
     runs = list_backtests()
     if not runs:
-        st.info("还没有回测结果。研究侧运行 python -m backtest.engine 后，把净值写到 web/backtests。")
+        st.info("还没有回测结果。本机运行 python -m backtest.engine --start YYYYMMDD --end YYYYMMDD，结果会写到 web/backtests。")
         return
     labels = {item.name: item.label for item in runs}
     selected = st.selectbox("回测区间", options=[item.name for item in runs], format_func=lambda key: labels[key])
@@ -166,6 +177,102 @@ def _render_about(snapshot: Snapshot) -> None:
     st.caption("原始指标：" + "、".join(FACTOR_LABELS.values()))
 
 
+_DECISIONS = {
+    "continue_validation": "可以继续验证",
+    "reject_current_definition": "当前定义未通过",
+    "evidence_insufficient": "证据不足",
+}
+
+
+def _render_research() -> None:
+    runs = list_research()
+    if not runs:
+        st.info(
+            "还没有研究报告。本机运行 python -m research.report 后，再运行 python -m strategy.publish_site。"
+        )
+        return
+    selected = st.selectbox("研究编号", options=[item.name for item in runs])
+    run = next(item for item in runs if item.name == selected)
+    decision = str(run.summary.get("decision") or "")
+    st.metric("决策", _DECISIONS.get(decision, decision or MISSING))
+    reasons = run.summary.get("reasons") or []
+    if reasons:
+        st.markdown("\n".join(f"- {reason}" for reason in reasons))
+    if not run.rank_ic.empty:
+        st.subheader("Rank IC")
+        st.dataframe(run.rank_ic, width="stretch", hide_index=True)
+    if not run.stress.empty:
+        st.subheader("压力测试")
+        st.dataframe(run.stress, width="stretch", hide_index=True)
+    if run.report:
+        st.markdown(run.report)
+
+
+def _render_valuations() -> None:
+    runs = list_valuations()
+    if not runs:
+        st.info(
+            "还没有估值。本机运行 python -m valuation.run --code 600519.SH --asof YYYYMMDD，"
+            "再运行 python -m strategy.publish_site。"
+        )
+        return
+    labels = {item.name: f"{item.code}  {item.asof}" for item in runs}
+    selected = st.selectbox("股票", options=[item.name for item in runs], format_func=lambda key: labels[key])
+    run = next(item for item in runs if item.name == selected)
+    if not run.scenarios.empty:
+        st.subheader("三情景")
+        st.dataframe(run.scenarios, width="stretch", hide_index=True)
+    if not run.sensitivity.empty:
+        st.subheader("敏感性")
+        st.dataframe(run.sensitivity.reset_index(), width="stretch", hide_index=True)
+    if run.report:
+        st.markdown(run.report)
+
+
+def _render_chan() -> None:
+    runs = list_chan()
+    if not runs:
+        st.info("还没有缠论研究结果。本机生成报告后，运行 python -m strategy.publish_site。")
+        return
+    selected = st.selectbox("缠论编号", options=[item.name for item in runs])
+    run = next(item for item in runs if item.name == selected)
+    decision = str(run.summary.get("decision") or "")
+    st.metric("决策", _DECISIONS.get(decision, decision or MISSING))
+    gaps = run.summary.get("known_gaps") or []
+    if gaps:
+        st.caption("口径：" + "；".join(str(item) for item in gaps))
+    if not run.periods.empty:
+        st.dataframe(run.periods, width="stretch", hide_index=True)
+    if not run.equity.empty and "equity" in run.equity.columns:
+        curve = run.equity.copy()
+        curve["trade_date"] = pd.to_datetime(curve["trade_date"])
+        st.line_chart(curve.set_index("trade_date")["equity"])
+    if run.report:
+        st.markdown(run.report)
+
+
+def _render_books() -> None:
+    books = list_books()
+    if not books:
+        st.info(
+            "还没有交易清单。本机运行 python -m ptrade.export_book --asof YYYYMMDD --out fundamental_book.json，"
+            "再运行 python -m strategy.publish_site --book fundamental_book.json。"
+        )
+        return
+    selected = st.selectbox("清单日期", options=[item.name for item in books], format_func=lambda key: next(item.label for item in books if item.name == key))
+    book = next(item for item in books if item.name == selected)
+    ranked = pd.DataFrame(book.payload.get("ranked") or [])
+    st.caption(f"目标新开仓 {book.payload.get('top_n', 8)} 只。页面只提供下载，下单仍在 PTrade 客户端完成。")
+    if not ranked.empty:
+        st.dataframe(ranked.rename(columns={"ts_code": "代码", "rank": "名次", "composite": "综合分"}), width="stretch", hide_index=True)
+    st.download_button(
+        "下载排名清单",
+        data=json.dumps(book.payload, ensure_ascii=False, indent=2).encode("utf-8"),
+        file_name=f"fundamental-book-{book.name}.json",
+        mime="application/json",
+    )
+
+
 def _choice_label(code: str, options: list[str], names: list[str]) -> str:
     name = names[options.index(code)] if code in options else ""
     return f"{code}  {name}".strip()
@@ -176,30 +283,44 @@ st.title("研究记录")
 st.caption("这是按公告日整理的研究记录，不是买卖建议。")
 
 snapshots = visible_snapshots()
-if not snapshots:
-    st.info(
-        "还没有可展示的截面。在本机运行 python -m strategy.publish --asof YYYYMMDD --top 8，"
-        "把 web/snapshots 里的新日期推送到仓库后，这里会出现结果。"
+snapshot = None
+if snapshots:
+    selected_labels = {item.asof: item.label for item in snapshots}
+    selected = st.sidebar.selectbox(
+        "截面日",
+        options=[item.asof for item in snapshots],
+        format_func=lambda key: selected_labels[key],
+        index=len(snapshots) - 1,
     )
-    st.stop()
+    snapshot = next(item for item in snapshots if item.asof == selected)
+    if snapshot.sample:
+        st.warning("当前是示例数据，用来看页面长什么样。发布真实截面后，这个日期会从列表里消失。")
 
-selected_labels = {item.asof: item.label for item in snapshots}
-selected = st.sidebar.selectbox(
-    "截面日",
-    options=[item.asof for item in snapshots],
-    format_func=lambda key: selected_labels[key],
-    index=len(snapshots) - 1,
+holding_tab, reject_tab, backtest_tab, research_tab, valuation_tab, chan_tab, book_tab, about_tab = st.tabs(
+    ["候选持仓", "为什么没入选", "回测", "研究结论", "估值", "缠论", "交易清单", "这些数字怎么来的"]
 )
-snapshot = next(item for item in snapshots if item.asof == selected)
-if snapshot.sample:
-    st.warning("当前是示例数据，用来看页面长什么样。发布真实截面后，这个日期会从列表里消失。")
-
-holding_tab, reject_tab, backtest_tab, about_tab = st.tabs(["候选持仓", "为什么没入选", "回测", "这些数字怎么来的"])
 with holding_tab:
-    _render_holdings(snapshot)
+    if snapshot is None:
+        st.info("还没有可展示的截面。在本机运行 python -m strategy.publish --asof YYYYMMDD --top 8。")
+    else:
+        _render_holdings(snapshot)
 with reject_tab:
-    _render_rejections(snapshot)
+    if snapshot is None:
+        st.info("还没有可展示的截面。在本机运行 python -m strategy.publish --asof YYYYMMDD --top 8。")
+    else:
+        _render_rejections(snapshot)
 with backtest_tab:
     _render_backtest()
+with research_tab:
+    _render_research()
+with valuation_tab:
+    _render_valuations()
+with chan_tab:
+    _render_chan()
+with book_tab:
+    _render_books()
 with about_tab:
-    _render_about(snapshot)
+    if snapshot is None:
+        st.info("发布一个截面后，这里会显示打分口径。")
+    else:
+        _render_about(snapshot)

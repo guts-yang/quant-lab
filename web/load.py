@@ -121,6 +121,156 @@ def list_backtests(root: str | Path | None = None) -> list[BacktestView]:
     return real or found
 
 
+@dataclass(frozen=True)
+class ResearchView:
+    name: str
+    summary: dict
+    report: str
+    rank_ic: pd.DataFrame
+    stress: pd.DataFrame
+
+
+@dataclass(frozen=True)
+class ValuationView:
+    name: str
+    code: str
+    asof: str
+    report: str
+    scenarios: pd.DataFrame
+    sensitivity: pd.DataFrame
+
+
+@dataclass(frozen=True)
+class ChanView:
+    name: str
+    summary: dict
+    report: str
+    periods: pd.DataFrame
+    equity: pd.DataFrame
+
+
+@dataclass(frozen=True)
+class BookView:
+    name: str
+    payload: dict
+
+    @property
+    def label(self) -> str:
+        asof = str(self.payload.get("asof") or self.name)
+        if len(asof) == 8 and asof.isdigit():
+            return f"{asof[:4]}-{asof[4:6]}-{asof[6:8]}"
+        return asof
+
+
+def research_root() -> Path:
+    return Path(__file__).resolve().parent / "research"
+
+
+def valuation_root() -> Path:
+    return Path(__file__).resolve().parent / "valuations"
+
+
+def chan_root() -> Path:
+    return Path(__file__).resolve().parent / "chan"
+
+
+def book_root() -> Path:
+    return Path(__file__).resolve().parent / "books"
+
+
+def list_research(root: str | Path | None = None) -> list[ResearchView]:
+    return [_read_research(path) for path in _directories(root, research_root)]
+
+
+def list_valuations(root: str | Path | None = None) -> list[ValuationView]:
+    return [_read_valuation(path) for path in _directories(root, valuation_root)]
+
+
+def list_chan(root: str | Path | None = None) -> list[ChanView]:
+    return [_read_chan(path) for path in _directories(root, chan_root)]
+
+
+def list_books(root: str | Path | None = None) -> list[BookView]:
+    base = Path(root) if root is not None else book_root()
+    if not base.exists():
+        return []
+    found = []
+    for path in sorted(base.glob("*.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(payload, dict) and "ranked" in payload:
+            found.append(BookView(path.stem, payload))
+    return found
+
+
+def _directories(root: str | Path | None, default) -> list[Path]:
+    base = Path(root) if root is not None else default()
+    if not base.exists():
+        return []
+    return sorted(path for path in base.iterdir() if path.is_dir())
+
+
+def _read_research(path: Path) -> ResearchView:
+    return ResearchView(
+        name=path.name,
+        summary=_json(path / "summary.json"),
+        report=_text(path / "report.md"),
+        rank_ic=_table(path / "diagnostics" / "rank_ic_summary.parquet"),
+        stress=_table(path / "stress.parquet"),
+    )
+
+
+def _read_valuation(path: Path) -> ValuationView:
+    assumptions = _json(path / "assumptions.json")
+    code, _, asof = path.name.rpartition("_")
+    return ValuationView(
+        name=path.name,
+        code=str(assumptions.get("ts_code") or code),
+        asof=str(assumptions.get("asof") or asof),
+        report=_text(path / "report.md"),
+        scenarios=_table(path / "scenarios.parquet"),
+        sensitivity=_table(path / "sensitivity.parquet"),
+    )
+
+
+def _read_chan(path: Path) -> ChanView:
+    periods = _table(path / "walkforward" / "summary.parquet")
+    equity = pd.DataFrame()
+    preferred = ["holdout", "validation", "development"]
+    names = preferred + [name for name in _period_dirs(path) if name not in preferred]
+    for name in names:
+        candidate = path / "walkforward" / name / "strategy_equity.parquet"
+        if candidate.exists():
+            equity = _table(candidate)
+            break
+    return ChanView(path.name, _json(path / "summary.json"), _text(path / "report.md"), periods, equity)
+
+
+def _period_dirs(path: Path) -> list[str]:
+    walk = path / "walkforward"
+    if not walk.exists():
+        return []
+    return sorted(item.name for item in walk.iterdir() if item.is_dir())
+
+
+def _json(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    loaded = json.loads(path.read_text(encoding="utf-8"))
+    return loaded if isinstance(loaded, dict) else {}
+
+
+def _text(path: Path) -> str:
+    if not path.exists():
+        return ""
+    return path.read_text(encoding="utf-8")
+
+
+def _table(path: Path) -> pd.DataFrame:
+    if not path.exists():
+        return pd.DataFrame()
+    return pd.read_parquet(path)
+
+
 def filter_rows(frame: pd.DataFrame, query: str) -> pd.DataFrame:
     text = query.strip().lower()
     if not text or frame is None or frame.empty:
