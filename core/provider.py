@@ -58,7 +58,7 @@ INDEX_DAILY_COLUMNS = ["ts_code", "trade_date", "close"]
 # total_mv 已换成元。Tushare daily_basic 原始单位是万元。
 DAILY_BASIC_COLUMNS = ["ts_code", "trade_date", "close", "total_mv"]
 DIVIDEND_COLUMNS = ["ts_code", "ex_date", "cash_div_tax"]
-INSTRUMENT_COLUMNS = ["ts_code", "list_date", "delist_date", "list_status", "industry"]
+INSTRUMENT_COLUMNS = ["ts_code", "name", "list_date", "delist_date", "list_status", "industry"]
 NAME_COLUMNS = ["ts_code", "name", "start_date", "end_date"]
 SUSPEND_COLUMNS = ["ts_code", "trade_date", "suspend_timing", "suspend_type"]
 INDEX_MEMBER_COLUMNS = ["index_code", "ts_code", "trade_date", "weight"]
@@ -303,9 +303,14 @@ def normalize_instruments(raw: pd.DataFrame | None) -> pd.DataFrame:
         industry = raw["industry"].astype("string").str.strip()
     else:
         industry = pd.Series(pd.NA, index=raw.index, dtype="string")
+    if "name" in raw.columns:
+        name = raw["name"].astype("string").str.strip()
+    else:
+        name = pd.Series(pd.NA, index=raw.index, dtype="string")
     return pd.DataFrame(
         {
             "ts_code": raw["ts_code"].astype(str),
+            "name": name,
             "list_date": _to_datetime(raw["list_date"]),
             "delist_date": _to_datetime(delist),
             "list_status": status.map(_code),

@@ -113,10 +113,12 @@ def test_instruments_keep_industry():
             "delist_date": [None],
             "list_status": ["L"],
             "industry": ["银行"],
+            "name": ["平安银行"],
         }
     )
     out = normalize_instruments(raw)
     assert out.loc[0, "industry"] == "银行"
+    assert out.loc[0, "name"] == "平安银行"
 
 
 def test_recent_period_ends_stop_at_asof():

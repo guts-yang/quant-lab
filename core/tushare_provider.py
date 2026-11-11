@@ -403,7 +403,7 @@ class TushareProvider:
     def _stock_basic(self) -> pd.DataFrame:
         path = self.cache_dir / "stock_basic.parquet"
         cached = _read_fresh(path, max_age_days=1)
-        if cached is not None and "industry" in cached.columns:
+        if cached is not None and {"industry", "name"} <= set(cached.columns):
             return cached
         frames: list[pd.DataFrame] = []
         for status in ("L", "D", "P"):
@@ -411,7 +411,7 @@ class TushareProvider:
                 "stock_basic",
                 exchange="",
                 list_status=status,
-                fields="ts_code,list_date,delist_date,list_status,industry",
+                fields="ts_code,name,list_date,delist_date,list_status,industry",
             )
             if not raw.empty:
                 frames.append(raw)
