@@ -21,6 +21,7 @@ from charts import (
     present_value_frame,
     quoted_price,
     revenue_frame,
+    security_label,
     sensitivity_frame,
     value_frame,
 )
@@ -219,6 +220,15 @@ def _render_research() -> None:
         st.markdown(run.report)
 
 
+def _valuation_title(run) -> str:
+    assumptions = run.assumptions or {}
+    company = assumptions.get("name")
+    if not company:
+        fundamentals = assumptions.get("fundamentals") or {}
+        company = fundamentals.get("name")
+    return security_label(None if company is None else str(company), run.code)
+
+
 def _render_valuations() -> None:
     runs = list_valuations()
     if not runs:
@@ -227,7 +237,7 @@ def _render_valuations() -> None:
             "再运行 python -m strategy.publish_site。"
         )
         return
-    labels = {item.name: f"{item.code}  {item.asof}" for item in runs}
+    labels = {item.name: f"{_valuation_title(item)}  {item.asof}" for item in runs}
     selected = st.selectbox("股票", options=[item.name for item in runs], format_func=lambda key: labels[key])
     run = next(item for item in runs if item.name == selected)
     _render_valuation_charts(run)
@@ -249,7 +259,7 @@ def _render_valuation_charts(run) -> None:
             alt.Chart(values)
             .mark_bar()
             .encode(
-                x=alt.X("情景:N", sort=list(values["情景"]), title=None),
+                x=alt.X("情景:N", sort=list(values["情景"]), title=None, axis=alt.Axis(labelAngle=0)),
                 y=alt.Y("每股价值:Q", title="元/股"),
                 tooltip=["情景", alt.Tooltip("每股价值:Q", format=".2f", title="元/股")],
             )
@@ -270,7 +280,7 @@ def _render_valuation_charts(run) -> None:
             alt.Chart(present)
             .mark_bar()
             .encode(
-                x=alt.X("构成:N", sort=list(present["构成"]), title=None),
+                x=alt.X("构成:N", sort=list(present["构成"]), title=None, axis=alt.Axis(labelAngle=0)),
                 y=alt.Y("现值:Q", title="亿元"),
                 tooltip=["构成", alt.Tooltip("现值:Q", format=".1f", title="亿元")],
             )
@@ -331,7 +341,7 @@ def _render_valuation_charts(run) -> None:
             alt.Chart(anchors)
             .mark_bar()
             .encode(
-                x=alt.X("口径:N", sort=list(anchors["口径"]), title=None),
+                x=alt.X("口径:N", sort=list(anchors["口径"]), title=None, axis=alt.Axis(labelAngle=0)),
                 y=alt.Y("增速:Q", title="收入增速", axis=alt.Axis(format="%")),
                 tooltip=["口径", alt.Tooltip("增速:Q", format=".1%")],
             )

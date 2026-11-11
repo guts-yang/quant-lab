@@ -94,6 +94,7 @@ def test_loaders_read_published_sections(tmp_path):
     assert valuations[0].asof == "20261110"
     assert set(valuations[0].forecast["scenario"]) == {"bear", "base", "bull"}
     assert valuations[0].assumptions["ts_code"] == "002594.SZ"
+    assert valuations[0].assumptions["name"] == "比亚迪"
     _assert_chart_frames(valuations[0])
     chan = module.list_chan(web / "chan")
     assert list(chan[0].equity["equity"]) == [100.0]
@@ -133,6 +134,7 @@ def _valuation(path: Path) -> None:
     (path / "assumptions.json").write_text(
         json.dumps(
             {
+                "name": "比亚迪",
                 "ts_code": "002594.SZ",
                 "asof": "20261110",
                 "password": "hidden",
@@ -173,6 +175,7 @@ def _assert_chart_frames(valuation) -> None:
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
 
+    assert module.security_label(valuation.assumptions["name"], valuation.code) == "比亚迪（002594.SZ）"
     values = module.value_frame(valuation.scenarios)
     assert list(values["情景"]) == ["熊市", "基准", "牛市"]
     assert list(values.columns) == ["情景", "每股价值"]
@@ -182,7 +185,7 @@ def _assert_chart_frames(valuation) -> None:
     margin = module.margin_frame(valuation.forecast)
     assert list(margin["净利率"]) == [0.2]
     present = module.present_value_frame(valuation.scenarios)
-    assert list(present["构成"]) == ["显式期现金流", "终值"]
+    assert list(present["构成"]) == ["显式期", "终值"]
     anchors = module.growth_anchor_frame(valuation.assumptions)
     assert list(anchors["口径"]) == ["5年历史", "基准情景", "现价隐含"]
     heat = module.sensitivity_frame(valuation.sensitivity)

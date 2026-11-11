@@ -8,6 +8,14 @@ SCENARIO_ORDER = ("bear", "base", "bull")
 SCENARIO_LABELS = {"bear": "熊市", "base": "基准", "bull": "牛市"}
 
 
+def security_label(name: str | None, code: str) -> str:
+    """公司名称在前，代码放在括号里。没有名称时只留代码。"""
+    company = str(name or "").strip()
+    if company in {"", "None", "nan", "<NA>"}:
+        return str(code)
+    return f"{company}（{code}）"
+
+
 def value_frame(scenarios: pd.DataFrame | None) -> pd.DataFrame:
     """熊、基准、牛的每股价值，顺序固定。"""
     columns = ["情景", "每股价值"]
@@ -45,7 +53,7 @@ def present_value_frame(scenarios: pd.DataFrame | None) -> pd.DataFrame:
         return pd.DataFrame(columns=columns)
     return pd.DataFrame(
         [
-            {"构成": "显式期现金流", "现值": explicit / 1e8},
+            {"构成": "显式期", "现值": explicit / 1e8},
             {"构成": "终值", "现值": terminal / 1e8},
         ],
         columns=columns,
