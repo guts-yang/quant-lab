@@ -15,9 +15,11 @@ import pandas as pd
 from core.provider import (
     BALANCE_COLUMNS,
     BAR_COLUMNS,
+    CASHFLOW_COLUMNS,
     DAILY_BASIC_COLUMNS,
     DIVIDEND_COLUMNS,
     FACTOR_INDICATOR_COLUMNS,
+    INCOME_COLUMNS,
     INDICATOR_COLUMNS,
     INSTRUMENT_COLUMNS,
     NAME_COLUMNS,
@@ -29,9 +31,11 @@ from core.provider import (
     filter_periods,
     normalize_balance_sheet,
     normalize_bars,
+    normalize_cash_flow,
     normalize_daily_basic,
     normalize_dividends,
     normalize_factor_indicator,
+    normalize_income_statement,
     normalize_index_daily,
     normalize_indicator,
     normalize_instruments,
@@ -49,6 +53,14 @@ _BALANCE_FIELDS = (
     "goodwill,total_hldr_eqy_exc_min_int,total_assets,total_liab"
 )
 _INDICATOR_FIELDS = "ts_code,ann_date,end_date,profit_dedt"
+_INCOME_FIELDS = (
+    "ts_code,ann_date,f_ann_date,end_date,report_type,comp_type,"
+    "total_revenue,n_income_attr_p,basic_eps"
+)
+_CASHFLOW_FIELDS = (
+    "ts_code,ann_date,f_ann_date,end_date,report_type,comp_type,"
+    "n_cashflow_act,c_pay_acq_const_fiolta"
+)
 _FACTOR_INDICATOR_FIELDS = (
     "ts_code,ann_date,end_date,q_dtprofit,q_sales_yoy,roe,roic,grossprofit_margin"
 )
@@ -182,6 +194,28 @@ class TushareProvider:
         )
         return annual_indicators(frame)
 
+    def get_income_statements(self, periods: Sequence[str]) -> pd.DataFrame:
+        return self._financials(
+            periods,
+            vip_api="income_vip",
+            code_api="income",
+            fields=_INCOME_FIELDS,
+            cache_name="income",
+            normalize=normalize_income_statement,
+            columns=INCOME_COLUMNS,
+        )
+
+    def get_cash_flows(self, periods: Sequence[str]) -> pd.DataFrame:
+        return self._financials(
+            periods,
+            vip_api="cashflow_vip",
+            code_api="cashflow",
+            fields=_CASHFLOW_FIELDS,
+            cache_name="cashflow",
+            normalize=normalize_cash_flow,
+            columns=CASHFLOW_COLUMNS,
+        )
+
     def get_factor_indicators(self, periods: Sequence[str]) -> pd.DataFrame:
         return self._financials(
             periods,
@@ -263,6 +297,34 @@ class TushareProvider:
                 time.sleep(self.pause_seconds)
             frames.append(cached)
         return _concat(frames, OHLC_COLUMNS)
+
+    def get_stock_ohlc(self, ts_code: str, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+        """按代码和年份缓存。历史年份不再变，当年缓存只留一天。"""
+        start = pd.Timestamp(start).normalize()
+        end = pd.Timestamp(end).normalize()
+        code = str(ts_code)
+        this_year = pd.Timestamp.today().year
+        frames: list[pd.DataFrame] = []
+        for year in range(start.year, end.year + 1):
+            path = self.cache_dir / "ohlc_code" / f"{code}_{year}.parquet"
+            cached = _read_fresh(path, max_age_days=1) if year >= this_year else _read(path)
+            if cached is None:
+                raw = self._query(
+                    "daily",
+                    ts_code=code,
+                    start_date=f"{year}0101",
+                    end_date=f"{year}1231",
+                    fields="ts_code,trade_date,open,high,low,close",
+                )
+                cached = normalize_ohlc(raw)
+                _write(cached, path)
+                time.sleep(self.pause_seconds)
+            frames.append(cached)
+        frame = _concat(frames, OHLC_COLUMNS)
+        if frame.empty:
+            return frame
+        dates = pd.to_datetime(frame["trade_date"], errors="coerce")
+        return frame.loc[dates.between(start, end)].reset_index(drop=True)
 
     def get_index_daily(self, index_code: str, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
         start = pd.Timestamp(start).normalize()

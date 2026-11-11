@@ -21,6 +21,26 @@ BALANCE_COLUMNS = [
     "comp_type",
 ]
 INDICATOR_COLUMNS = ["ts_code", "ann_date", "end_date", "profit_dedt"]
+# 利润表和现金流量表都是年内累计值（YTD），TTM 和单季换算在 valuation 层做。
+INCOME_COLUMNS = [
+    "ts_code",
+    "ann_date",
+    "end_date",
+    "total_revenue",
+    "n_income_attr",
+    "basic_eps",
+    "report_type",
+    "comp_type",
+]
+CASHFLOW_COLUMNS = [
+    "ts_code",
+    "ann_date",
+    "end_date",
+    "ocf",
+    "capex",
+    "report_type",
+    "comp_type",
+]
 FACTOR_INDICATOR_COLUMNS = [
     "ts_code",
     "ann_date",
@@ -99,6 +119,43 @@ def normalize_balance_sheet(raw: pd.DataFrame | None) -> pd.DataFrame:
             "equity": _number_column(raw, equity_name),
             "total_assets": _number_column(raw, "total_assets"),
             "total_liab": _number_column(raw, "total_liab"),
+            "report_type": raw["report_type"].map(_code) if "report_type" in raw.columns else None,
+            "comp_type": raw["comp_type"].map(_code) if "comp_type" in raw.columns else None,
+        }
+    )
+    return out.reset_index(drop=True)
+
+
+def normalize_income_statement(raw: pd.DataFrame | None) -> pd.DataFrame:
+    """利润表归一。收入用 total_revenue，利润用归母净利润，估值口径和排雷的扣非口径分开。"""
+    if raw is None or raw.empty:
+        return _blank_frame(INCOME_COLUMNS)
+    out = pd.DataFrame(
+        {
+            "ts_code": raw["ts_code"].astype(str),
+            "ann_date": _availability(raw),
+            "end_date": _to_datetime(raw["end_date"]),
+            "total_revenue": _number_column(raw, "total_revenue"),
+            "n_income_attr": _number_column(raw, "n_income_attr_p"),
+            "basic_eps": _number_column(raw, "basic_eps"),
+            "report_type": raw["report_type"].map(_code) if "report_type" in raw.columns else None,
+            "comp_type": raw["comp_type"].map(_code) if "comp_type" in raw.columns else None,
+        }
+    )
+    return out.reset_index(drop=True)
+
+
+def normalize_cash_flow(raw: pd.DataFrame | None) -> pd.DataFrame:
+    """现金流量表归一。capex 取购建固定资产、无形资产和其他长期资产支付的现金。"""
+    if raw is None or raw.empty:
+        return _blank_frame(CASHFLOW_COLUMNS)
+    out = pd.DataFrame(
+        {
+            "ts_code": raw["ts_code"].astype(str),
+            "ann_date": _availability(raw),
+            "end_date": _to_datetime(raw["end_date"]),
+            "ocf": _number_column(raw, "n_cashflow_act"),
+            "capex": _number_column(raw, "c_pay_acq_const_fiolta"),
             "report_type": raw["report_type"].map(_code) if "report_type" in raw.columns else None,
             "comp_type": raw["comp_type"].map(_code) if "comp_type" in raw.columns else None,
         }
@@ -365,6 +422,14 @@ class DataProvider(Protocol):
         """已公告年报的扣非净利润。"""
         ...
 
+    def get_income_statements(self, periods: Sequence[str]) -> pd.DataFrame:
+        """归一后的利润表（年内累计值），periods 为 YYYYMMDD 报告期。"""
+        ...
+
+    def get_cash_flows(self, periods: Sequence[str]) -> pd.DataFrame:
+        """归一后的现金流量表（年内累计值），periods 为 YYYYMMDD 报告期。"""
+        ...
+
     def get_factor_indicators(self, periods: Sequence[str]) -> pd.DataFrame:
         """季度财务指标，供截面因子使用。不替代 get_indicators。"""
         ...
@@ -383,6 +448,10 @@ class DataProvider(Protocol):
 
     def get_ohlc(self, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
         """开高低收。供 ATR 和止损，不替代成交额。"""
+        ...
+
+    def get_stock_ohlc(self, ts_code: str, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+        """单只股票的开高低收。供估值算 beta，避免拉全市场日线。"""
         ...
 
     def get_index_daily(self, index_code: str, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
