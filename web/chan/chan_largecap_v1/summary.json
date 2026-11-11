@@ -1,0 +1,47 @@
+{
+  "config": {
+    "development": {
+      "name": "development",
+      "start": "20180101",
+      "end": "20211231"
+    },
+    "validation": {
+      "name": "validation",
+      "start": "20220101",
+      "end": "20231231"
+    },
+    "holdout": {
+      "name": "holdout",
+      "start": "20240101",
+      "end": "20251231"
+    },
+    "capital": 40000.0,
+    "max_positions": 5,
+    "costs": {
+      "commission_rate": 0.00025,
+      "min_commission": 5.0,
+      "stamp_tax": 0.0005,
+      "slippage": 0.001
+    },
+    "benchmark_code": "000300.SH",
+    "chan_core": "1.2.2",
+    "bi_standard": "81",
+    "price_return_only": true,
+    "min_holdout_months": 12,
+    "max_holdout_drawdown": -0.2,
+    "max_cost_to_average_equity": 0.05,
+    "min_holdout_sells": 5,
+    "max_winner_share": 0.8
+  },
+  "decision": "reject_current_definition",
+  "reasons": [
+    "锁定样本外最大回撤超过预先设定门槛。",
+    "成本占平均资产比例超过预先设定门槛，或成本结果缺失。"
+  ],
+  "price_return_only": true,
+  "known_gaps": [
+    "买卖点使用 chan-lun-core 笔级简化口径，不是第 101 课的精确二类点。",
+    "价格收益不含复权、分红和公司行动。",
+    "涨跌停按前收 10% 判断，没有覆盖 20% 和 ST 板块，也没有建模排队成交。"
+  ]
+}
