@@ -1,0 +1,71 @@
+{
+  "ts_code": "600036.SH",
+  "asof": "20261110",
+  "template": "net_income",
+  "fundamentals": {
+    "industry": "银行",
+    "comp_type": "2",
+    "price": 43.01,
+    "total_mv": 1084705559256.0001,
+    "shares": 25219845600.000004,
+    "revenue_ttm": 350964000000.0,
+    "net_income_ttm": 152885000000.0,
+    "ocf_ttm": 421511000000.0,
+    "fcf_ttm": 375785000000.0,
+    "revenue_cagr_5y": 0.03047899896465922,
+    "margin_ttm": 0.43561447897790084,
+    "margin_mean_5y": 0.41599617555300356,
+    "fcf_conversion": 2.777075429102843,
+    "name": "招商银行"
+  },
+  "discount": {
+    "beta": 0.5,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.06
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.018287399378795532,
+      "average_growth": 0.021643699689397767,
+      "growth_terminal": 0.025,
+      "margin_start": 0.43561447897790084,
+      "margin_terminal": 0.30562727152800107,
+      "cash_conversion": 1.0,
+      "discount_rate": 0.075,
+      "exit_multiple": 5.629612072522152,
+      "exit_basis": "pe",
+      "per_share": 45.79671523833779
+    },
+    "base": {
+      "growth_start": 0.03047899896465922,
+      "average_growth": 0.02773949948232961,
+      "growth_terminal": 0.025,
+      "margin_start": 0.43561447897790084,
+      "margin_terminal": 0.41599617555300356,
+      "cash_conversion": 1.0,
+      "discount_rate": 0.06,
+      "exit_multiple": 6.329433393254297,
+      "exit_basis": "pe",
+      "per_share": 66.2798060264798
+    },
+    "bull": {
+      "growth_start": 0.038098748705824026,
+      "average_growth": 0.03154937435291201,
+      "growth_terminal": 0.025,
+      "margin_start": 0.43561447897790084,
+      "margin_terminal": 0.430367769055391,
+      "cash_conversion": 1.0,
+      "discount_rate": 0.049999999999999996,
+      "exit_multiple": 7.094870409381356,
+      "exit_basis": "pe",
+      "per_share": 77.15354983581913
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.11208203599619151,
+    "average_growth": -0.04354101799809577,
+    "converged": true
+  },
+  "name": "招商银行"
+}

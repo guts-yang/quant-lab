@@ -1,0 +1,71 @@
+{
+  "ts_code": "002594.SZ",
+  "asof": "20261110",
+  "template": "fcfe",
+  "fundamentals": {
+    "industry": "汽车整车",
+    "comp_type": "1",
+    "price": 84.44,
+    "total_mv": 769856156900.0,
+    "shares": 9117197500.0,
+    "revenue_ttm": 804003084000.0,
+    "net_income_ttm": 31630827000.0,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.38704436754206584,
+    "margin_ttm": 0.039341673719251555,
+    "margin_mean_5y": 0.04341352585433762,
+    "fcf_conversion": 1.5855602566788227,
+    "name": "比亚迪"
+  },
+  "discount": {
+    "beta": 1.07951514683409,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.07737333307587495
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.05077870651568128,
+      "average_growth": 0.03788935325784064,
+      "growth_terminal": 0.025,
+      "margin_start": 0.039341673719251555,
+      "margin_terminal": -0.026630768848564648,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.09237333307587495,
+      "exit_multiple": 0.4261895710039486,
+      "exit_basis": "ps",
+      "per_share": 28.50609937436039
+    },
+    "base": {
+      "growth_start": 0.08463117752613547,
+      "average_growth": 0.05481558876306774,
+      "growth_terminal": 0.025,
+      "margin_start": 0.039341673719251555,
+      "margin_terminal": 0.039341673719251555,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.07737333307587495,
+      "exit_multiple": 0.6769712483619672,
+      "exit_basis": "ps",
+      "per_share": 79.2432078698759
+    },
+    "bull": {
+      "growth_start": 0.10578897190766934,
+      "average_growth": 0.06539448595383467,
+      "growth_terminal": 0.025,
+      "margin_start": 0.039341673719251555,
+      "margin_terminal": 0.026327690855900476,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.06737333307587495,
+      "exit_multiple": 1.0195263891237254,
+      "exit_basis": "ps",
+      "per_share": 113.24970406908055
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.106019565782879,
+    "average_growth": 0.0655097828914395,
+    "converged": true
+  },
+  "name": "比亚迪"
+}

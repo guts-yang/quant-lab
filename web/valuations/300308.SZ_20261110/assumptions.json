@@ -1,0 +1,71 @@
+{
+  "ts_code": "300308.SZ",
+  "asof": "20261110",
+  "template": "fcfe",
+  "fundamentals": {
+    "industry": "通信设备",
+    "comp_type": "1",
+    "price": 471.0,
+    "total_mv": 554795421600.0,
+    "shares": 1177909600.0,
+    "revenue_ttm": 82782192511.44,
+    "net_income_ttm": 25903260870.5,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.4023959765543481,
+    "margin_ttm": 0.31290861095422573,
+    "margin_mean_5y": 0.22453246302889449,
+    "fcf_conversion": 0.08864417032985965,
+    "name": "中际旭创"
+  },
+  "discount": {
+    "beta": 2.2680769124615354,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.14274423018538446
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.058152394995601694,
+      "average_growth": 0.04157619749780085,
+      "growth_terminal": 0.025,
+      "margin_start": 0.31290861095422573,
+      "margin_terminal": -0.09149963436195706,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.15774423018538447,
+      "exit_multiple": 2.890086972236606,
+      "exit_basis": "ps",
+      "per_share": 114.7807682692743
+    },
+    "base": {
+      "growth_start": 0.09692065832600283,
+      "average_growth": 0.06096032916300141,
+      "growth_terminal": 0.025,
+      "margin_start": 0.31290861095422573,
+      "margin_terminal": 0.22453246302889449,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.14274423018538446,
+      "exit_multiple": 5.185804502253211,
+      "exit_basis": "ps",
+      "per_share": 267.8639380216687
+    },
+    "bull": {
+      "growth_start": 0.12115082290750354,
+      "average_growth": 0.07307541145375177,
+      "growth_terminal": 0.025,
+      "margin_start": 0.31290861095422573,
+      "margin_terminal": 0.09346681940217566,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.13274423018538445,
+      "exit_multiple": 9.050790820261225,
+      "exit_basis": "ps",
+      "per_share": 475.425470472763
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.29140312708067273,
+    "average_growth": 0.15820156354033638,
+    "converged": true
+  },
+  "name": "中际旭创"
+}

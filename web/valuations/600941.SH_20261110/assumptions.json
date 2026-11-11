@@ -1,0 +1,71 @@
+{
+  "ts_code": "600941.SH",
+  "asof": "20261110",
+  "template": "fcfe",
+  "fundamentals": {
+    "industry": "电信运营",
+    "comp_type": "1",
+    "price": 101.55,
+    "total_mv": 2203863589050.0,
+    "shares": 21702251000.0,
+    "revenue_ttm": 1035816000000.0,
+    "net_income_ttm": 127940000000.0,
+    "ocf_ttm": 257162000000.0,
+    "fcf_ttm": 114033000000.0,
+    "revenue_cagr_5y": 0.06456741073419892,
+    "margin_ttm": 0.1235161457247233,
+    "margin_mean_5y": 0.13275895805207447,
+    "fcf_conversion": 0.9268223259183868,
+    "name": "中国移动"
+  },
+  "discount": {
+    "beta": 0.5,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.06
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.03874044644051935,
+      "average_growth": 0.031870223220259675,
+      "growth_terminal": 0.025,
+      "margin_start": 0.1235161457247233,
+      "margin_terminal": 0.015633187693090727,
+      "cash_conversion": 0.9268223259183868,
+      "discount_rate": 0.075,
+      "exit_multiple": 1.2135021451033698,
+      "exit_basis": "ps",
+      "per_share": 60.634128285282216
+    },
+    "base": {
+      "growth_start": 0.06456741073419892,
+      "average_growth": 0.04478370536709946,
+      "growth_terminal": 0.025,
+      "margin_start": 0.1235161457247233,
+      "margin_terminal": 0.1235161457247233,
+      "cash_conversion": 0.9268223259183868,
+      "discount_rate": 0.06,
+      "exit_multiple": 2.1276593420549594,
+      "exit_basis": "ps",
+      "per_share": 128.7576147824859
+    },
+    "bull": {
+      "growth_start": 0.08070926341774864,
+      "average_growth": 0.052854631708874326,
+      "growth_terminal": 0.025,
+      "margin_start": 0.1235161457247233,
+      "margin_terminal": 0.1235161457247233,
+      "cash_conversion": 0.9268223259183868,
+      "discount_rate": 0.049999999999999996,
+      "exit_multiple": 14.613292576055652,
+      "exit_basis": "ps",
+      "per_share": 750.1121227339157
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.010652630004853274,
+    "average_growth": 0.007173684997573365,
+    "converged": true
+  },
+  "name": "中国移动"
+}

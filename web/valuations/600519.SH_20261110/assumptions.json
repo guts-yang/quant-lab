@@ -1,0 +1,71 @@
+{
+  "ts_code": "600519.SH",
+  "asof": "20261110",
+  "template": "fcfe",
+  "fundamentals": {
+    "industry": "白酒",
+    "comp_type": "1",
+    "price": 1439.0,
+    "total_mv": 1798867422400.0,
+    "shares": 1250081600.0,
+    "revenue_ttm": 174433934764.97998,
+    "net_income_ttm": 82160746371.45001,
+    "ocf_ttm": 107384382666.37,
+    "fcf_ttm": 105089651604.89,
+    "revenue_cagr_5y": 0.11916422118504588,
+    "margin_ttm": 0.4710135472329259,
+    "margin_mean_5y": 0.4885121310235014,
+    "fcf_conversion": 0.8560150745815747,
+    "name": "贵州茅台"
+  },
+  "discount": {
+    "beta": 0.5,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.06
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.07149853271102753,
+      "average_growth": 0.04824926635551376,
+      "growth_terminal": 0.025,
+      "margin_start": 0.4710135472329259,
+      "margin_terminal": -0.004734888948008336,
+      "cash_conversion": 0.8560150745815747,
+      "discount_rate": 0.075,
+      "exit_multiple": 3.3131391814202886,
+      "exit_basis": "ps",
+      "per_share": 548.5937037871912
+    },
+    "base": {
+      "growth_start": 0.11916422118504588,
+      "average_growth": 0.07208211059252294,
+      "growth_terminal": 0.025,
+      "margin_start": 0.4710135472329259,
+      "margin_terminal": 0.4710135472329259,
+      "cash_conversion": 0.8560150745815747,
+      "discount_rate": 0.06,
+      "exit_multiple": 4.334472860666289,
+      "exit_basis": "ps",
+      "per_share": 1089.1604749389362
+    },
+    "bull": {
+      "growth_start": 0.14895527648130735,
+      "average_growth": 0.08697763824065366,
+      "growth_terminal": 0.025,
+      "margin_start": 0.4710135472329259,
+      "margin_terminal": 0.2626233300096973,
+      "cash_conversion": 0.8560150745815747,
+      "discount_rate": 0.049999999999999996,
+      "exit_multiple": 6.779424290694461,
+      "exit_basis": "ps",
+      "per_share": 1560.5365883531442
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.21781685535778234,
+    "average_growth": 0.12140842767889116,
+    "converged": true
+  },
+  "name": "贵州茅台"
+}
