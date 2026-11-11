@@ -24,6 +24,7 @@ from valuation.model import (
     reverse_dcf,
     sensitivity_grid,
 )
+from valuation.scenario import forecast_table
 
 
 def _inputs(**overrides) -> DcfInputs:
@@ -54,6 +55,17 @@ def test_margin_path_lands_on_terminal_at_final_year():
     path = margin_path(0.5, 0.4, 5)
     assert path[0] == pytest.approx(0.48)
     assert path[-1] == pytest.approx(0.4)
+
+
+def test_forecast_table_stacks_three_scenarios_and_keeps_base_numbers():
+    bear = dcf_value(_inputs(growth_start=0.05))
+    base = dcf_value(_inputs())
+    bull = dcf_value(_inputs(growth_start=0.20))
+    table = forecast_table({"base": base, "bull": bull, "bear": bear})
+    assert list(table["scenario"].drop_duplicates()) == ["bear", "base", "bull"]
+    base_rows = table.loc[table["scenario"].eq("base")].reset_index(drop=True)
+    assert list(base_rows["revenue"]) == pytest.approx(list(base.projection["revenue"]))
+    assert "scenario" in table.columns
 
 
 def test_dcf_value_matches_hand_computation():

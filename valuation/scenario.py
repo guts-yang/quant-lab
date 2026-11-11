@@ -92,10 +92,25 @@ def write_outputs(report: ValuationReport, out_dir: str | Path) -> None:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     (out / "assumptions.json").write_text(_assumptions_json(report), encoding="utf-8")
-    report.scenarios["base"].projection.to_parquet(out / "forecast.parquet", index=False)
+    forecast_table(report.scenarios).to_parquet(out / "forecast.parquet", index=False)
     _scenarios_frame(report).to_parquet(out / "scenarios.parquet", index=False)
     report.sensitivity.to_parquet(out / "sensitivity.parquet")
     (out / "report.md").write_text(render_report(report), encoding="utf-8")
+
+
+def forecast_table(scenarios: dict[str, DcfResult]) -> pd.DataFrame:
+    """熊、基准、牛三条预测叠成一张表。scenario 用 bear/base/bull，与 scenarios.parquet 一致。"""
+    frames: list[pd.DataFrame] = []
+    for name in ("bear", "base", "bull"):
+        result = scenarios.get(name)
+        if result is None:
+            continue
+        frame = result.projection.copy()
+        frame.insert(0, "scenario", name)
+        frames.append(frame)
+    if not frames:
+        return pd.DataFrame(columns=["scenario", "year", "growth", "revenue", "margin", "net_income", "fcfe"])
+    return pd.concat(frames, ignore_index=True)
 
 
 def render_report(report: ValuationReport) -> str:
