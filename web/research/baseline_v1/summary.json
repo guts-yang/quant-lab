@@ -1,0 +1,47 @@
+{
+  "config": {
+    "development": {
+      "name": "development",
+      "start": "20180101",
+      "end": "20211231"
+    },
+    "validation": {
+      "name": "validation",
+      "start": "20220101",
+      "end": "20231231"
+    },
+    "holdout": {
+      "name": "holdout",
+      "start": "20240101",
+      "end": "20251231"
+    },
+    "holding_sessions": 21,
+    "quantiles": 5,
+    "scenario": {
+      "name": "baseline",
+      "commission_rate": 0.00025,
+      "min_commission": 5.0,
+      "stamp_tax": 0.0005,
+      "slippage": 0.001,
+      "capital": 40000.0,
+      "top_n": 8,
+      "exit_rank": 15
+    },
+    "benchmark_code": "000300.SH",
+    "price_return_only": true,
+    "min_holdout_months": 12,
+    "min_holdout_calmar": 0.0,
+    "max_holdout_drawdown": -0.2,
+    "max_cost_to_average_equity": 0.05
+  },
+  "decision": "reject_current_definition",
+  "reasons": [
+    "基线成本占平均资产比例超过预先设定门槛，或成本结果缺失。"
+  ],
+  "price_return_only": true,
+  "known_gaps": [
+    "基准和标签使用收盘价价格收益，未计入复权、分红和公司行动。",
+    "日线回测未建模涨跌停、停牌排队和市场冲击。",
+    "行业字段当前没有历史时点版本，行业切片只用于探索。"
+  ]
+}
