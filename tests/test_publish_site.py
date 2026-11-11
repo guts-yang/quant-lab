@@ -92,6 +92,9 @@ def test_loaders_read_published_sections(tmp_path):
     valuations = module.list_valuations(web / "valuations")
     assert valuations[0].code == "002594.SZ"
     assert valuations[0].asof == "20261110"
+    assert set(valuations[0].forecast["scenario"]) == {"bear", "base", "bull"}
+    assert valuations[0].assumptions["ts_code"] == "002594.SZ"
+    _assert_chart_frames(valuations[0])
     chan = module.list_chan(web / "chan")
     assert list(chan[0].equity["equity"]) == [100.0]
     books = module.list_books(web / "books")
@@ -128,11 +131,63 @@ def _valuation(path: Path) -> None:
     path.mkdir(parents=True)
     (path / "report.md").write_text("# DCF\n", encoding="utf-8")
     (path / "assumptions.json").write_text(
-        json.dumps({"ts_code": "002594.SZ", "asof": "20261110", "password": "hidden"}),
+        json.dumps(
+            {
+                "ts_code": "002594.SZ",
+                "asof": "20261110",
+                "password": "hidden",
+                "fundamentals": {"price": 90.0, "revenue_cagr_5y": 0.2},
+                "scenarios": {"base": {"average_growth": 0.08}},
+                "implied_growth": {"average_growth": 0.12},
+            }
+        ),
         encoding="utf-8",
     )
-    pd.DataFrame({"scenario": ["base"], "per_share": [79.24]}).to_parquet(path / "scenarios.parquet", index=False)
+    pd.DataFrame(
+        {
+            "scenario": ["bear", "base", "bull"],
+            "per_share": [40.0, 79.24, 120.0],
+            "pv_explicit": [1e10, 2e10, 3e10],
+            "pv_terminal": [4e10, 8e10, 12e10],
+        }
+    ).to_parquet(path / "scenarios.parquet", index=False)
+    pd.DataFrame(
+        {
+            "scenario": ["bear", "base", "bull"],
+            "year": [1, 1, 1],
+            "revenue": [1.0e10, 2.0e10, 3.0e10],
+            "margin": [0.1, 0.2, 0.3],
+            "fcfe": [1.0e9, 2.0e9, 3.0e9],
+        }
+    ).to_parquet(path / "forecast.parquet", index=False)
     pd.DataFrame({"0.06": [80.0]}, index=pd.Index([0.077], name="discount_rate")).to_parquet(path / "sensitivity.parquet")
+
+
+def _assert_chart_frames(valuation) -> None:
+    import importlib.util
+    import sys
+
+    spec = importlib.util.spec_from_file_location("quantlab_web_charts", ROOT / "web" / "charts.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+
+    values = module.value_frame(valuation.scenarios)
+    assert list(values["情景"]) == ["熊市", "基准", "牛市"]
+    assert list(values.columns) == ["情景", "每股价值"]
+    revenue = module.revenue_frame(valuation.forecast)
+    assert set(revenue["情景"]) == {"熊市", "基准", "牛市"}
+    assert list(revenue.columns) == ["年份", "情景", "收入"]
+    margin = module.margin_frame(valuation.forecast)
+    assert list(margin["净利率"]) == [0.2]
+    present = module.present_value_frame(valuation.scenarios)
+    assert list(present["构成"]) == ["显式期现金流", "终值"]
+    anchors = module.growth_anchor_frame(valuation.assumptions)
+    assert list(anchors["口径"]) == ["5年历史", "基准情景", "现价隐含"]
+    heat = module.sensitivity_frame(valuation.sensitivity)
+    assert {"折现率", "起始增速", "每股价值"} <= set(heat.columns)
+    assert len(heat) == 1
 
 
 def _chan(path: Path) -> None:

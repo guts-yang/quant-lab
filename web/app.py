@@ -6,6 +6,7 @@ import json
 import sys
 from pathlib import Path
 
+import altair as alt
 import pandas as pd
 import streamlit as st
 
@@ -13,6 +14,16 @@ _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
+from charts import (
+    fcfe_frame,
+    growth_anchor_frame,
+    margin_frame,
+    present_value_frame,
+    quoted_price,
+    revenue_frame,
+    sensitivity_frame,
+    value_frame,
+)
 from labels import FACTOR_LABELS, MISSING, factor_rows, format_score, holdings_view, pool_view, reason_label, rejected_view
 from load import (
     Snapshot,
@@ -219,14 +230,137 @@ def _render_valuations() -> None:
     labels = {item.name: f"{item.code}  {item.asof}" for item in runs}
     selected = st.selectbox("股票", options=[item.name for item in runs], format_func=lambda key: labels[key])
     run = next(item for item in runs if item.name == selected)
+    _render_valuation_charts(run)
     if not run.scenarios.empty:
         st.subheader("三情景")
         st.dataframe(run.scenarios, width="stretch", hide_index=True)
     if not run.sensitivity.empty:
-        st.subheader("敏感性")
+        st.subheader("敏感性表")
         st.dataframe(run.sensitivity.reset_index(), width="stretch", hide_index=True)
     if run.report:
         st.markdown(run.report)
+
+
+def _render_valuation_charts(run) -> None:
+    values = value_frame(run.scenarios)
+    if not values.empty:
+        st.subheader("价值对照")
+        bars = (
+            alt.Chart(values)
+            .mark_bar()
+            .encode(
+                x=alt.X("情景:N", sort=list(values["情景"]), title=None),
+                y=alt.Y("每股价值:Q", title="元/股"),
+                tooltip=["情景", alt.Tooltip("每股价值:Q", format=".2f", title="元/股")],
+            )
+        )
+        price = quoted_price(run.assumptions)
+        chart = bars
+        if price is not None:
+            rule = alt.Chart(pd.DataFrame({"现价": [price]})).mark_rule(strokeDash=[6, 3]).encode(y="现价:Q")
+            chart = bars + rule
+        st.altair_chart(chart.properties(height=280), use_container_width=True)
+        if price is not None:
+            st.caption(f"横线是现价 {price:.2f} 元/股。")
+
+    present = present_value_frame(run.scenarios)
+    if not present.empty:
+        st.subheader("现值构成")
+        st.altair_chart(
+            alt.Chart(present)
+            .mark_bar()
+            .encode(
+                x=alt.X("构成:N", sort=list(present["构成"]), title=None),
+                y=alt.Y("现值:Q", title="亿元"),
+                tooltip=["构成", alt.Tooltip("现值:Q", format=".1f", title="亿元")],
+            )
+            .properties(height=280),
+            use_container_width=True,
+        )
+        st.caption("基准情景。显式期是预测期内股权现金流的现值，终值是退出倍数折现回来的部分。")
+
+    revenue = revenue_frame(run.forecast)
+    margin = margin_frame(run.forecast)
+    cash = fcfe_frame(run.forecast)
+    if not revenue.empty or not margin.empty or not cash.empty:
+        st.subheader("预测路径")
+    if not revenue.empty:
+        st.altair_chart(
+            alt.Chart(revenue)
+            .mark_line(point=True)
+            .encode(
+                x=alt.X("年份:O", title="预测年"),
+                y=alt.Y("收入:Q", title="亿元"),
+                color=alt.Color("情景:N", sort=["熊市", "基准", "牛市"], title=None),
+                tooltip=["年份", "情景", alt.Tooltip("收入:Q", format=".1f", title="亿元")],
+            )
+            .properties(height=280),
+            use_container_width=True,
+        )
+    if not margin.empty:
+        st.altair_chart(
+            alt.Chart(margin)
+            .mark_line(point=True)
+            .encode(
+                x=alt.X("年份:O", title="预测年"),
+                y=alt.Y("净利率:Q", title="净利率", axis=alt.Axis(format="%")),
+                tooltip=["年份", alt.Tooltip("净利率:Q", format=".1%")],
+            )
+            .properties(height=240),
+            use_container_width=True,
+        )
+        st.caption("净利率只画基准情景。")
+    if not cash.empty:
+        st.altair_chart(
+            alt.Chart(cash)
+            .mark_bar()
+            .encode(
+                x=alt.X("年份:O", title="预测年"),
+                y=alt.Y("股权现金流:Q", title="亿元"),
+                tooltip=["年份", alt.Tooltip("股权现金流:Q", format=".1f", title="亿元")],
+            )
+            .properties(height=240),
+            use_container_width=True,
+        )
+        st.caption("股权现金流只画基准情景。")
+
+    anchors = growth_anchor_frame(run.assumptions)
+    if not anchors.empty:
+        st.subheader("增速锚")
+        st.altair_chart(
+            alt.Chart(anchors)
+            .mark_bar()
+            .encode(
+                x=alt.X("口径:N", sort=list(anchors["口径"]), title=None),
+                y=alt.Y("增速:Q", title="收入增速", axis=alt.Axis(format="%")),
+                tooltip=["口径", alt.Tooltip("增速:Q", format=".1%")],
+            )
+            .properties(height=280),
+            use_container_width=True,
+        )
+
+    heat = sensitivity_frame(run.sensitivity)
+    if not heat.empty:
+        st.subheader("敏感性")
+        growth_order = heat.sort_values("起始增速")["增速标签"].drop_duplicates().tolist()
+        rate_order = heat.sort_values("折现率")["折现率标签"].drop_duplicates().tolist()
+        st.altair_chart(
+            alt.Chart(heat)
+            .mark_rect()
+            .encode(
+                x=alt.X("增速标签:N", sort=growth_order, title="起始增速"),
+                y=alt.Y("折现率标签:N", sort=rate_order, title="折现率"),
+                color=alt.Color("每股价值:Q", title="元/股"),
+                tooltip=[
+                    alt.Tooltip("折现率标签:N", title="折现率"),
+                    alt.Tooltip("增速标签:N", title="起始增速"),
+                    alt.Tooltip("每股价值:Q", format=".2f", title="元/股"),
+                ],
+            )
+            .properties(height=280),
+            use_container_width=True,
+        )
+        st.caption("基准情景附近的每股价值。中间一格是当前折现率和起始增速。")
 
 
 def _render_chan() -> None:
