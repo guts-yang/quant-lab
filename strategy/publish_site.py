@@ -19,7 +19,13 @@ RESEARCH_FILES = (
     "walkforward/summary.parquet",
     "stress.parquet",
 )
-VALUATION_FILES = ("report.md", "scenarios.parquet", "sensitivity.parquet", "assumptions.json")
+VALUATION_FILES = (
+    "report.md",
+    "scenarios.parquet",
+    "sensitivity.parquet",
+    "assumptions.json",
+    "forecast.parquet",
+)
 CHAN_FILES = ("report.md", "summary.json", "walkforward/summary.parquet")
 
 

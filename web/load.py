@@ -138,6 +138,8 @@ class ValuationView:
     report: str
     scenarios: pd.DataFrame
     sensitivity: pd.DataFrame
+    forecast: pd.DataFrame
+    assumptions: dict
 
 
 @dataclass(frozen=True)
@@ -229,6 +231,8 @@ def _read_valuation(path: Path) -> ValuationView:
         report=_text(path / "report.md"),
         scenarios=_table(path / "scenarios.parquet"),
         sensitivity=_table(path / "sensitivity.parquet"),
+        forecast=_table(path / "forecast.parquet"),
+        assumptions=assumptions,
     )
 
 
