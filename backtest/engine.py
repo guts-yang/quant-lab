@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
+import math
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
+from pathlib import Path
 
 import pandas as pd
 
@@ -125,6 +128,44 @@ def simulate(
 
     equity = pd.DataFrame(curve)
     return BacktestResult(equity, pd.DataFrame(trades), performance(equity))
+
+
+def write_backtest(
+    result: BacktestResult,
+    start: pd.Timestamp,
+    end: pd.Timestamp,
+    directory: str | Path,
+    capital: float = INITIAL_CAPITAL,
+    top_n: int = 8,
+    sample: bool = False,
+    note: str = "价格收益，不含分红复权。",
+) -> Path:
+    """把净值、成交和四项绩效写成网页回测目录。"""
+    path = Path(directory)
+    path.mkdir(parents=True, exist_ok=True)
+    summary = {
+        "sample": bool(sample),
+        "start": f"{pd.Timestamp(start):%Y%m%d}",
+        "end": f"{pd.Timestamp(end):%Y%m%d}",
+        "capital": capital,
+        "top_n": int(top_n),
+        "cagr": _json_number(result.metrics.get("cagr")),
+        "max_drawdown": _json_number(result.metrics.get("max_drawdown")),
+        "sharpe": _json_number(result.metrics.get("sharpe")),
+        "calmar": _json_number(result.metrics.get("calmar")),
+        "note": note,
+    }
+    (path / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    result.equity.to_parquet(path / "equity.parquet", index=False)
+    trades = result.trades if result.trades is not None else pd.DataFrame()
+    trades.to_parquet(path / "trades.parquet", index=False)
+    return path
+
+
+def _json_number(value: object) -> float | None:
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return None
+    return float(value)
 
 
 def run_backtest(
@@ -378,11 +419,20 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     result = run_backtest(TushareProvider(), args.start, args.end, capital=args.capital, top_n=args.top)
     metrics = result.metrics
+    destination = write_backtest(
+        result,
+        args.start,
+        args.end,
+        Path(__file__).resolve().parents[1] / "web" / "backtests" / f"{args.start}_{args.end}",
+        capital=args.capital,
+        top_n=args.top,
+    )
     print(
         f"start={args.start} end={args.end} "
         f"cagr={metrics['cagr']:.4f} max_drawdown={metrics['max_drawdown']:.4f} "
         f"sharpe={metrics['sharpe']:.4f} calmar={metrics['calmar']:.4f}"
     )
+    print(destination)
 
 
 if __name__ == "__main__":
