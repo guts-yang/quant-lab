@@ -24,7 +24,7 @@ from valuation.model import (
     reverse_dcf,
     sensitivity_grid,
 )
-from valuation.scenario import forecast_table
+from valuation.scenario import forecast_table, security_label
 
 
 def _inputs(**overrides) -> DcfInputs:
@@ -55,6 +55,12 @@ def test_margin_path_lands_on_terminal_at_final_year():
     path = margin_path(0.5, 0.4, 5)
     assert path[0] == pytest.approx(0.48)
     assert path[-1] == pytest.approx(0.4)
+
+
+def test_security_label_leads_with_the_company_name():
+    assert security_label("中际旭创", "300308.SZ") == "中际旭创（300308.SZ）"
+    assert security_label(None, "300308.SZ") == "300308.SZ"
+    assert security_label("  ", "300308.SZ") == "300308.SZ"
 
 
 def test_forecast_table_stacks_three_scenarios_and_keeps_base_numbers():
@@ -283,6 +289,7 @@ def test_company_fundamentals_shares_derived_from_market_cap():
             "delist_date": [pd.NaT],
             "list_status": ["L"],
             "industry": ["白酒"],
+            "name": ["贵州茅台"],
         }
     )
     daily_basic = pd.DataFrame(
@@ -293,6 +300,7 @@ def test_company_fundamentals_shares_derived_from_market_cap():
     assert fundamentals.margin_ttm == pytest.approx(12.0 / 110.0)  # NI TTM = 9+10−7 = 12
     assert fundamentals.shares == pytest.approx(2.2e10 / 20.0)
     assert fundamentals.industry == "白酒"
+    assert fundamentals.name == "贵州茅台"
     assert fundamentals.comp_type == "1"
 
 

@@ -32,6 +32,14 @@ SCENARIO_NAMES = {"bear": "熊市", "base": "基准", "bull": "牛市"}
 DEFAULT_BETA = 1.0
 
 
+def security_label(name: str | None, code: str) -> str:
+    """公司名称在前，代码放在括号里。没有名称时只留代码。"""
+    company = str(name or "").strip()
+    if company in {"", "None", "nan", "<NA>"}:
+        return str(code)
+    return f"{company}（{code}）"
+
+
 @dataclass(frozen=True)
 class ValuationReport:
     ts_code: str
@@ -116,7 +124,7 @@ def forecast_table(scenarios: dict[str, DcfResult]) -> pd.DataFrame:
 def render_report(report: ValuationReport) -> str:
     fundamentals = report.fundamentals
     lines = [
-        f"# DCF 估值 {report.ts_code}（asof {report.asof:%Y-%m-%d}）",
+        f"# DCF 估值 {security_label(fundamentals.name, report.ts_code)}（asof {report.asof:%Y-%m-%d}）",
         "",
         f"- 行业：{fundamentals.industry or '未知'}　模板：{report.template}",
         f"- 现价：{_fmt(fundamentals.price)} 元　总市值：{_fmt_yi(fundamentals.total_mv)}",
@@ -206,10 +214,12 @@ def _scenarios_frame(report: ValuationReport) -> pd.DataFrame:
 def _assumptions_json(report: ValuationReport) -> str:
     fundamentals = report.fundamentals
     payload = {
+        "name": fundamentals.name,
         "ts_code": report.ts_code,
         "asof": report.asof.strftime("%Y%m%d"),
         "template": report.template,
         "fundamentals": {
+            "name": fundamentals.name,
             "industry": fundamentals.industry,
             "comp_type": fundamentals.comp_type,
             "price": fundamentals.price,

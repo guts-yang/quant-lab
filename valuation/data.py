@@ -140,6 +140,7 @@ def company_fundamentals(
     conversion = _fcf_conversion(ocf_annual, capex_annual, income_annual)
 
     industry = _instrument_industry(instruments, code)
+    name = _instrument_name(instruments, code)
     comp_type = _latest_comp_type(income)
     price, total_mv = _market_snapshot(daily_basic, code)
     shares = total_mv / price if total_mv is not None and price else None
@@ -158,6 +159,7 @@ def company_fundamentals(
         margin_ttm=margin_ttm,
         margin_mean_5y=margin_mean_5y,
         fcf_conversion=conversion,
+        name=name,
     )
 
 
@@ -300,6 +302,19 @@ def _fcf_conversion(
     if not ratios:
         return None
     return float(pd.Series(ratios).median())
+
+
+def _instrument_name(instruments: pd.DataFrame, code: str) -> str | None:
+    if instruments is None or instruments.empty or "name" not in instruments.columns:
+        return None
+    row = instruments.loc[instruments["ts_code"].astype(str).eq(code)]
+    if row.empty:
+        return None
+    name = row.iloc[0]["name"]
+    if name is None or pd.isna(name):
+        return None
+    text = str(name).strip()
+    return text or None
 
 
 def _instrument_industry(instruments: pd.DataFrame, code: str) -> str | None:

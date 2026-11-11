@@ -60,6 +60,7 @@ class CompanyFundamentals:
     margin_ttm: float | None
     margin_mean_5y: float | None
     fcf_conversion: float | None  # 历年 FCF/归母净利的中位数
+    name: str | None = None  # 截面日证券简称。缺失时报告只写代码。
 
 
 @dataclass(frozen=True)

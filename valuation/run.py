@@ -10,7 +10,7 @@ import pandas as pd
 
 from core.tushare_provider import TushareProvider
 from valuation.assumptions import FileEstimatesProvider, ValuationConfig
-from valuation.scenario import run_valuation, write_outputs
+from valuation.scenario import run_valuation, security_label, write_outputs
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +37,7 @@ def main() -> None:
     write_outputs(report, out_dir)
 
     base = report.scenarios["base"]
+    print(security_label(report.fundamentals.name, report.ts_code))
     print(f"行业 {report.fundamentals.industry}，模板 {report.template}，β {report.beta:.2f}，折现率 {report.discount_rate:.2%}")
     for name in ("bear", "base", "bull"):
         print(f"  {name}: {report.scenarios[name].per_share:.2f} 元/股")
