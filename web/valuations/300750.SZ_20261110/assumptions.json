@@ -1,8 +1,10 @@
 {
+  "name": "宁德时代",
   "ts_code": "300750.SZ",
   "asof": "20261110",
   "template": "fcfe",
   "fundamentals": {
+    "name": "宁德时代",
     "industry": "电气设备",
     "comp_type": "1",
     "price": 249.95,
@@ -15,8 +17,7 @@
     "revenue_cagr_5y": 0.5313160222350537,
     "margin_ttm": 0.150484147556049,
     "margin_mean_5y": 0.12987976012245403,
-    "fcf_conversion": 1.258640033566163,
-    "name": "宁德时代"
+    "fcf_conversion": 1.258640033566163
   },
   "discount": {
     "beta": 1.138153978472919,
@@ -66,6 +67,5 @@
     "growth_start": -0.044052416831680985,
     "average_growth": -0.009526208415840497,
     "converged": true
-  },
-  "name": "宁德时代"
+  }
 }

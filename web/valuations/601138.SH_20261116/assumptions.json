@@ -7,8 +7,8 @@
     "name": "工业富联",
     "industry": "通信设备",
     "comp_type": "1",
-    "price": 40.1,
-    "total_mv": 795748101230.0,
+    "price": 36.22,
+    "total_mv": 718753023106.0,
     "shares": 19844092300.0,
     "revenue_ttm": 1240370256000.0,
     "net_income_ttm": 53173404000.0,
@@ -34,9 +34,9 @@
       "margin_terminal": -0.09149963436195706,
       "cash_conversion": 0.5,
       "discount_rate": 0.13996698623263282,
-      "exit_multiple": 2.8720274821850027,
+      "exit_multiple": 2.8549374345302847,
       "exit_basis": "ps",
-      "per_share": 91.13770164032314
+      "per_share": 90.57004768805108
     },
     "base": {
       "growth_start": 0.09692065832600283,
@@ -46,9 +46,9 @@
       "margin_terminal": 0.04069198150469822,
       "cash_conversion": 0.5,
       "discount_rate": 0.1249669862326328,
-      "exit_multiple": 5.106841973895761,
+      "exit_multiple": 4.890383407959183,
       "exit_basis": "ps",
-      "per_share": 219.0587719935052
+      "per_share": 210.09617215704642
     },
     "bull": {
       "growth_start": 0.12115082290750354,
@@ -58,14 +58,14 @@
       "margin_terminal": 0.09346681940217566,
       "cash_conversion": 0.5,
       "discount_rate": 0.11496698623263281,
-      "exit_multiple": 8.9777929865216,
+      "exit_multiple": 8.328131329278774,
       "exit_basis": "ps",
-      "per_share": 441.9506879524448
+      "per_share": 410.98876389389164
     }
   },
   "implied_growth": {
-    "growth_start": -0.34780602967446195,
-    "average_growth": -0.16140301483723096,
+    "growth_start": -0.3610018253175604,
+    "average_growth": -0.1680009126587802,
     "converged": true
   }
 }

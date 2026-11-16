@@ -1,8 +1,10 @@
 {
+  "name": "招商银行",
   "ts_code": "600036.SH",
   "asof": "20261110",
   "template": "net_income",
   "fundamentals": {
+    "name": "招商银行",
     "industry": "银行",
     "comp_type": "2",
     "price": 43.01,
@@ -15,8 +17,7 @@
     "revenue_cagr_5y": 0.03047899896465922,
     "margin_ttm": 0.43561447897790084,
     "margin_mean_5y": 0.41599617555300356,
-    "fcf_conversion": 2.777075429102843,
-    "name": "招商银行"
+    "fcf_conversion": 2.777075429102843
   },
   "discount": {
     "beta": 0.5,
@@ -66,6 +67,5 @@
     "growth_start": -0.11208203599619151,
     "average_growth": -0.04354101799809577,
     "converged": true
-  },
-  "name": "招商银行"
+  }
 }

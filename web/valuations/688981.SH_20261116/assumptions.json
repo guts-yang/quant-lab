@@ -7,8 +7,8 @@
     "name": "中芯国际",
     "industry": "半导体",
     "comp_type": "1",
-    "price": 110.5,
-    "total_mv": 946149542650.0,
+    "price": 106.44,
+    "total_mv": 911386039092.0,
     "shares": 8562439300.0,
     "revenue_ttm": 73610258000.0,
     "net_income_ttm": 7207299000.0,
@@ -34,9 +34,9 @@
       "margin_terminal": 0.009321632668425476,
       "cash_conversion": 0.5,
       "discount_rate": 0.1328272132968722,
-      "exit_multiple": 5.110229882959751,
+      "exit_multiple": 4.900196817702073,
       "exit_basis": "ps",
-      "per_share": 30.945508762063827
+      "per_share": 29.726822683586764
     },
     "base": {
       "growth_start": 0.19635196189404236,
@@ -46,9 +46,9 @@
       "margin_terminal": 0.09791161172129026,
       "cash_conversion": 0.5,
       "discount_rate": 0.1178272132968722,
-      "exit_multiple": 8.276394710335943,
+      "exit_multiple": 7.800992834281568,
       "exit_basis": "ps",
-      "per_share": 70.5689809141782
+      "per_share": 66.69763996432289
     },
     "bull": {
       "growth_start": 0.24543995236755295,
@@ -58,14 +58,14 @@
       "margin_terminal": 0.18702078887557808,
       "cash_conversion": 0.5,
       "discount_rate": 0.1078272132968722,
-      "exit_multiple": 15.412132995539164,
+      "exit_multiple": 14.86165020833526,
       "exit_basis": "ps",
-      "per_share": 160.50284070664492
+      "per_share": 154.96999364083064
     }
   },
   "implied_growth": {
-    "growth_start": 0.3517847017426329,
-    "average_growth": 0.18839235087131642,
+    "growth_start": 0.3587749544757671,
+    "average_growth": 0.19188747723788357,
     "converged": true
   }
 }

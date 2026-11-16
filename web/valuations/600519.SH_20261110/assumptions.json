@@ -1,8 +1,10 @@
 {
+  "name": "贵州茅台",
   "ts_code": "600519.SH",
   "asof": "20261110",
   "template": "fcfe",
   "fundamentals": {
+    "name": "贵州茅台",
     "industry": "白酒",
     "comp_type": "1",
     "price": 1439.0,
@@ -15,8 +17,7 @@
     "revenue_cagr_5y": 0.11916422118504588,
     "margin_ttm": 0.4710135472329259,
     "margin_mean_5y": 0.4885121310235014,
-    "fcf_conversion": 0.8560150745815747,
-    "name": "贵州茅台"
+    "fcf_conversion": 0.8560150745815747
   },
   "discount": {
     "beta": 0.5,
@@ -66,6 +67,5 @@
     "growth_start": 0.21781685535778234,
     "average_growth": 0.12140842767889116,
     "converged": true
-  },
-  "name": "贵州茅台"
+  }
 }

@@ -7,9 +7,9 @@
     "name": "东山精密",
     "industry": "元器件",
     "comp_type": "1",
-    "price": 84.37,
-    "total_mv": 164132613359.0,
-    "shares": 1945390700.0,
+    "price": 75.93,
+    "total_mv": 147713515851.0,
+    "shares": 1945390699.9999998,
     "revenue_ttm": 58433581048.07001,
     "net_income_ttm": 5451533328.57,
     "ocf_ttm": 5876314072.26,
@@ -34,9 +34,9 @@
       "margin_terminal": -0.013561133321328744,
       "cash_conversion": 0.6665534399852203,
       "discount_rate": 0.1524544428283569,
-      "exit_multiple": 1.8544151773649373,
+      "exit_multiple": 1.7719592310727512,
       "exit_basis": "ps",
-      "per_share": 29.84895473653862
+      "per_share": 28.68466554347022
     },
     "base": {
       "growth_start": 0.0738949838319245,
@@ -46,9 +46,9 @@
       "margin_terminal": 0.04982893159151031,
       "cash_conversion": 0.6665534399852203,
       "discount_rate": 0.13745444282835692,
-      "exit_multiple": 3.3949005526851948,
+      "exit_multiple": 3.263550289888555,
       "exit_basis": "ps",
-      "per_share": 65.47246919458414
+      "per_share": 63.22906858744784
     },
     "bull": {
       "growth_start": 0.09236872978990562,
@@ -58,14 +58,14 @@
       "margin_terminal": 0.0936422101783956,
       "cash_conversion": 0.6665534399852203,
       "discount_rate": 0.1274544428283569,
-      "exit_multiple": 5.681473484086272,
+      "exit_multiple": 5.439979736189159,
       "exit_basis": "ps",
-      "per_share": 120.39143370964223
+      "per_share": 115.72967418823902
     }
   },
   "implied_growth": {
-    "growth_start": 0.15565494679690545,
-    "average_growth": 0.09032747339845272,
+    "growth_start": 0.13258611785176788,
+    "average_growth": 0.07879305892588394,
     "converged": true
   }
 }

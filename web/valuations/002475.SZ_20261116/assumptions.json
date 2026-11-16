@@ -7,9 +7,9 @@
     "name": "立讯精密",
     "industry": "元器件",
     "comp_type": "1",
-    "price": 50.02,
-    "total_mv": 387321746752.0,
-    "shares": 7743337599.999999,
+    "price": 48.45,
+    "total_mv": 375164706720.0,
+    "shares": 7743337600.0,
     "revenue_ttm": 396441589846.7001,
     "net_income_ttm": 18138461540.350002,
     "ocf_ttm": 7412907296.490002,
@@ -34,9 +34,9 @@
       "margin_terminal": -0.013561133321328744,
       "cash_conversion": 0.5,
       "discount_rate": 0.1283583168246098,
-      "exit_multiple": 1.8544151773649373,
+      "exit_multiple": 1.7719592310727512,
       "exit_basis": "ps",
-      "per_share": 71.75005345855715
+      "per_share": 68.65733501153579
     },
     "base": {
       "growth_start": 0.22473880348092268,
@@ -46,9 +46,9 @@
       "margin_terminal": 0.045753175259346426,
       "cash_conversion": 0.5,
       "discount_rate": 0.11335831682460981,
-      "exit_multiple": 3.3949005526851948,
+      "exit_multiple": 3.263550289888555,
       "exit_basis": "ps",
-      "per_share": 194.06930050188444
+      "per_share": 186.93074326576456
     },
     "bull": {
       "growth_start": 0.2809235043511533,
@@ -58,14 +58,14 @@
       "margin_terminal": 0.0936422101783956,
       "cash_conversion": 0.5,
       "discount_rate": 0.10335831682460982,
-      "exit_multiple": 5.681473484086272,
+      "exit_multiple": 5.439979736189159,
       "exit_basis": "ps",
-      "per_share": 406.31678903219995
+      "per_share": 389.81680350674844
     }
   },
   "implied_growth": {
-    "growth_start": -0.17586933008313083,
-    "average_growth": -0.07543466504156542,
+    "growth_start": -0.17465838083423146,
+    "average_growth": -0.07482919041711573,
     "converged": true
   }
 }

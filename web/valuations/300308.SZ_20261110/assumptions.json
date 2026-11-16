@@ -1,8 +1,10 @@
 {
+  "name": "中际旭创",
   "ts_code": "300308.SZ",
   "asof": "20261110",
   "template": "fcfe",
   "fundamentals": {
+    "name": "中际旭创",
     "industry": "通信设备",
     "comp_type": "1",
     "price": 471.0,
@@ -15,8 +17,7 @@
     "revenue_cagr_5y": 0.4023959765543481,
     "margin_ttm": 0.31290861095422573,
     "margin_mean_5y": 0.22453246302889449,
-    "fcf_conversion": 0.08864417032985965,
-    "name": "中际旭创"
+    "fcf_conversion": 0.08864417032985965
   },
   "discount": {
     "beta": 2.2680769124615354,
@@ -66,6 +67,5 @@
     "growth_start": 0.29140312708067273,
     "average_growth": 0.15820156354033638,
     "converged": true
-  },
-  "name": "中际旭创"
+  }
 }

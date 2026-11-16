@@ -7,9 +7,9 @@
     "name": "长鑫科技",
     "industry": "半导体",
     "comp_type": "1",
-    "price": 39.98,
-    "total_mv": 2714006282018.0,
-    "shares": 67884099100.00001,
+    "price": 38.34,
+    "total_mv": 2602676359494.0,
+    "shares": 67884099099.99999,
     "revenue_ttm": 298739759956.99,
     "net_income_ttm": 139194888346.24,
     "ocf_ttm": null,
@@ -34,9 +34,9 @@
       "margin_terminal": 0.009321632668425476,
       "cash_conversion": 0.9,
       "discount_rate": 0.088,
-      "exit_multiple": 5.110229882959751,
+      "exit_multiple": 4.900196817702073,
       "exit_basis": "ps",
-      "per_share": 34.531517638032035
+      "per_share": 33.40137823387152
     },
     "base": {
       "growth_start": 0.36351554263754393,
@@ -46,9 +46,9 @@
       "margin_terminal": 0.08439571865302252,
       "cash_conversion": 0.9,
       "discount_rate": 0.073,
-      "exit_multiple": 8.276394710335943,
+      "exit_multiple": 7.800992834281568,
       "exit_basis": "ps",
-      "per_share": 86.56498926942868
+      "per_share": 82.27558160942905
     },
     "bull": {
       "growth_start": 0.4543944282969299,
@@ -58,14 +58,14 @@
       "margin_terminal": 0.18702078887557808,
       "cash_conversion": 0.9,
       "discount_rate": 0.063,
-      "exit_multiple": 15.412132995539164,
+      "exit_multiple": 14.86165020833526,
       "exit_basis": "ps",
-      "per_share": 208.6348221357974
+      "per_share": 201.85462806282973
     }
   },
   "implied_growth": {
-    "growth_start": 0.09213533547642216,
-    "average_growth": 0.05856766773821108,
+    "growth_start": 0.09436509300911991,
+    "average_growth": 0.05968254650455995,
     "converged": true
   }
 }

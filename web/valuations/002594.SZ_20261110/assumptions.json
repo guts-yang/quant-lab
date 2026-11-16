@@ -1,8 +1,10 @@
 {
+  "name": "比亚迪",
   "ts_code": "002594.SZ",
   "asof": "20261110",
   "template": "fcfe",
   "fundamentals": {
+    "name": "比亚迪",
     "industry": "汽车整车",
     "comp_type": "1",
     "price": 84.44,
@@ -15,8 +17,7 @@
     "revenue_cagr_5y": 0.38704436754206584,
     "margin_ttm": 0.039341673719251555,
     "margin_mean_5y": 0.04341352585433762,
-    "fcf_conversion": 1.5855602566788227,
-    "name": "比亚迪"
+    "fcf_conversion": 1.5855602566788227
   },
   "discount": {
     "beta": 1.07951514683409,
@@ -66,6 +67,5 @@
     "growth_start": 0.106019565782879,
     "average_growth": 0.0655097828914395,
     "converged": true
-  },
-  "name": "比亚迪"
+  }
 }

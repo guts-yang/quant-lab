@@ -7,9 +7,9 @@
     "name": "北方华创",
     "industry": "半导体",
     "comp_type": "1",
-    "price": 553.0,
-    "total_mv": 402558450847.00006,
-    "shares": 727953799.0000001,
+    "price": 546.39,
+    "total_mv": 397746676236.0,
+    "shares": 727953799.0007138,
     "revenue_ttm": 43518825142.42,
     "net_income_ttm": 5783604209.570001,
     "ocf_ttm": null,
@@ -34,9 +34,9 @@
       "margin_terminal": 0.009321632668425476,
       "cash_conversion": 0.5,
       "discount_rate": 0.11362631913898492,
-      "exit_multiple": 5.110229882959751,
+      "exit_multiple": 4.900196817702073,
       "exit_basis": "ps",
-      "per_share": 332.46277015629687
+      "per_share": 319.4189063055338
     },
     "base": {
       "growth_start": 0.36351554263754393,
@@ -46,9 +46,9 @@
       "margin_terminal": 0.1328989050288591,
       "cash_conversion": 0.5,
       "discount_rate": 0.09862631913898492,
-      "exit_multiple": 8.276394710335943,
+      "exit_multiple": 7.800992834281568,
       "exit_basis": "ps",
-      "per_share": 906.5073492928096
+      "per_share": 857.1111242199629
     },
     "bull": {
       "growth_start": 0.4543944282969299,
@@ -58,14 +58,14 @@
       "margin_terminal": 0.18702078887557808,
       "cash_conversion": 0.5,
       "discount_rate": 0.08862631913898493,
-      "exit_multiple": 15.412132995539164,
+      "exit_multiple": 14.86165020833526,
       "exit_basis": "ps",
-      "per_share": 2256.296189044319
+      "per_share": 2178.3362403381097
     }
   },
   "implied_growth": {
-    "growth_start": 0.19148227538748436,
-    "average_growth": 0.10824113769374219,
+    "growth_start": 0.20602116087447014,
+    "average_growth": 0.11551058043723507,
     "converged": true
   }
 }

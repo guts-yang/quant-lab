@@ -7,9 +7,9 @@
     "name": "兆易创新",
     "industry": "半导体",
     "comp_type": "1",
-    "price": 246.02,
-    "total_mv": 173191050471.0,
-    "shares": 703971427.0018697,
+    "price": 223.22,
+    "total_mv": 157140501935.0,
+    "shares": 703971427.0002688,
     "revenue_ttm": 22669200057.300003,
     "net_income_ttm": 11630482163.619999,
     "ocf_ttm": 10456930822.32,
@@ -34,9 +34,9 @@
       "margin_terminal": 0.009321632668425476,
       "cash_conversion": 0.7019132423342238,
       "discount_rate": 0.1508477528035333,
-      "exit_multiple": 5.110229882959751,
+      "exit_multiple": 4.900196817702073,
       "exit_basis": "ps",
-      "per_share": 121.63118634317374
+      "per_share": 117.86611153753407
     },
     "base": {
       "growth_start": 0.15400504764365586,
@@ -46,9 +46,9 @@
       "margin_terminal": 0.18739678051489897,
       "cash_conversion": 0.7019132423342238,
       "discount_rate": 0.13584775280353328,
-      "exit_multiple": 8.276394710335943,
+      "exit_multiple": 7.800992834281568,
       "exit_basis": "ps",
-      "per_share": 246.9031056003443
+      "per_share": 235.52872585854158
     },
     "bull": {
       "growth_start": 0.19250630955456982,
@@ -58,14 +58,14 @@
       "margin_terminal": 0.18702078887557808,
       "cash_conversion": 0.7019132423342238,
       "discount_rate": 0.12584775280353327,
-      "exit_multiple": 15.412132995539164,
+      "exit_multiple": 14.86165020833526,
       "exit_basis": "ps",
-      "per_share": 496.44198154036775
+      "per_share": 480.6568596110809
     }
   },
   "implied_growth": {
-    "growth_start": 0.15278095550671444,
-    "average_growth": 0.08889047775335722,
+    "growth_start": 0.13569008722154308,
+    "average_growth": 0.08034504361077154,
     "converged": true
   }
 }
