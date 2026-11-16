@@ -25,6 +25,7 @@ VALUATION_FILES = (
     "sensitivity.parquet",
     "assumptions.json",
     "forecast.parquet",
+    "history.parquet",
 )
 CHAN_FILES = ("report.md", "summary.json", "walkforward/summary.parquet")
 

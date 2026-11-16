@@ -45,6 +45,7 @@ def test_publish_site_copies_results_and_refuses_env(tmp_path):
     assert "token" not in research_summary
     assert (web / "backtests" / "baseline_holdout" / "equity.parquet").exists()
     assert (web / "valuations" / "002594.SZ_20261110" / "scenarios.parquet").exists()
+    assert (web / "valuations" / "002594.SZ_20261110" / "history.parquet").exists()
     assert (web / "chan" / "chan_v1" / "walkforward" / "holdout" / "strategy_equity.parquet").exists()
     published_book = json.loads((web / "books" / "20261029.json").read_text(encoding="utf-8"))
     assert "token" not in published_book
@@ -95,6 +96,7 @@ def test_loaders_read_published_sections(tmp_path):
     assert set(valuations[0].forecast["scenario"]) == {"bear", "base", "bull"}
     assert valuations[0].assumptions["ts_code"] == "002594.SZ"
     assert valuations[0].assumptions["name"] == "比亚迪"
+    assert list(valuations[0].history["close"]) == [90.0]
     _assert_chart_frames(valuations[0])
     chan = module.list_chan(web / "chan")
     assert list(chan[0].equity["equity"]) == [100.0]
@@ -163,9 +165,35 @@ def _valuation(path: Path) -> None:
         }
     ).to_parquet(path / "forecast.parquet", index=False)
     pd.DataFrame({"0.06": [80.0]}, index=pd.Index([0.077], name="discount_rate")).to_parquet(path / "sensitivity.parquet")
+    pd.DataFrame(
+        {"trade_date": pd.to_datetime(["2026-11-10"]), "close": [90.0], "intrinsic": [70.0]}
+    ).to_parquet(path / "history.parquet", index=False)
 
 
-def _assert_chart_frames(valuation) -> None:
+def test_history_percentile_stays_on_three_years():
+    module = _chart_module()
+    history = pd.DataFrame(
+        {
+            "trade_date": ["2020-11-16", "2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15", "2026-11-16"],
+            "close": [59.66, 10.0, 10.0, 10.0, 10.0, 59.66],
+            "intrinsic": [1.0, 9.0, 8.5, 8.0, 7.5, 39.36],
+        }
+    )
+    position = module.history_position(history, "2026-11-16")
+    assert position["premium"] == pytest.approx((59.66 - 39.36) / 59.66)
+    assert position["expensive_share"] == pytest.approx(0.2)
+    headline = module.history_headline("长江电力（600900.SH）", position)
+    assert "比往常更贵" in headline
+    assert "过去 3 年" in headline
+    assert "20%" in headline
+    assert module.gap_label(position["premium"]) == "34% 高估"
+    assert module.gap_label(-0.1) == "10% 低估"
+    recent = module.history_window(history, "2026-11-16", 1)
+    assert pd.Timestamp("2020-11-16") not in set(recent["trade_date"])
+    assert len(recent) == 5
+
+
+def _chart_module():
     import importlib.util
     import sys
 
@@ -174,6 +202,11 @@ def _assert_chart_frames(valuation) -> None:
     assert spec.loader is not None
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
+    return module
+
+
+def _assert_chart_frames(valuation) -> None:
+    module = _chart_module()
 
     assert module.security_label(valuation.assumptions["name"], valuation.code) == "比亚迪（002594.SZ）"
     values = module.value_frame(valuation.scenarios)

@@ -140,6 +140,7 @@ class ValuationView:
     sensitivity: pd.DataFrame
     forecast: pd.DataFrame
     assumptions: dict
+    history: pd.DataFrame
 
 
 @dataclass(frozen=True)
@@ -233,6 +234,7 @@ def _read_valuation(path: Path) -> ValuationView:
         sensitivity=_table(path / "sensitivity.parquet"),
         forecast=_table(path / "forecast.parquet"),
         assumptions=assumptions,
+        history=_table(path / "history.parquet"),
     )
 
 

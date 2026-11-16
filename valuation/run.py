@@ -24,6 +24,7 @@ def main() -> None:
     parser.add_argument("--years", type=int, default=ValuationConfig.forecast_years, help="预测年数，默认 %(default)s")
     parser.add_argument("--estimates", default=None, help="分析师一致预期 JSON（可选）")
     parser.add_argument("--out", default=None, help="产物目录，默认 data/research/valuation_<code>")
+    parser.add_argument("--history", action="store_true", help="额外写出三年股价与基准内在价值 history.parquet")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
@@ -35,6 +36,12 @@ def main() -> None:
     report = run_valuation(provider, args.code, asof, config, estimates)
     out_dir = Path(args.out) if args.out else Path("data/research") / f"valuation_{args.code.replace('.', '_')}"
     write_outputs(report, out_dir)
+    if args.history:
+        from valuation.history import build_history
+
+        history = build_history(provider, args.code, asof, config, estimates)
+        history.to_parquet(out_dir / "history.parquet", index=False)
+        print(f"股价与内在价值 {len(history)} 个交易日，已写入 {out_dir / 'history.parquet'}")
 
     base = report.scenarios["base"]
     print(security_label(report.fundamentals.name, report.ts_code))

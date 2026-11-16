@@ -149,6 +149,82 @@ def sensitivity_frame(sensitivity: pd.DataFrame | None) -> pd.DataFrame:
     return long[columns].reset_index(drop=True)
 
 
+HISTORY_WINDOWS = {"近1年": 1, "近3年": 3}
+
+
+def history_window(history: pd.DataFrame | None, asof: object, years: int) -> pd.DataFrame:
+    """截到截面日为止的最近若干年。premium = (收盘价 − 内在价值) / 收盘价。"""
+    columns = ["trade_date", "close", "intrinsic", "premium"]
+    if history is None or history.empty or "trade_date" not in history.columns:
+        return pd.DataFrame(columns=columns)
+    frame = history.copy()
+    frame["trade_date"] = pd.to_datetime(frame["trade_date"], errors="coerce").dt.normalize()
+    frame["close"] = pd.to_numeric(frame.get("close"), errors="coerce")
+    frame["intrinsic"] = pd.to_numeric(frame.get("intrinsic"), errors="coerce") if "intrinsic" in frame.columns else pd.NA
+    frame = frame.dropna(subset=["trade_date", "close"])
+    if frame.empty:
+        return pd.DataFrame(columns=columns)
+    end = pd.Timestamp(asof).normalize() if asof else frame["trade_date"].max()
+    start = end - pd.DateOffset(years=int(years))
+    frame = frame.loc[frame["trade_date"].between(start, end)]
+    frame = frame.sort_values("trade_date", kind="mergesort").drop_duplicates("trade_date", keep="last")
+    close = frame["close"]
+    intrinsic = frame["intrinsic"]
+    frame["premium"] = (close - intrinsic) / close.where(close > 0)
+    return frame[columns].reset_index(drop=True)
+
+
+def history_position(history: pd.DataFrame | None, asof: object) -> dict[str, float] | None:
+    """过去 3 年里，高估幅度大于或等于今天的交易日占比。缺内在价值的日期不计。"""
+    window = history_window(history, asof, HISTORY_WINDOWS["近3年"])
+    usable = window.dropna(subset=["premium"])
+    if usable.empty:
+        return None
+    latest = usable.iloc[-1]
+    share = float((usable["premium"] >= float(latest["premium"])).mean())
+    return {
+        "close": float(latest["close"]),
+        "intrinsic": float(latest["intrinsic"]),
+        "premium": float(latest["premium"]),
+        "expensive_share": share,
+    }
+
+
+def history_headline(name: str, position: dict[str, float] | None) -> str | None:
+    """三年位置的一句话。占比不随页面上的 1 年 / 3 年切换改变。"""
+    if not position:
+        return None
+    share = position["expensive_share"]
+    pct = f"{share:.0%}"
+    if share < 0.5:
+        return f"{name}比往常更贵。过去 3 年里，只有约 {pct} 的交易日达到或超过今天的高估幅度。"
+    if share > 0.5:
+        return f"{name}比往常更便宜。过去 3 年里，约 {pct} 的交易日达到或超过今天的高估幅度。"
+    return f"{name}的估值处在过去 3 年的中间。约 {pct} 的交易日达到或超过今天的高估幅度。"
+
+
+def gap_label(premium: float) -> str:
+    """徽章文字。正数是现价里高出内在价值的部分。"""
+    if abs(premium) < 0.005:
+        return "与内在价值接近"
+    if premium > 0:
+        return f"{premium:.0%} 高估"
+    return f"{abs(premium):.0%} 低估"
+
+
+def price_value_lines(window: pd.DataFrame | None) -> pd.DataFrame:
+    """股价实线和内在价值虚线共用的长表。"""
+    columns = ["trade_date", "序列", "价格"]
+    if window is None or window.empty:
+        return pd.DataFrame(columns=columns)
+    price = window.loc[window["close"].notna(), ["trade_date", "close"]].rename(columns={"close": "价格"})
+    price["序列"] = "股价"
+    intrinsic = window.loc[window["intrinsic"].notna(), ["trade_date", "intrinsic"]].rename(columns={"intrinsic": "价格"})
+    intrinsic["序列"] = "内在价值"
+    lines = pd.concat([price, intrinsic], ignore_index=True)
+    return lines[columns]
+
+
 def _base_forecast(forecast: pd.DataFrame | None) -> pd.DataFrame:
     if forecast is None or forecast.empty or "year" not in forecast.columns:
         return pd.DataFrame()

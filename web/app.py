@@ -15,10 +15,16 @@ if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
 from charts import (
+    HISTORY_WINDOWS,
     fcfe_frame,
+    gap_label,
     growth_anchor_frame,
+    history_headline,
+    history_position,
+    history_window,
     margin_frame,
     present_value_frame,
+    price_value_lines,
     quoted_price,
     revenue_frame,
     security_label,
@@ -220,6 +226,111 @@ def _render_research() -> None:
         st.markdown(run.report)
 
 
+def _render_price_history(run) -> None:
+    history = getattr(run, "history", None)
+    if history is None or history.empty or "intrinsic" not in history.columns:
+        return
+    if history["intrinsic"].notna().sum() == 0:
+        return
+    st.subheader("股价与内在价值")
+    choice = st.radio(
+        "区间",
+        list(HISTORY_WINDOWS),
+        horizontal=True,
+        index=list(HISTORY_WINDOWS).index("近3年"),
+        label_visibility="collapsed",
+        key=f"valuation-history-{run.name}",
+    )
+    window = history_window(history, run.asof, HISTORY_WINDOWS[choice])
+    if window.empty or window["intrinsic"].notna().sum() == 0:
+        return
+    headline = history_headline(_valuation_title(run), history_position(history, run.asof))
+    if headline:
+        st.markdown(headline)
+    lines = price_value_lines(window)
+    price_color = "#b42318"
+    value_color = "#98a2b3"
+    line = (
+        alt.Chart(lines)
+        .mark_line()
+        .encode(
+            x=alt.X("trade_date:T", title=None),
+            y=alt.Y("价格:Q", title="元/股"),
+            color=alt.Color(
+                "序列:N",
+                scale=alt.Scale(domain=["股价", "内在价值"], range=[price_color, value_color]),
+                title=None,
+            ),
+            strokeDash=alt.StrokeDash(
+                "序列:N",
+                scale=alt.Scale(domain=["股价", "内在价值"], range=[[1, 0], [6, 4]]),
+                legend=None,
+            ),
+            tooltip=[
+                alt.Tooltip("trade_date:T", title="日期"),
+                "序列",
+                alt.Tooltip("价格:Q", format=".2f", title="元/股"),
+            ],
+        )
+    )
+    latest = window.dropna(subset=["intrinsic"]).iloc[-1]
+    ends = pd.DataFrame(
+        [
+            {"trade_date": latest["trade_date"], "价格": latest["close"], "序列": "股价"},
+            {"trade_date": latest["trade_date"], "价格": latest["intrinsic"], "序列": "内在价值"},
+        ]
+    )
+    points = (
+        alt.Chart(ends)
+        .mark_point(filled=True, size=70)
+        .encode(
+            x="trade_date:T",
+            y="价格:Q",
+            color=alt.Color("序列:N", scale=alt.Scale(domain=["股价", "内在价值"], range=[price_color, value_color]), legend=None),
+        )
+    )
+    label = gap_label(float(latest["premium"]))
+    gap = pd.DataFrame(
+        [
+            {
+                "trade_date": latest["trade_date"],
+                "低": min(float(latest["close"]), float(latest["intrinsic"])),
+                "高": max(float(latest["close"]), float(latest["intrinsic"])),
+                "中": (float(latest["close"]) + float(latest["intrinsic"])) / 2,
+                "标签": label,
+            }
+        ]
+    )
+    bracket = alt.Chart(gap).mark_rule(stroke="#667085").encode(x="trade_date:T", y="低:Q", y2="高:Q")
+    badge = (
+        alt.Chart(gap)
+        .mark_text(align="right", dx=-8, fontSize=13, fontWeight="bold", color="#b42318" if float(latest["premium"]) > 0 else "#1f7a4d")
+        .encode(x="trade_date:T", y="中:Q", text="标签:N")
+    )
+    band = window.dropna(subset=["premium"]).assign(色带=1)
+    strip = (
+        alt.Chart(band)
+        .mark_bar(size=4)
+        .encode(
+            x=alt.X("trade_date:T", title=None, axis=None),
+            y=alt.Y("色带:Q", axis=None, scale=alt.Scale(domain=[0, 1])),
+            color=alt.Color(
+                "premium:Q",
+                scale=alt.Scale(domain=[-0.4, 0, 0.4], range=["#1f7a4d", "#f2f4f7", "#b42318"], interpolate="rgb"),
+                legend=None,
+            ),
+            tooltip=[
+                alt.Tooltip("trade_date:T", title="日期"),
+                alt.Tooltip("premium:Q", format=".0%", title="高估幅度"),
+            ],
+        )
+        .properties(height=18)
+    )
+    chart = alt.vconcat(alt.layer(line, points, bracket, badge).properties(height=320), strip).resolve_scale(color="independent")
+    st.altair_chart(chart, use_container_width=True)
+    st.caption("虚线是基准情景的每股价值，只在财报公告日重算，其余交易日沿用上一次的结果。高估幅度 =（股价 − 内在价值）/ 股价。")
+
+
 def _valuation_title(run) -> str:
     assumptions = run.assumptions or {}
     company = assumptions.get("name")
@@ -252,6 +363,7 @@ def _render_valuations() -> None:
 
 
 def _render_valuation_charts(run) -> None:
+    _render_price_history(run)
     values = value_frame(run.scenarios)
     if not values.empty:
         st.subheader("价值对照")

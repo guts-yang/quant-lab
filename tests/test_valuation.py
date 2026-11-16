@@ -15,6 +15,7 @@ from valuation.assumptions import (
 )
 from valuation.data import annual_values, company_fundamentals, ttm_at, ttm_growth_per_code, ttm_per_code, visible_frame
 from valuation.discount import cost_of_equity, estimate_beta
+from valuation.history import align_history, announcement_dates, build_history, valuation_knots
 from valuation.model import (
     DcfInputs,
     average_growth,
@@ -337,3 +338,68 @@ def test_cost_of_equity_is_clamped():
     assert cost_of_equity(0.018, 1.0, 0.055) == pytest.approx(0.073)
     assert cost_of_equity(0.018, 5.0, 0.055) == pytest.approx(0.15)  # 上限
     assert cost_of_equity(0.0, 0.5, 0.01) == pytest.approx(0.06)  # 下限
+
+
+def test_valuation_knots_keep_the_prior_announcement_and_the_asof():
+    dates = pd.to_datetime(["2020-04-30", "2021-08-28", "2024-04-30", "2026-11-16"])
+    knots = valuation_knots(dates, pd.Timestamp("2021-11-16"), pd.Timestamp("2026-11-16"))
+    assert knots == [
+        pd.Timestamp("2021-08-28"),
+        pd.Timestamp("2024-04-30"),
+        pd.Timestamp("2026-11-16"),
+    ]
+
+
+def test_align_history_leaves_days_before_the_first_value_blank():
+    prices = pd.DataFrame({"trade_date": ["2024-01-02", "2024-04-30", "2024-05-06"], "close": [10.0, 11.0, 12.0]})
+    knots = pd.DataFrame({"trade_date": ["2024-04-30"], "intrinsic": [8.0]})
+    out = align_history(prices, knots)
+    assert pd.isna(out.loc[0, "intrinsic"])
+    assert out.loc[1, "intrinsic"] == 8.0
+    assert out.loc[2, "intrinsic"] == 8.0
+
+
+def test_history_skips_a_failed_announcement_and_ignores_unconsolidated_reports():
+    income = pd.DataFrame(
+        {
+            "ts_code": ["600900.SH"] * 4,
+            "ann_date": ["2021-04-30", "2023-08-30", "2024-04-30", "2025-04-30"],
+            "end_date": ["2020-12-31", "2023-06-30", "2023-12-31", "2024-12-31"],
+            "report_type": ["1", "2", "1", "1"],
+        }
+    )
+    prices = pd.DataFrame(
+        {
+            "trade_date": pd.to_datetime(["2024-04-29", "2024-05-06", "2025-04-30", "2026-11-16"]),
+            "close": [10.0, 12.0, 13.0, 30.49],
+        }
+    )
+
+    class _Provider:
+        def get_income_statements(self, periods):
+            return income
+
+        def get_stock_ohlc(self, code, start, end):
+            dates = pd.to_datetime(prices["trade_date"])
+            return prices.loc[dates.between(start, end)].reset_index(drop=True)
+
+    seen: list[pd.Timestamp] = []
+
+    def valuer(day):
+        seen.append(day)
+        if day == pd.Timestamp("2024-04-30"):
+            raise ValueError("缺少 shares，无法估值")
+        return {
+            pd.Timestamp("2021-04-30"): 8.0,
+            pd.Timestamp("2025-04-30"): 18.0,
+            pd.Timestamp("2026-11-16"): 18.19,
+        }[day]
+
+    history = build_history(_Provider(), "600900.SH", "2026-11-16", valuer=valuer)
+    assert pd.Timestamp("2023-08-30") not in seen
+    assert list(history["intrinsic"]) == [8.0, 8.0, 18.0, 18.19]
+    assert announcement_dates(income, "600900.SH", "2026-11-16").tolist() == [
+        pd.Timestamp("2021-04-30"),
+        pd.Timestamp("2024-04-30"),
+        pd.Timestamp("2025-04-30"),
+    ]
