@@ -1,0 +1,71 @@
+{
+  "name": "宇树科技",
+  "ts_code": "688836.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "宇树科技",
+    "industry": "专用机械",
+    "comp_type": "1",
+    "price": 703.99,
+    "total_mv": 284738822557.0,
+    "shares": 404464300.0,
+    "revenue_ttm": 1425519178.4199998,
+    "net_income_ttm": 249336000.29000002,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 1.2078535373506467,
+    "margin_ttm": 0.17490890621784277,
+    "margin_mean_5y": 0.03939749850177074,
+    "fcf_conversion": null
+  },
+  "discount": {
+    "beta": 1.0,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.073
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.08019323443089607,
+      "average_growth": 0.05259661721544804,
+      "growth_terminal": 0.025,
+      "margin_start": 0.17490890621784277,
+      "margin_terminal": -0.00726235355829022,
+      "cash_conversion": 0.9,
+      "discount_rate": 0.088,
+      "exit_multiple": 2.3175125996054167,
+      "exit_basis": "ps",
+      "per_share": 7.980132768023591
+    },
+    "base": {
+      "growth_start": 0.13365539071816013,
+      "average_growth": 0.07932769535908006,
+      "growth_terminal": 0.025,
+      "margin_start": 0.17490890621784277,
+      "margin_terminal": 0.05252578057964537,
+      "cash_conversion": 0.9,
+      "discount_rate": 0.073,
+      "exit_multiple": 3.979144201758549,
+      "exit_basis": "ps",
+      "per_share": 17.108330036181655
+    },
+    "bull": {
+      "growth_start": 0.16706923839770016,
+      "average_growth": 0.09603461919885008,
+      "growth_terminal": 0.025,
+      "margin_start": 0.17490890621784277,
+      "margin_terminal": 0.10155451608634361,
+      "cash_conversion": 0.9,
+      "discount_rate": 0.063,
+      "exit_multiple": 6.319043915186478,
+      "exit_basis": "ps",
+      "per_share": 31.021311868356815
+    }
+  },
+  "implied_growth": {
+    "growth_start": 1.9072121403034585,
+    "average_growth": 0.9661060701517291,
+    "converged": true
+  }
+}
