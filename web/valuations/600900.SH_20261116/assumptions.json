@@ -1,0 +1,71 @@
+{
+  "name": "长江电力",
+  "ts_code": "600900.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "长江电力",
+    "industry": "水力发电",
+    "comp_type": "1",
+    "price": 30.49,
+    "total_mv": 746035957673.0,
+    "shares": 24468217700.0,
+    "revenue_ttm": 83556869408.73001,
+    "net_income_ttm": 32653763204.87,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.08338578953609899,
+    "margin_ttm": 0.3907968720697228,
+    "margin_mean_5y": 0.39775386860584927,
+    "fcf_conversion": 1.4225096105112276
+  },
+  "discount": {
+    "beta": 0.5,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.06
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.033096905306799214,
+      "average_growth": 0.029048452653399608,
+      "growth_terminal": 0.025,
+      "margin_start": 0.3907968720697228,
+      "margin_terminal": 0.02500926707037872,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.075,
+      "exit_multiple": 1.3959558036648398,
+      "exit_basis": "ps",
+      "per_share": 8.154062844630133
+    },
+    "base": {
+      "growth_start": 0.05516150884466536,
+      "average_growth": 0.04008075442233268,
+      "growth_terminal": 0.025,
+      "margin_start": 0.3907968720697228,
+      "margin_terminal": 0.3907968720697228,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.06,
+      "exit_multiple": 2.5373915324674097,
+      "exit_basis": "ps",
+      "per_share": 18.18680202306038
+    },
+    "bull": {
+      "growth_start": 0.0689518860558317,
+      "average_growth": 0.046975943027915856,
+      "growth_terminal": 0.025,
+      "margin_start": 0.3907968720697228,
+      "margin_terminal": 0.23225263962547518,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.049999999999999996,
+      "exit_multiple": 7.185027919188692,
+      "exit_basis": "ps",
+      "per_share": 32.79832927523211
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.2445971910165572,
+    "average_growth": 0.1347985955082786,
+    "converged": true
+  }
+}
