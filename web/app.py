@@ -30,6 +30,7 @@ from charts import (
     security_label,
     sensitivity_frame,
     value_frame,
+    valuation_ranking,
 )
 from labels import FACTOR_LABELS, MISSING, factor_rows, format_score, holdings_view, pool_view, reason_label, rejected_view
 from load import (
@@ -331,13 +332,21 @@ def _render_price_history(run) -> None:
     st.caption("虚线是基准情景的每股价值，只在财报公告日重算，其余交易日沿用上一次的结果。高估幅度 =（股价 − 内在价值）/ 股价。")
 
 
-def _valuation_title(run) -> str:
+def _valuation_company(run) -> str:
     assumptions = run.assumptions or {}
     company = assumptions.get("name")
     if not company:
         fundamentals = assumptions.get("fundamentals") or {}
         company = fundamentals.get("name")
-    return security_label(None if company is None else str(company), run.code)
+    name = str(company or "").strip()
+    if name in {"", "None", "nan", "<NA>"}:
+        return ""
+    return name
+
+
+def _valuation_title(run) -> str:
+    company = _valuation_company(run)
+    return security_label(company or None, run.code)
 
 
 def _render_valuations() -> None:
@@ -348,9 +357,20 @@ def _render_valuations() -> None:
             "再运行 python -m strategy.publish_site。"
         )
         return
+    ranking = valuation_ranking(runs)
+    if not ranking.empty:
+        st.subheader("估值机会排名")
+        display = ranking.copy()
+        for col in ("现价", "熊市", "基准", "牛市"):
+            display[col] = display[col].map(lambda v: f"{v:.2f}" if pd.notna(v) else "")
+        display["估值机会"] = display["估值机会"].map(lambda v: f"{v:+.1%}" if pd.notna(v) else "")
+        st.dataframe(display, width="stretch", hide_index=True)
+        st.caption("估值机会 = 基准每股价值 ÷ 现价 − 1，按基准情景相对现价的上行空间排序，最被低估的排最前。")
     labels = {item.name: f"{_valuation_title(item)}  {item.asof}" for item in runs}
     selected = st.selectbox("股票", options=[item.name for item in runs], format_func=lambda key: labels[key])
     run = next(item for item in runs if item.name == selected)
+    company = _valuation_company(run)
+    st.header(f"**{company or run.code}**")
     _render_valuation_charts(run)
     if not run.scenarios.empty:
         st.subheader("三情景")

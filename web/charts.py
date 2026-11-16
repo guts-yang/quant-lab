@@ -225,6 +225,51 @@ def price_value_lines(window: pd.DataFrame | None) -> pd.DataFrame:
     return lines[columns]
 
 
+def valuation_ranking(runs) -> pd.DataFrame:
+    """把所有估值按基准情景相对现价的上行空间排序，最被低估的排最前。
+
+    估值机会 = 基准每股价值 / 现价 − 1。现价或基准缺失的股票不进排名。
+    """
+    columns = ["公司", "代码", "截面日", "现价", "熊市", "基准", "牛市", "估值机会"]
+    rows: list[dict[str, object]] = []
+    for run in runs or []:
+        assumptions = getattr(run, "assumptions", None) or {}
+        fundamentals = assumptions.get("fundamentals") or {}
+        price = _number(fundamentals.get("price"))
+        name = str(assumptions.get("name") or "").strip()
+        if name in {"", "None", "nan", "<NA>"}:
+            name = str(getattr(run, "code", "") or "")
+        scenarios = getattr(run, "scenarios", None)
+        per_share: dict[str, float | None] = {}
+        if scenarios is not None and not scenarios.empty and "scenario" in scenarios.columns:
+            for label in ("bear", "base", "bull"):
+                matched = scenarios.loc[scenarios["scenario"].astype(str).eq(label)]
+                per_share[label] = _number(matched["per_share"].iloc[0]) if not matched.empty else None
+        else:
+            per_share = {"bear": None, "base": None, "bull": None}
+        base = per_share.get("base")
+        if price is None or price <= 0 or base is None:
+            continue
+        rows.append(
+            {
+                "公司": name,
+                "代码": str(getattr(run, "code", "") or ""),
+                "截面日": str(getattr(run, "asof", "") or ""),
+                "现价": price,
+                "熊市": per_share.get("bear"),
+                "基准": base,
+                "牛市": per_share.get("bull"),
+                "估值机会": base / price - 1.0,
+            }
+        )
+    frame = pd.DataFrame(rows, columns=columns)
+    if frame.empty:
+        return frame
+    frame = frame.sort_values("估值机会", ascending=False, kind="stable").reset_index(drop=True)
+    frame.insert(0, "排名", range(1, len(frame) + 1))
+    return frame
+
+
 def _base_forecast(forecast: pd.DataFrame | None) -> pd.DataFrame:
     if forecast is None or forecast.empty or "year" not in forecast.columns:
         return pd.DataFrame()

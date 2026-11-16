@@ -226,6 +226,45 @@ def _assert_chart_frames(valuation) -> None:
     assert len(heat) == 1
 
 
+def test_valuation_ranking_sorts_by_base_upside_descending():
+    module = _chart_module()
+
+    class _Run:
+        def __init__(self, name, code, asof, price, base, bear=None, bull=None):
+            self.code = code
+            self.asof = asof
+            self.assumptions = {
+                "name": name,
+                "fundamentals": {"price": price},
+            }
+            self.scenarios = pd.DataFrame(
+                {
+                    "scenario": ["bear", "base", "bull"],
+                    "per_share": [bear, base, bull],
+                }
+            )
+
+    runs = [
+        _Run("甲", "000001.SZ", "20261116", 10.0, 12.0, bear=8.0, bull=15.0),
+        _Run("乙", "000002.SZ", "20261116", 10.0, 9.0, bear=7.0, bull=11.0),
+        _Run("丙", "000003.SZ", "20261116", 10.0, 15.0, bear=5.0, bull=20.0),
+    ]
+    ranking = module.valuation_ranking(runs)
+    assert list(ranking.columns) == ["排名", "公司", "代码", "截面日", "现价", "熊市", "基准", "牛市", "估值机会"]
+    assert list(ranking["公司"]) == ["丙", "甲", "乙"]
+    assert list(ranking["排名"]) == [1, 2, 3]
+    assert ranking.loc[ranking["公司"].eq("丙"), "估值机会"].iloc[0] == pytest.approx(0.5)
+    assert ranking.loc[ranking["公司"].eq("乙"), "估值机会"].iloc[0] == pytest.approx(-0.1)
+
+    # missing price or base is skipped
+    runs_with_gap = [
+        _Run("甲", "000001.SZ", "20261116", 10.0, 12.0),
+        _Run("无价", "000004.SZ", "20261116", None, 12.0),
+    ]
+    ranking_gap = module.valuation_ranking(runs_with_gap)
+    assert list(ranking_gap["公司"]) == ["甲"]
+
+
 def _chan(path: Path) -> None:
     path.mkdir(parents=True)
     (path / "report.md").write_text("# 缠论\n", encoding="utf-8")
