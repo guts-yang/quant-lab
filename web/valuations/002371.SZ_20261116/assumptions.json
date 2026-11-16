@@ -1,0 +1,71 @@
+{
+  "name": "北方华创",
+  "ts_code": "002371.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "北方华创",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 553.0,
+    "total_mv": 402558450847.00006,
+    "shares": 727953799.0000001,
+    "revenue_ttm": 43518825142.42,
+    "net_income_ttm": 5783604209.570001,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.4539786409905242,
+    "margin_ttm": 0.1328989050288591,
+    "margin_mean_5y": 0.15973739687218316,
+    "fcf_conversion": -0.08414397619183099
+  },
+  "discount": {
+    "beta": 1.4659330752542714,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.09862631913898492
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.21810932558252635,
+      "average_growth": 0.12155466279126317,
+      "growth_terminal": 0.025,
+      "margin_start": 0.1328989050288591,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11362631913898492,
+      "exit_multiple": 5.110229882959751,
+      "exit_basis": "ps",
+      "per_share": 332.46277015629687
+    },
+    "base": {
+      "growth_start": 0.36351554263754393,
+      "average_growth": 0.194257771318772,
+      "growth_terminal": 0.025,
+      "margin_start": 0.1328989050288591,
+      "margin_terminal": 0.1328989050288591,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09862631913898492,
+      "exit_multiple": 8.276394710335943,
+      "exit_basis": "ps",
+      "per_share": 906.5073492928096
+    },
+    "bull": {
+      "growth_start": 0.4543944282969299,
+      "average_growth": 0.23969721414846498,
+      "growth_terminal": 0.025,
+      "margin_start": 0.1328989050288591,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08862631913898493,
+      "exit_multiple": 15.412132995539164,
+      "exit_basis": "ps",
+      "per_share": 2256.296189044319
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.19148227538748436,
+    "average_growth": 0.10824113769374219,
+    "converged": true
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "中芯国际",
+  "ts_code": "688981.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "中芯国际",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 110.5,
+    "total_mv": 946149542650.0,
+    "shares": 8562439300.0,
+    "revenue_ttm": 73610258000.0,
+    "net_income_ttm": 7207299000.0,
+    "ocf_ttm": 20080979000.0,
+    "fcf_ttm": -39869604000.0,
+    "revenue_cagr_5y": 0.19635196189404236,
+    "margin_ttm": 0.09791161172129026,
+    "margin_mean_5y": 0.14256799395716677,
+    "fcf_conversion": -6.3899018290981155
+  },
+  "discount": {
+    "beta": 1.8150402417613125,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.1178272132968722
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.11781117713642542,
+      "average_growth": 0.0714055885682127,
+      "growth_terminal": 0.025,
+      "margin_start": 0.09791161172129026,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1328272132968722,
+      "exit_multiple": 5.110229882959751,
+      "exit_basis": "ps",
+      "per_share": 30.945508762063827
+    },
+    "base": {
+      "growth_start": 0.19635196189404236,
+      "average_growth": 0.11067598094702118,
+      "growth_terminal": 0.025,
+      "margin_start": 0.09791161172129026,
+      "margin_terminal": 0.09791161172129026,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1178272132968722,
+      "exit_multiple": 8.276394710335943,
+      "exit_basis": "ps",
+      "per_share": 70.5689809141782
+    },
+    "bull": {
+      "growth_start": 0.24543995236755295,
+      "average_growth": 0.13521997618377649,
+      "growth_terminal": 0.025,
+      "margin_start": 0.09791161172129026,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1078272132968722,
+      "exit_multiple": 15.412132995539164,
+      "exit_basis": "ps",
+      "per_share": 160.50284070664492
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.3517847017426329,
+    "average_growth": 0.18839235087131642,
+    "converged": true
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "工业富联",
+  "ts_code": "601138.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "工业富联",
+    "industry": "通信设备",
+    "comp_type": "1",
+    "price": 40.1,
+    "total_mv": 795748101230.0,
+    "shares": 19844092300.0,
+    "revenue_ttm": 1240370256000.0,
+    "net_income_ttm": 53173404000.0,
+    "ocf_ttm": 12594069000.0,
+    "fcf_ttm": -8689901000.0,
+    "revenue_cagr_5y": 0.1589721745618935,
+    "margin_ttm": 0.042868977019390894,
+    "margin_mean_5y": 0.04069198150469822,
+    "fcf_conversion": 0.23449646524771722
+  },
+  "discount": {
+    "beta": 1.9448542951387782,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.1249669862326328
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.058152394995601694,
+      "average_growth": 0.04157619749780085,
+      "growth_terminal": 0.025,
+      "margin_start": 0.042868977019390894,
+      "margin_terminal": -0.09149963436195706,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.13996698623263282,
+      "exit_multiple": 2.8720274821850027,
+      "exit_basis": "ps",
+      "per_share": 91.13770164032314
+    },
+    "base": {
+      "growth_start": 0.09692065832600283,
+      "average_growth": 0.06096032916300141,
+      "growth_terminal": 0.025,
+      "margin_start": 0.042868977019390894,
+      "margin_terminal": 0.04069198150469822,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1249669862326328,
+      "exit_multiple": 5.106841973895761,
+      "exit_basis": "ps",
+      "per_share": 219.0587719935052
+    },
+    "bull": {
+      "growth_start": 0.12115082290750354,
+      "average_growth": 0.07307541145375177,
+      "growth_terminal": 0.025,
+      "margin_start": 0.042868977019390894,
+      "margin_terminal": 0.09346681940217566,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11496698623263281,
+      "exit_multiple": 8.9777929865216,
+      "exit_basis": "ps",
+      "per_share": 441.9506879524448
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.34780602967446195,
+    "average_growth": -0.16140301483723096,
+    "converged": true
+  }
+}

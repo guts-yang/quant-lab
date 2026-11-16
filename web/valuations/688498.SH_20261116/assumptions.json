@@ -1,0 +1,71 @@
+{
+  "name": "源杰科技",
+  "ts_code": "688498.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "源杰科技",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 673.1,
+    "total_mv": 83801151930.0,
+    "shares": 124500300.0,
+    "revenue_ttm": 1827192272.6799996,
+    "net_income_ttm": 1108884830.7,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.2687471865666238,
+    "margin_ttm": 0.6068791157230345,
+    "margin_mean_5y": 0.2642885870186106,
+    "fcf_conversion": -1.35752294865311
+  },
+  "discount": {
+    "beta": 1.984868987681888,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.12716779432250383
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.16124831193997427,
+      "average_growth": 0.09312415596998713,
+      "growth_terminal": 0.025,
+      "margin_start": 0.6068791157230345,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.14216779432250382,
+      "exit_multiple": 5.110229882959751,
+      "exit_basis": "ps",
+      "per_share": 68.14622070810711
+    },
+    "base": {
+      "growth_start": 0.2687471865666238,
+      "average_growth": 0.14687359328331187,
+      "growth_terminal": 0.025,
+      "margin_start": 0.6068791157230345,
+      "margin_terminal": 0.2642885870186106,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12716779432250383,
+      "exit_multiple": 8.276394710335943,
+      "exit_basis": "ps",
+      "per_share": 160.6364944757741
+    },
+    "bull": {
+      "growth_start": 0.3359339832082797,
+      "average_growth": 0.18046699160413987,
+      "growth_terminal": 0.025,
+      "margin_start": 0.6068791157230345,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11716779432250383,
+      "exit_multiple": 15.412132995539164,
+      "exit_basis": "ps",
+      "per_share": 350.9753947414562
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.8591128109876045,
+    "average_growth": 0.4420564054938022,
+    "converged": true
+  }
+}

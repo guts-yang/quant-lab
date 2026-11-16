@@ -57,6 +57,37 @@ def test_annual_indicators_drop_interim_reports():
     assert list(annual["profit_dedt"]) == [-1.0]
 
 
+def test_daily_basic_skips_session_before_close_is_published(tmp_path, monkeypatch):
+    calls: list[str] = []
+
+    class _Pro:
+        def daily_basic(self, trade_date: str, fields: str) -> pd.DataFrame:
+            calls.append(trade_date)
+            if trade_date == "20261116":
+                return pd.DataFrame(columns=["ts_code", "trade_date", "close", "total_mv"])
+            return pd.DataFrame(
+                {
+                    "ts_code": ["688256.SH"],
+                    "trade_date": [trade_date],
+                    "close": [100.0],
+                    "total_mv": [200.0],
+                }
+            )
+
+    provider = TushareProvider(cache_dir=tmp_path, pause_seconds=0, pro=_Pro())
+    monkeypatch.setattr(
+        provider,
+        "_open_dates",
+        lambda start, end: [pd.Timestamp("2026-11-13"), pd.Timestamp("2026-11-16")],
+    )
+    frame = provider.get_daily_basic(pd.Timestamp("2026-11-16"))
+    assert list(frame["ts_code"]) == ["688256.SH"]
+    assert frame.loc[0, "total_mv"] == 2_000_000
+    assert calls == ["20261116", "20261113"]
+    assert not (tmp_path / "daily_basic" / "20261116.parquet").exists()
+    assert (tmp_path / "daily_basic" / "20261113.parquet").exists()
+
+
 def test_daily_basic_market_value_is_stored_in_yuan():
     raw = pd.DataFrame(
         {

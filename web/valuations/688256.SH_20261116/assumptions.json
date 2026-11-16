@@ -1,0 +1,71 @@
+{
+  "name": "寒武纪",
+  "ts_code": "688256.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "寒武纪",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 978.88,
+    "total_mv": 615572603520.0,
+    "shares": 628854000.0,
+    "revenue_ttm": 11416173749.27,
+    "net_income_ttm": 4169105554.3600006,
+    "ocf_ttm": -241456557.79999998,
+    "fcf_ttm": -1269709248.25,
+    "revenue_cagr_5y": 0.6990118654427202,
+    "margin_ttm": 0.36519289614233413,
+    "margin_mean_5y": -0.13457890596412686,
+    "fcf_conversion": -0.518201843846438
+  },
+  "discount": {
+    "beta": 2.0745881912969213,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.13210235052133068
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.21810932558252635,
+      "average_growth": 0.12155466279126317,
+      "growth_terminal": 0.025,
+      "margin_start": 0.36519289614233413,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1471023505213307,
+      "exit_multiple": 5.110229882959751,
+      "exit_basis": "ps",
+      "per_share": 89.32200346464171
+    },
+    "base": {
+      "growth_start": 0.36351554263754393,
+      "average_growth": 0.194257771318772,
+      "growth_terminal": 0.025,
+      "margin_start": 0.36519289614233413,
+      "margin_terminal": 0.08439571865302252,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.13210235052133068,
+      "exit_multiple": 8.276394710335943,
+      "exit_basis": "ps",
+      "per_share": 230.49973037872525
+    },
+    "bull": {
+      "growth_start": 0.4543944282969299,
+      "average_growth": 0.23969721414846498,
+      "growth_terminal": 0.025,
+      "margin_start": 0.36519289614233413,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12210235052133069,
+      "exit_multiple": 15.412132995539164,
+      "exit_basis": "ps",
+      "per_share": 566.4952310699086
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.979892775037041,
+    "average_growth": 0.5024463875185204,
+    "converged": true
+  }
+}

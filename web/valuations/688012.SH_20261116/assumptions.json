@@ -1,0 +1,71 @@
+{
+  "name": "中微公司",
+  "ts_code": "688012.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "中微公司",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 245.9,
+    "total_mv": 235533421570.0,
+    "shares": 957842300.0,
+    "revenue_ttm": 14648221687.539999,
+    "net_income_ttm": 5034247081.660001,
+    "ocf_ttm": 891561843.6799998,
+    "fcf_ttm": -419257387.50000024,
+    "revenue_cagr_5y": 0.4036073198663168,
+    "margin_ttm": 0.34367633075503,
+    "margin_mean_5y": 0.21636657037274926,
+    "fcf_conversion": 0.348671264684304
+  },
+  "discount": {
+    "beta": 1.8830005426330616,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.12156502984481839
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.21810932558252635,
+      "average_growth": 0.12155466279126317,
+      "growth_terminal": 0.025,
+      "margin_start": 0.34367633075503,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1365650298448184,
+      "exit_multiple": 5.110229882959751,
+      "exit_basis": "ps",
+      "per_share": 79.3415369071542
+    },
+    "base": {
+      "growth_start": 0.36351554263754393,
+      "average_growth": 0.194257771318772,
+      "growth_terminal": 0.025,
+      "margin_start": 0.34367633075503,
+      "margin_terminal": 0.21636657037274926,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12156502984481839,
+      "exit_multiple": 8.276394710335943,
+      "exit_basis": "ps",
+      "per_share": 212.42877637305787
+    },
+    "bull": {
+      "growth_start": 0.4543944282969299,
+      "average_growth": 0.23969721414846498,
+      "growth_terminal": 0.025,
+      "margin_start": 0.34367633075503,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11156502984481839,
+      "exit_multiple": 15.412132995539164,
+      "exit_basis": "ps",
+      "per_share": 508.14837631552496
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.41857423471091926,
+    "average_growth": 0.2217871173554596,
+    "converged": true
+  }
+}

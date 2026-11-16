@@ -1,0 +1,71 @@
+{
+  "name": "兆易创新",
+  "ts_code": "603986.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "兆易创新",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 246.02,
+    "total_mv": 173191050471.0,
+    "shares": 703971427.0018697,
+    "revenue_ttm": 22669200057.300003,
+    "net_income_ttm": 11630482163.619999,
+    "ocf_ttm": 10456930822.32,
+    "fcf_ttm": 8719086987.880001,
+    "revenue_cagr_5y": 0.15400504764365586,
+    "margin_ttm": 0.5130521647972627,
+    "margin_mean_5y": 0.18739678051489897,
+    "fcf_conversion": 0.7019132423342238
+  },
+  "discount": {
+    "beta": 2.142686414609696,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.13584775280353328
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.09240302858619351,
+      "average_growth": 0.058701514293096745,
+      "growth_terminal": 0.025,
+      "margin_start": 0.5130521647972627,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.7019132423342238,
+      "discount_rate": 0.1508477528035333,
+      "exit_multiple": 5.110229882959751,
+      "exit_basis": "ps",
+      "per_share": 121.63118634317374
+    },
+    "base": {
+      "growth_start": 0.15400504764365586,
+      "average_growth": 0.08950252382182793,
+      "growth_terminal": 0.025,
+      "margin_start": 0.5130521647972627,
+      "margin_terminal": 0.18739678051489897,
+      "cash_conversion": 0.7019132423342238,
+      "discount_rate": 0.13584775280353328,
+      "exit_multiple": 8.276394710335943,
+      "exit_basis": "ps",
+      "per_share": 246.9031056003443
+    },
+    "bull": {
+      "growth_start": 0.19250630955456982,
+      "average_growth": 0.1087531547772849,
+      "growth_terminal": 0.025,
+      "margin_start": 0.5130521647972627,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.7019132423342238,
+      "discount_rate": 0.12584775280353327,
+      "exit_multiple": 15.412132995539164,
+      "exit_basis": "ps",
+      "per_share": 496.44198154036775
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.15278095550671444,
+    "average_growth": 0.08889047775335722,
+    "converged": true
+  }
+}

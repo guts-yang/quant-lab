@@ -228,17 +228,25 @@ class TushareProvider:
         )
 
     def get_daily_basic(self, asof: pd.Timestamp) -> pd.DataFrame:
+        """不晚于 asof、且已经有收盘和市值的最近交易日。"""
         asof = pd.Timestamp(asof).normalize()
         sessions = self._open_dates(asof - pd.Timedelta(days=15), asof)
-        if not sessions:
-            return pd.DataFrame(columns=DAILY_BASIC_COLUMNS)
-        key = pd.Timestamp(sessions[-1]).strftime("%Y%m%d")
+        for session in reversed(sessions):
+            frame = self._daily_basic_on(session)
+            if not frame.empty:
+                return frame
+        return pd.DataFrame(columns=DAILY_BASIC_COLUMNS)
+
+    def _daily_basic_on(self, session: pd.Timestamp) -> pd.DataFrame:
+        key = pd.Timestamp(session).strftime("%Y%m%d")
         path = self.cache_dir / "daily_basic" / f"{key}.parquet"
         cached = _read(path)
-        if cached is not None:
+        if cached is not None and not cached.empty:
             return cached
         raw = self._query("daily_basic", trade_date=key, fields="ts_code,trade_date,close,total_mv")
         frame = normalize_daily_basic(raw)
+        if frame.empty:
+            return frame
         _write(frame, path)
         return frame
 
