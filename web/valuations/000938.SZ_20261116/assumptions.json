@@ -1,0 +1,71 @@
+{
+  "name": "紫光股份",
+  "ts_code": "000938.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "紫光股份",
+    "industry": "IT设备",
+    "comp_type": "1",
+    "price": 24.11,
+    "total_mv": 68956526389.0,
+    "shares": 2860079900.0,
+    "revenue_ttm": 121582281999.37001,
+    "net_income_ttm": 3054647767.3900003,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.10135345088963321,
+    "margin_ttm": 0.025124119379547658,
+    "margin_mean_5y": 0.024486179302076316,
+    "fcf_conversion": 1.6384825848857827
+  },
+  "discount": {
+    "beta": 1.745739314689394,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.11401566230791667
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.060812070533779926,
+      "average_growth": 0.042906035266889964,
+      "growth_terminal": 0.025,
+      "margin_start": 0.025124119379547658,
+      "margin_terminal": -0.01933082212760332,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.12901566230791667,
+      "exit_multiple": 2.2713245020158555,
+      "exit_basis": "ps",
+      "per_share": 55.86459486458275
+    },
+    "base": {
+      "growth_start": 0.10135345088963321,
+      "average_growth": 0.0631767254448166,
+      "growth_terminal": 0.025,
+      "margin_start": 0.025124119379547658,
+      "margin_terminal": 0.025124119379547658,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.11401566230791667,
+      "exit_multiple": 3.9558901565720084,
+      "exit_basis": "ps",
+      "per_share": 128.86517173316432
+    },
+    "bull": {
+      "growth_start": 0.12669181361204152,
+      "average_growth": 0.07584590680602075,
+      "growth_terminal": 0.025,
+      "margin_start": 0.025124119379547658,
+      "margin_terminal": 0.10437746511480898,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.10401566230791667,
+      "exit_multiple": 8.925424624192251,
+      "exit_basis": "ps",
+      "per_share": 339.17428807389774
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.3436382868521487,
+    "average_growth": -0.15931914342607434,
+    "converged": true
+  }
+}

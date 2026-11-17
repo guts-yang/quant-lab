@@ -1,0 +1,71 @@
+{
+  "name": "共进股份",
+  "ts_code": "603118.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "共进股份",
+    "industry": "通信设备",
+    "comp_type": "1",
+    "price": 14.71,
+    "total_mv": 11580835844.0,
+    "shares": 787276400.0,
+    "revenue_ttm": 10697524643.259998,
+    "net_income_ttm": 103978583.58000001,
+    "ocf_ttm": -230625987.18999994,
+    "fcf_ttm": -585251017.4199998,
+    "revenue_cagr_5y": 0.007920442256238003,
+    "margin_ttm": 0.00971987324614503,
+    "margin_mean_5y": 0.014302006765875074,
+    "fcf_conversion": -0.19682210555229032
+  },
+  "discount": {
+    "beta": 1.1911398990133117,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.08351269444573214
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.004752265353742802,
+      "average_growth": 0.014876132676871403,
+      "growth_terminal": 0.025,
+      "margin_start": 0.00971987324614503,
+      "margin_terminal": -0.09149963436195706,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09851269444573214,
+      "exit_multiple": 2.8549374345302847,
+      "exit_basis": "ps",
+      "per_share": 20.771530413065033
+    },
+    "base": {
+      "growth_start": 0.007920442256238003,
+      "average_growth": 0.016460221128119002,
+      "growth_terminal": 0.025,
+      "margin_start": 0.00971987324614503,
+      "margin_terminal": 0.00971987324614503,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08351269444573214,
+      "exit_multiple": 4.890383407959183,
+      "exit_basis": "ps",
+      "per_share": 42.842811307006116
+    },
+    "bull": {
+      "growth_start": 0.009900552820297503,
+      "average_growth": 0.017450276410148752,
+      "growth_terminal": 0.025,
+      "margin_start": 0.00971987324614503,
+      "margin_terminal": 0.09346681940217566,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.07351269444573215,
+      "exit_multiple": 8.328131329278774,
+      "exit_basis": "ps",
+      "per_share": 79.83728782084276
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.26970915207048696,
+    "average_growth": -0.12235457603524347,
+    "converged": true
+  }
+}

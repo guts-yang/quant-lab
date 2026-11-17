@@ -1,0 +1,71 @@
+{
+  "name": "通富微电",
+  "ts_code": "002156.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "通富微电",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 43.82,
+    "total_mv": 69840215214.0,
+    "shares": 1593797700.0,
+    "revenue_ttm": 32690340754.100002,
+    "net_income_ttm": 3418823219.14,
+    "ocf_ttm": 7046090196.99,
+    "fcf_ttm": -2499055797.5300007,
+    "revenue_cagr_5y": 0.20991499418597637,
+    "margin_ttm": 0.10458206125340597,
+    "margin_mean_5y": 0.03166229223548474,
+    "fcf_conversion": -3.6942532357034286
+  },
+  "discount": {
+    "beta": 1.9681822337454649,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.12625002285600057
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.1259489965115858,
+      "average_growth": 0.0754744982557929,
+      "growth_terminal": 0.025,
+      "margin_start": 0.10458206125340597,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.14125002285600058,
+      "exit_multiple": 4.900196817702073,
+      "exit_basis": "ps",
+      "per_share": 69.36843270824316
+    },
+    "base": {
+      "growth_start": 0.20991499418597637,
+      "average_growth": 0.11745749709298817,
+      "growth_terminal": 0.025,
+      "margin_start": 0.10458206125340597,
+      "margin_terminal": 0.08439571865302252,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12625002285600057,
+      "exit_multiple": 7.800992834281568,
+      "exit_basis": "ps",
+      "per_share": 157.07616291830723
+    },
+    "bull": {
+      "growth_start": 0.26239374273247046,
+      "average_growth": 0.14369687136623524,
+      "growth_terminal": 0.025,
+      "margin_start": 0.10458206125340597,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11625002285600057,
+      "exit_multiple": 14.86165020833526,
+      "exit_basis": "ps",
+      "per_share": 369.0008538984768
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.16687999041207685,
+    "average_growth": -0.07093999520603843,
+    "converged": true
+  }
+}

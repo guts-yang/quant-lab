@@ -1,0 +1,71 @@
+{
+  "name": "长飞光纤",
+  "ts_code": "601869.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "长飞光纤",
+    "industry": "通信设备",
+    "comp_type": "1",
+    "price": 225.49,
+    "total_mv": 186684320999.0,
+    "shares": 827905100.0,
+    "revenue_ttm": 23101279670.0,
+    "net_income_ttm": 6471635653.0,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.11631079502198727,
+    "margin_ttm": 0.28014186856515383,
+    "margin_mean_5y": 0.07381126481126284,
+    "fcf_conversion": -0.5429871412417815
+  },
+  "discount": {
+    "beta": 1.6364562542530408,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.10800509398391725
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.058152394995601694,
+      "average_growth": 0.04157619749780085,
+      "growth_terminal": 0.025,
+      "margin_start": 0.28014186856515383,
+      "margin_terminal": -0.09149963436195706,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12300509398391725,
+      "exit_multiple": 2.8549374345302847,
+      "exit_basis": "ps",
+      "per_share": 53.29971467986292
+    },
+    "base": {
+      "growth_start": 0.09692065832600283,
+      "average_growth": 0.06096032916300141,
+      "growth_terminal": 0.025,
+      "margin_start": 0.28014186856515383,
+      "margin_terminal": 0.07381126481126284,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10800509398391725,
+      "exit_multiple": 4.890383407959183,
+      "exit_basis": "ps",
+      "per_share": 115.0181060654272
+    },
+    "bull": {
+      "growth_start": 0.12115082290750354,
+      "average_growth": 0.07307541145375177,
+      "growth_terminal": 0.025,
+      "margin_start": 0.28014186856515383,
+      "margin_terminal": 0.09346681940217566,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09800509398391725,
+      "exit_multiple": 8.328131329278774,
+      "exit_basis": "ps",
+      "per_share": 213.97017114848236
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.3280502458977663,
+    "average_growth": 0.17652512294888317,
+    "converged": true
+  }
+}

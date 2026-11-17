@@ -1,0 +1,71 @@
+{
+  "name": "中天科技",
+  "ts_code": "600522.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "中天科技",
+    "industry": "通信设备",
+    "comp_type": "1",
+    "price": 21.84,
+    "total_mv": 74538821448.0,
+    "shares": 3412949700.0,
+    "revenue_ttm": 62965506390.17,
+    "net_income_ttm": 4565024978.15,
+    "ocf_ttm": 6387017705.19,
+    "fcf_ttm": 4459857042.559999,
+    "revenue_cagr_5y": 0.03267890099870585,
+    "margin_ttm": 0.072500409190113,
+    "margin_mean_5y": 0.05275797637929315,
+    "fcf_conversion": 0.8336963166813736
+  },
+  "discount": {
+    "beta": 1.676435692535589,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.1102039630894574
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.01960734059922351,
+      "average_growth": 0.022303670299611753,
+      "growth_terminal": 0.025,
+      "margin_start": 0.072500409190113,
+      "margin_terminal": -0.09149963436195706,
+      "cash_conversion": 0.8336963166813736,
+      "discount_rate": 0.12520396308945742,
+      "exit_multiple": 2.8549374345302847,
+      "exit_basis": "ps",
+      "per_share": 25.998287735244872
+    },
+    "base": {
+      "growth_start": 0.03267890099870585,
+      "average_growth": 0.028839450499352926,
+      "growth_terminal": 0.025,
+      "margin_start": 0.072500409190113,
+      "margin_terminal": 0.05275797637929315,
+      "cash_conversion": 0.8336963166813736,
+      "discount_rate": 0.1102039630894574,
+      "exit_multiple": 4.890383407959183,
+      "exit_basis": "ps",
+      "per_share": 57.96907316748448
+    },
+    "bull": {
+      "growth_start": 0.040848626248382314,
+      "average_growth": 0.032924313124191154,
+      "growth_terminal": 0.025,
+      "margin_start": 0.072500409190113,
+      "margin_terminal": 0.09346681940217566,
+      "cash_conversion": 0.8336963166813736,
+      "discount_rate": 0.1002039630894574,
+      "exit_multiple": 8.328131329278774,
+      "exit_basis": "ps",
+      "per_share": 105.90811363195968
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.23508789179461803,
+    "average_growth": -0.10504394589730902,
+    "converged": true
+  }
+}

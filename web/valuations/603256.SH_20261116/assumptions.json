@@ -1,0 +1,71 @@
+{
+  "name": "宏和科技",
+  "ts_code": "603256.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "宏和科技",
+    "industry": "玻璃",
+    "comp_type": "1",
+    "price": 66.88,
+    "total_mv": 60498738432.0,
+    "shares": 904586400.0000001,
+    "revenue_ttm": 2293276717.33,
+    "net_income_ttm": 806601642.72,
+    "ocf_ttm": 763075731.7199999,
+    "fcf_ttm": -2654187089.46,
+    "revenue_cagr_5y": 0.13541629446743153,
+    "margin_ttm": 0.35172451567864194,
+    "margin_mean_5y": 0.08276095293838893,
+    "fcf_conversion": -1.2168988948853887
+  },
+  "discount": {
+    "beta": 2.5,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.15
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.025216327182007014,
+      "average_growth": 0.02510816359100351,
+      "growth_terminal": 0.025,
+      "margin_start": 0.35172451567864194,
+      "margin_terminal": -0.05932436404709898,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.16499999999999998,
+      "exit_multiple": 1.5414062668865376,
+      "exit_basis": "ps",
+      "per_share": 2.4010539837326896
+    },
+    "base": {
+      "growth_start": 0.04202721197001169,
+      "average_growth": 0.03351360598500584,
+      "growth_terminal": 0.025,
+      "margin_start": 0.35172451567864194,
+      "margin_terminal": 0.08276095293838893,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.15,
+      "exit_multiple": 2.676549817333285,
+      "exit_basis": "ps",
+      "per_share": 4.496935099980012
+    },
+    "bull": {
+      "growth_start": 0.052534014962514614,
+      "average_growth": 0.03876700748125731,
+      "growth_terminal": 0.025,
+      "margin_start": 0.35172451567864194,
+      "margin_terminal": 0.10322578006976627,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.13999999999999999,
+      "exit_multiple": 4.5333561202658315,
+      "exit_basis": "ps",
+      "per_share": 7.4061121312566724
+    }
+  },
+  "implied_growth": {
+    "growth_start": 1.1935533824012792,
+    "average_growth": 0.6092766912006395,
+    "converged": true
+  }
+}

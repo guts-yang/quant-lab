@@ -1,0 +1,71 @@
+{
+  "name": "大华股份",
+  "ts_code": "002236.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "大华股份",
+    "industry": "IT设备",
+    "comp_type": "1",
+    "price": 14.42,
+    "total_mv": 47142759482.00001,
+    "shares": 3269262100.0000005,
+    "revenue_ttm": 34938156486.25,
+    "net_income_ttm": 3225712843.91,
+    "ocf_ttm": 176274060.2800002,
+    "fcf_ttm": -376177895.0799998,
+    "revenue_cagr_5y": 0.04348981480715519,
+    "margin_ttm": 0.09232636087080001,
+    "margin_mean_5y": 0.12350711478865932,
+    "fcf_conversion": 0.42826771434532646
+  },
+  "discount": {
+    "beta": 1.352151271215983,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.09236831991687908
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.026093888884293114,
+      "average_growth": 0.025546944442146557,
+      "growth_terminal": 0.025,
+      "margin_start": 0.09232636087080001,
+      "margin_terminal": -0.01933082212760332,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10736831991687908,
+      "exit_multiple": 2.2713245020158555,
+      "exit_basis": "ps",
+      "per_share": 15.11373805859547
+    },
+    "base": {
+      "growth_start": 0.04348981480715519,
+      "average_growth": 0.03424490740357759,
+      "growth_terminal": 0.025,
+      "margin_start": 0.09232636087080001,
+      "margin_terminal": 0.09232636087080001,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09236831991687908,
+      "exit_multiple": 3.9558901565720084,
+      "exit_basis": "ps",
+      "per_share": 31.654176650538275
+    },
+    "bull": {
+      "growth_start": 0.05436226850894399,
+      "average_growth": 0.039681134254472,
+      "growth_terminal": 0.025,
+      "margin_start": 0.09232636087080001,
+      "margin_terminal": 0.10437746511480898,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08236831991687908,
+      "exit_multiple": 8.925424624192251,
+      "exit_basis": "ps",
+      "per_share": 75.1692175599895
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.1774266449637001,
+    "average_growth": -0.07621332248185006,
+    "converged": true
+  }
+}

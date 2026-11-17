@@ -1,0 +1,71 @@
+{
+  "name": "至纯科技",
+  "ts_code": "603690.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "至纯科技",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 18.38,
+    "total_mv": 7038883834.000001,
+    "shares": 382964300.00000006,
+    "revenue_ttm": 2129077018.19,
+    "net_income_ttm": -1065922831.5899998,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.15362638047107202,
+    "margin_ttm": -0.5006501984114115,
+    "margin_mean_5y": -0.007997043927973088,
+    "fcf_conversion": -5.091543781038157
+  },
+  "discount": {
+    "beta": 1.1461986275894898,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.08104092451742194
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.09217582828264322,
+      "average_growth": 0.05858791414132162,
+      "growth_terminal": 0.025,
+      "margin_start": -0.5006501984114115,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09604092451742194,
+      "exit_multiple": 4.900196817702073,
+      "exit_basis": "ps",
+      "per_share": 17.4151075423027
+    },
+    "base": {
+      "growth_start": 0.15362638047107202,
+      "average_growth": 0.089313190235536,
+      "growth_terminal": 0.025,
+      "margin_start": -0.5006501984114115,
+      "margin_terminal": 0.0,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08104092451742194,
+      "exit_multiple": 7.800992834281568,
+      "exit_basis": "ps",
+      "per_share": 40.836943943012365
+    },
+    "bull": {
+      "growth_start": 0.19203297558884003,
+      "average_growth": 0.10851648779442001,
+      "growth_terminal": 0.025,
+      "margin_start": -0.5006501984114115,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.07104092451742194,
+      "exit_multiple": 14.86165020833526,
+      "exit_basis": "ps",
+      "per_share": 101.73125306597683
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.06976394496517968,
+    "average_growth": -0.022381972482589847,
+    "converged": true
+  }
+}

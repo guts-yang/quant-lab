@@ -1,0 +1,71 @@
+{
+  "name": "中瓷电子",
+  "ts_code": "003031.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "中瓷电子",
+    "industry": "元器件",
+    "comp_type": "1",
+    "price": 76.72,
+    "total_mv": 34604778488.0,
+    "shares": 451052900.0,
+    "revenue_ttm": 4152311890.99,
+    "net_income_ttm": 748174680.0800002,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.28666329436005555,
+    "margin_ttm": 0.18018267888388784,
+    "margin_mean_5y": 0.18511199700988643,
+    "fcf_conversion": 0.15666976950584777
+  },
+  "discount": {
+    "beta": 1.929044567401228,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.12409745120706754
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.1348432820885536,
+      "average_growth": 0.07992164104427679,
+      "growth_terminal": 0.025,
+      "margin_start": 0.18018267888388784,
+      "margin_terminal": -0.013561133321328744,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.13909745120706754,
+      "exit_multiple": 1.7719592310727512,
+      "exit_basis": "ps",
+      "per_share": 13.317338851594384
+    },
+    "base": {
+      "growth_start": 0.22473880348092268,
+      "average_growth": 0.12486940174046134,
+      "growth_terminal": 0.025,
+      "margin_start": 0.18018267888388784,
+      "margin_terminal": 0.18018267888388784,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12409745120706754,
+      "exit_multiple": 3.263550289888555,
+      "exit_basis": "ps",
+      "per_share": 36.339796677428325
+    },
+    "bull": {
+      "growth_start": 0.2809235043511533,
+      "average_growth": 0.15296175217557664,
+      "growth_terminal": 0.025,
+      "margin_start": 0.18018267888388784,
+      "margin_terminal": 0.0936422101783956,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11409745120706755,
+      "exit_multiple": 5.439979736189159,
+      "exit_basis": "ps",
+      "per_share": 67.98039662814098
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.5049568942868359,
+    "average_growth": 0.26497844714341795,
+    "converged": true
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "星网锐捷",
+  "ts_code": "002396.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "星网锐捷",
+    "industry": "通信设备",
+    "comp_type": "1",
+    "price": 24.28,
+    "total_mv": 18390038628.0,
+    "shares": 757415100.0,
+    "revenue_ttm": 22475881406.719997,
+    "net_income_ttm": 702582837.1,
+    "ocf_ttm": -1826875793.25,
+    "fcf_ttm": -2182343188.18,
+    "revenue_cagr_5y": 0.0904529623546877,
+    "margin_ttm": 0.03125941200641577,
+    "margin_mean_5y": 0.029045367914795214,
+    "fcf_conversion": 0.18575087572117538
+  },
+  "discount": {
+    "beta": 1.6942557333160693,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.11118406533238381
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.05427177741281262,
+      "average_growth": 0.03963588870640631,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03125941200641577,
+      "margin_terminal": -0.09149963436195706,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1261840653323838,
+      "exit_multiple": 2.8549374345302847,
+      "exit_basis": "ps",
+      "per_share": 45.80456587605509
+    },
+    "base": {
+      "growth_start": 0.0904529623546877,
+      "average_growth": 0.057726481177343844,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03125941200641577,
+      "margin_terminal": 0.029045367914795214,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11118406533238381,
+      "exit_multiple": 4.890383407959183,
+      "exit_basis": "ps",
+      "per_share": 105.29540779827668
+    },
+    "bull": {
+      "growth_start": 0.11306620294335962,
+      "average_growth": 0.0690331014716798,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03125941200641577,
+      "margin_terminal": 0.09346681940217566,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10118406533238382,
+      "exit_multiple": 8.328131329278774,
+      "exit_basis": "ps",
+      "per_share": 206.70542575260546
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.29977703307846837,
+    "average_growth": -0.13738851653923417,
+    "converged": true
+  }
+}

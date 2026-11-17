@@ -1,0 +1,71 @@
+{
+  "name": "立昂微",
+  "ts_code": "605358.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "立昂微",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 28.83,
+    "total_mv": 22262508701.999996,
+    "shares": 772199399.9999999,
+    "revenue_ttm": 4271608536.459999,
+    "net_income_ttm": 139670693.92,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.190436148901028,
+    "margin_ttm": 0.03269744704549846,
+    "margin_mean_5y": 0.06377407406008445,
+    "fcf_conversion": -3.857022036068808
+  },
+  "discount": {
+    "beta": 1.9352687108019606,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.12443977909410783
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.1142616893406168,
+      "average_growth": 0.0696308446703084,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03269744704549846,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.13943977909410782,
+      "exit_multiple": 4.900196817702073,
+      "exit_basis": "ps",
+      "per_share": 17.69058640071382
+    },
+    "base": {
+      "growth_start": 0.190436148901028,
+      "average_growth": 0.107718074450514,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03269744704549846,
+      "margin_terminal": 0.03269744704549846,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12443977909410783,
+      "exit_multiple": 7.800992834281568,
+      "exit_basis": "ps",
+      "per_share": 39.17724790536585
+    },
+    "bull": {
+      "growth_start": 0.238045186126285,
+      "average_growth": 0.1315225930631425,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03269744704549846,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11443977909410784,
+      "exit_multiple": 14.86165020833526,
+      "exit_basis": "ps",
+      "per_share": 92.9912681224567
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.09289348341912104,
+    "average_growth": 0.05894674170956051,
+    "converged": true
+  }
+}

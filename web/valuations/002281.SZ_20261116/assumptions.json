@@ -1,0 +1,71 @@
+{
+  "name": "光迅科技",
+  "ts_code": "002281.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "光迅科技",
+    "industry": "通信设备",
+    "comp_type": "1",
+    "price": 85.55,
+    "total_mv": 70811172240.0,
+    "shares": 827716800.0,
+    "revenue_ttm": 15080144889.769997,
+    "net_income_ttm": 1511813298.8700004,
+    "ocf_ttm": -1329689619.11,
+    "fcf_ttm": -2752930489.2599998,
+    "revenue_cagr_5y": 0.14557816711655192,
+    "margin_ttm": 0.10025190805000672,
+    "margin_mean_5y": 0.0857949683611984,
+    "fcf_conversion": 0.5754168382355715
+  },
+  "discount": {
+    "beta": 2.254236606598976,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.14198301336294367
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.058152394995601694,
+      "average_growth": 0.04157619749780085,
+      "growth_terminal": 0.025,
+      "margin_start": 0.10025190805000672,
+      "margin_terminal": -0.09149963436195706,
+      "cash_conversion": 0.5754168382355715,
+      "discount_rate": 0.15698301336294368,
+      "exit_multiple": 2.8549374345302847,
+      "exit_basis": "ps",
+      "per_share": 25.032142112421013
+    },
+    "base": {
+      "growth_start": 0.09692065832600283,
+      "average_growth": 0.06096032916300141,
+      "growth_terminal": 0.025,
+      "margin_start": 0.10025190805000672,
+      "margin_terminal": 0.0857949683611984,
+      "cash_conversion": 0.5754168382355715,
+      "discount_rate": 0.14198301336294367,
+      "exit_multiple": 4.890383407959183,
+      "exit_basis": "ps",
+      "per_share": 58.49332248232754
+    },
+    "bull": {
+      "growth_start": 0.12115082290750354,
+      "average_growth": 0.07307541145375177,
+      "growth_terminal": 0.025,
+      "margin_start": 0.10025190805000672,
+      "margin_terminal": 0.09346681940217566,
+      "cash_conversion": 0.5754168382355715,
+      "discount_rate": 0.13198301336294366,
+      "exit_multiple": 8.328131329278774,
+      "exit_basis": "ps",
+      "per_share": 110.16432661350355
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.22165355136749476,
+    "average_growth": 0.12332677568374738,
+    "converged": true
+  }
+}

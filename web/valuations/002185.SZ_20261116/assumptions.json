@@ -1,0 +1,71 @@
+{
+  "name": "华天科技",
+  "ts_code": "002185.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "华天科技",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 13.96,
+    "total_mv": 50046158864.0,
+    "shares": 3584968400.0,
+    "revenue_ttm": 21606230254.04,
+    "net_income_ttm": 1268364105.77,
+    "ocf_ttm": 2716480152.47,
+    "fcf_ttm": -5928198038.6,
+    "revenue_cagr_5y": 0.15479668425924742,
+    "margin_ttm": 0.05870362811360104,
+    "margin_mean_5y": 0.05558215078898087,
+    "fcf_conversion": -3.3175524055270564
+  },
+  "discount": {
+    "beta": 1.7037430227540806,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.11170586625147444
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.09287801055554845,
+      "average_growth": 0.05893900527777422,
+      "growth_terminal": 0.025,
+      "margin_start": 0.05870362811360104,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12670586625147445,
+      "exit_multiple": 4.900196817702073,
+      "exit_basis": "ps",
+      "per_share": 19.660440225701816
+    },
+    "base": {
+      "growth_start": 0.15479668425924742,
+      "average_growth": 0.0898983421296237,
+      "growth_terminal": 0.025,
+      "margin_start": 0.05870362811360104,
+      "margin_terminal": 0.05870362811360104,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11170586625147444,
+      "exit_multiple": 7.800992834281568,
+      "exit_basis": "ps",
+      "per_share": 41.93977859291812
+    },
+    "bull": {
+      "growth_start": 0.19349585532405927,
+      "average_growth": 0.10924792766202963,
+      "growth_terminal": 0.025,
+      "margin_start": 0.05870362811360104,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10170586625147444,
+      "exit_multiple": 14.86165020833526,
+      "exit_basis": "ps",
+      "per_share": 96.25334290854168
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.16235954192507612,
+    "average_growth": -0.06867977096253806,
+    "converged": true
+  }
+}

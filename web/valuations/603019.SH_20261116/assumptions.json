@@ -1,0 +1,71 @@
+{
+  "name": "中科曙光",
+  "ts_code": "603019.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "中科曙光",
+    "industry": "IT设备",
+    "comp_type": "1",
+    "price": 79.95,
+    "total_mv": 116908510485.0,
+    "shares": 1462270300.0,
+    "revenue_ttm": 18381914305.35,
+    "net_income_ttm": 2934744201.59,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.08048574574102574,
+    "margin_ttm": 0.15965389419402592,
+    "margin_mean_5y": 0.12936924736128208,
+    "fcf_conversion": 0.1820144248896834
+  },
+  "discount": {
+    "beta": 1.9565729325141286,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.12561151128827708
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.04829144744461544,
+      "average_growth": 0.036645723722307726,
+      "growth_terminal": 0.025,
+      "margin_start": 0.15965389419402592,
+      "margin_terminal": -0.01933082212760332,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1406115112882771,
+      "exit_multiple": 2.2713245020158555,
+      "exit_basis": "ps",
+      "per_share": 16.708792682625006
+    },
+    "base": {
+      "growth_start": 0.08048574574102574,
+      "average_growth": 0.05274287287051287,
+      "growth_terminal": 0.025,
+      "margin_start": 0.15965389419402592,
+      "margin_terminal": 0.12936924736128208,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12561151128827708,
+      "exit_multiple": 3.9558901565720084,
+      "exit_basis": "ps",
+      "per_share": 36.147630333843814
+    },
+    "bull": {
+      "growth_start": 0.10060718217628217,
+      "average_growth": 0.06280359108814108,
+      "growth_terminal": 0.025,
+      "margin_start": 0.15965389419402592,
+      "margin_terminal": 0.10437746511480898,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11561151128827708,
+      "exit_multiple": 8.925424624192251,
+      "exit_basis": "ps",
+      "per_share": 84.70278558840356
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.35246565743243397,
+    "average_growth": 0.18873282871621697,
+    "converged": true
+  }
+}

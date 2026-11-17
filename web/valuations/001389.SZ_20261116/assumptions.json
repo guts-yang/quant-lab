@@ -1,0 +1,71 @@
+{
+  "name": "广合科技",
+  "ts_code": "001389.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "广合科技",
+    "industry": "元器件",
+    "comp_type": "1",
+    "price": 82.81,
+    "total_mv": 39147091278.0,
+    "shares": 472733864.00193214,
+    "revenue_ttm": 8639796307.93,
+    "net_income_ttm": 1780057775.3999999,
+    "ocf_ttm": 1751437320.12,
+    "fcf_ttm": -1821890736.5900006,
+    "revenue_cagr_5y": 0.4311192336674936,
+    "margin_ttm": 0.20603006274189373,
+    "margin_mean_5y": 0.17705397845458642,
+    "fcf_conversion": -0.04618578416244665
+  },
+  "discount": {
+    "beta": 1.8152707178260687,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.11783988948043378
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.1348432820885536,
+      "average_growth": 0.07992164104427679,
+      "growth_terminal": 0.025,
+      "margin_start": 0.20603006274189373,
+      "margin_terminal": -0.013561133321328744,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1328398894804338,
+      "exit_multiple": 1.7719592310727512,
+      "exit_basis": "ps",
+      "per_share": 28.042292270994274
+    },
+    "base": {
+      "growth_start": 0.22473880348092268,
+      "average_growth": 0.12486940174046134,
+      "growth_terminal": 0.025,
+      "margin_start": 0.20603006274189373,
+      "margin_terminal": 0.17705397845458642,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11783988948043378,
+      "exit_multiple": 3.263550289888555,
+      "exit_basis": "ps",
+      "per_share": 75.4864725406795
+    },
+    "bull": {
+      "growth_start": 0.2809235043511533,
+      "average_growth": 0.15296175217557664,
+      "growth_terminal": 0.025,
+      "margin_start": 0.20603006274189373,
+      "margin_terminal": 0.0936422101783956,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10783988948043378,
+      "exit_multiple": 5.439979736189159,
+      "exit_basis": "ps",
+      "per_share": 141.11121499217103
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.25744378268139745,
+    "average_growth": 0.1412218913406987,
+    "converged": true
+  }
+}

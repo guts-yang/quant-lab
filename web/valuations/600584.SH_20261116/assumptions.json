@@ -1,0 +1,71 @@
+{
+  "name": "长电科技",
+  "ts_code": "600584.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "长电科技",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 50.5,
+    "total_mv": 90365437300.0,
+    "shares": 1789414600.0,
+    "revenue_ttm": 41154705231.37,
+    "net_income_ttm": 2228825694.82,
+    "ocf_ttm": 5259459940.959999,
+    "fcf_ttm": -5572596222.040001,
+    "revenue_cagr_5y": 0.07992809930189093,
+    "margin_ttm": 0.05415725084870945,
+    "margin_mean_5y": 0.06420550019854884,
+    "fcf_conversion": 0.7724094375729705
+  },
+  "discount": {
+    "beta": 1.877235449870545,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.12124794974287997
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.047956859581134555,
+      "average_growth": 0.03647842979056728,
+      "growth_terminal": 0.025,
+      "margin_start": 0.05415725084870945,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.7724094375729705,
+      "discount_rate": 0.13624794974287996,
+      "exit_multiple": 4.900196817702073,
+      "exit_basis": "ps",
+      "per_share": 61.96544863572196
+    },
+    "base": {
+      "growth_start": 0.07992809930189093,
+      "average_growth": 0.05246404965094547,
+      "growth_terminal": 0.025,
+      "margin_start": 0.05415725084870945,
+      "margin_terminal": 0.05415725084870945,
+      "cash_conversion": 0.7724094375729705,
+      "discount_rate": 0.12124794974287997,
+      "exit_multiple": 7.800992834281568,
+      "exit_basis": "ps",
+      "per_share": 120.52308004351829
+    },
+    "bull": {
+      "growth_start": 0.09991012412736366,
+      "average_growth": 0.06245506206368183,
+      "growth_terminal": 0.025,
+      "margin_start": 0.05415725084870945,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.7724094375729705,
+      "discount_rate": 0.11124794974287998,
+      "exit_multiple": 14.86165020833526,
+      "exit_basis": "ps",
+      "per_share": 262.94581893153793
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.16552651766743054,
+    "average_growth": -0.07026325883371529,
+    "converged": true
+  }
+}

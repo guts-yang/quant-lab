@@ -1,0 +1,71 @@
+{
+  "name": "亨通光电",
+  "ts_code": "600487.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "亨通光电",
+    "industry": "通信设备",
+    "comp_type": "1",
+    "price": 38.51,
+    "total_mv": 94980767473.00002,
+    "shares": 2466392300.0000005,
+    "revenue_ttm": 81600890828.6,
+    "net_income_ttm": 6467708854.92,
+    "ocf_ttm": 3155952753.7,
+    "fcf_ttm": -333534170.6199999,
+    "revenue_cagr_5y": 0.15600604843585453,
+    "margin_ttm": 0.07926027264218488,
+    "margin_mean_5y": 0.04051373493063195,
+    "fcf_conversion": -0.11536787041019987
+  },
+  "discount": {
+    "beta": 1.680879723558839,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.11044838479573615
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.058152394995601694,
+      "average_growth": 0.04157619749780085,
+      "growth_terminal": 0.025,
+      "margin_start": 0.07926027264218488,
+      "margin_terminal": -0.09149963436195706,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12544838479573617,
+      "exit_multiple": 2.8549374345302847,
+      "exit_basis": "ps",
+      "per_share": 53.97416956237828
+    },
+    "base": {
+      "growth_start": 0.09692065832600283,
+      "average_growth": 0.06096032916300141,
+      "growth_terminal": 0.025,
+      "margin_start": 0.07926027264218488,
+      "margin_terminal": 0.04051373493063195,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11044838479573615,
+      "exit_multiple": 4.890383407959183,
+      "exit_basis": "ps",
+      "per_share": 123.28782609167305
+    },
+    "bull": {
+      "growth_start": 0.12115082290750354,
+      "average_growth": 0.07307541145375177,
+      "growth_terminal": 0.025,
+      "margin_start": 0.07926027264218488,
+      "margin_terminal": 0.09346681940217566,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10044838479573616,
+      "exit_multiple": 8.328131329278774,
+      "exit_basis": "ps",
+      "per_share": 239.96459323453607
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.22667910754188364,
+    "average_growth": -0.1008395537709418,
+    "converged": true
+  }
+}

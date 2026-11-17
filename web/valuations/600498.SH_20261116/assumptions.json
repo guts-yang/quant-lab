@@ -1,0 +1,71 @@
+{
+  "name": "烽火通信",
+  "ts_code": "600498.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "烽火通信",
+    "industry": "通信设备",
+    "comp_type": "1",
+    "price": 26.35,
+    "total_mv": 35787713625.0,
+    "shares": 1358167500.0,
+    "revenue_ttm": 28290655972.370003,
+    "net_income_ttm": 237877696.64999992,
+    "ocf_ttm": 9979027862.84,
+    "fcf_ttm": 8113445372.440001,
+    "revenue_cagr_5y": 0.03407817372652966,
+    "margin_ttm": 0.008408348568598853,
+    "margin_mean_5y": 0.0164822654352867,
+    "fcf_conversion": -1.366796690863379
+  },
+  "discount": {
+    "beta": 2.0174401173133067,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.12895920645223186
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.020446904235917794,
+      "average_growth": 0.022723452117958898,
+      "growth_terminal": 0.025,
+      "margin_start": 0.008408348568598853,
+      "margin_terminal": -0.09149963436195706,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.14395920645223187,
+      "exit_multiple": 2.8549374345302847,
+      "exit_basis": "ps",
+      "per_share": 25.129895519845796
+    },
+    "base": {
+      "growth_start": 0.03407817372652966,
+      "average_growth": 0.02953908686326483,
+      "growth_terminal": 0.025,
+      "margin_start": 0.008408348568598853,
+      "margin_terminal": 0.008408348568598853,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12895920645223186,
+      "exit_multiple": 4.890383407959183,
+      "exit_basis": "ps",
+      "per_share": 53.86216971269209
+    },
+    "bull": {
+      "growth_start": 0.042597717158162074,
+      "average_growth": 0.033798858579081034,
+      "growth_terminal": 0.025,
+      "margin_start": 0.008408348568598853,
+      "margin_terminal": 0.09346681940217566,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11895920645223186,
+      "exit_multiple": 8.328131329278774,
+      "exit_basis": "ps",
+      "per_share": 102.55608391681525
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.16217947288957107,
+    "average_growth": -0.06858973644478554,
+    "converged": true
+  }
+}

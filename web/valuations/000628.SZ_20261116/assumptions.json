@@ -1,0 +1,71 @@
+{
+  "name": "高新发展",
+  "ts_code": "000628.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "高新发展",
+    "industry": "建筑工程",
+    "comp_type": "1",
+    "price": 46.55,
+    "total_mv": 16398634000.0,
+    "shares": 352280000.0,
+    "revenue_ttm": 4084558974.3599997,
+    "net_income_ttm": 149979639.05,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": -0.020836325274470435,
+    "margin_ttm": 0.03671868615227914,
+    "margin_mean_5y": 0.026997503365739157,
+    "fcf_conversion": 0.41736995359293155
+  },
+  "discount": {
+    "beta": 2.0266975039758908,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.12946836271867398
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": -0.01250179516468226,
+      "average_growth": 0.006249102417658868,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03671868615227914,
+      "margin_terminal": -0.10113703094121167,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.14446836271867397,
+      "exit_multiple": 0.6330350189075007,
+      "exit_basis": "ps",
+      "per_share": 2.193679581924296
+    },
+    "base": {
+      "growth_start": -0.020836325274470435,
+      "average_growth": 0.0020818373627647826,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03671868615227914,
+      "margin_terminal": 0.026997503365739157,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12946836271867398,
+      "exit_multiple": 2.1333296535498567,
+      "exit_basis": "ps",
+      "per_share": 11.491342962288645
+    },
+    "bull": {
+      "growth_start": -0.026045406593088044,
+      "average_growth": -0.0005227032965440194,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03671868615227914,
+      "margin_terminal": 0.04971204539127197,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11946836271867399,
+      "exit_multiple": 4.019465536557765,
+      "exit_basis": "ps",
+      "per_share": 22.1585584979698
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.4463526237744805,
+    "average_growth": 0.23567631188724025,
+    "converged": true
+  }
+}

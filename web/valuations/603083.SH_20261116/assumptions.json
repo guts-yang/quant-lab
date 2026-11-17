@@ -1,0 +1,71 @@
+{
+  "name": "剑桥科技",
+  "ts_code": "603083.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "剑桥科技",
+    "industry": "通信设备",
+    "comp_type": "1",
+    "price": 105.11,
+    "total_mv": 40645658604.0,
+    "shares": 386696400.0,
+    "revenue_ttm": 6384321774.43,
+    "net_income_ttm": 764831065.2,
+    "ocf_ttm": -1709330916.76,
+    "fcf_ttm": -3143030325.44,
+    "revenue_cagr_5y": 0.12231360708264694,
+    "margin_ttm": 0.11979832662307893,
+    "margin_mean_5y": 0.04181825129076863,
+    "fcf_conversion": -0.7200336291059108
+  },
+  "discount": {
+    "beta": 2.5,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.15
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.058152394995601694,
+      "average_growth": 0.04157619749780085,
+      "growth_terminal": 0.025,
+      "margin_start": 0.11979832662307893,
+      "margin_terminal": -0.09149963436195706,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.16499999999999998,
+      "exit_multiple": 2.8549374345302847,
+      "exit_basis": "ps",
+      "per_share": 22.003613369235747
+    },
+    "base": {
+      "growth_start": 0.09692065832600283,
+      "average_growth": 0.06096032916300141,
+      "growth_terminal": 0.025,
+      "margin_start": 0.11979832662307893,
+      "margin_terminal": 0.04181825129076863,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.15,
+      "exit_multiple": 4.890383407959183,
+      "exit_basis": "ps",
+      "per_share": 49.356094966521795
+    },
+    "bull": {
+      "growth_start": 0.12115082290750354,
+      "average_growth": 0.07307541145375177,
+      "growth_terminal": 0.025,
+      "margin_start": 0.11979832662307893,
+      "margin_terminal": 0.09346681940217566,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.13999999999999999,
+      "exit_multiple": 8.328131329278774,
+      "exit_basis": "ps",
+      "per_share": 94.87743991797727
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.3539184785119235,
+    "average_growth": 0.18945923925596175,
+    "converged": true
+  }
+}

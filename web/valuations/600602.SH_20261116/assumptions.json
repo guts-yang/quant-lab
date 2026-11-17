@@ -1,0 +1,71 @@
+{
+  "name": "云赛智联",
+  "ts_code": "600602.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "云赛智联",
+    "industry": "软件服务",
+    "comp_type": "1",
+    "price": 14.14,
+    "total_mv": 19338903290.0,
+    "shares": 1367673500.0,
+    "revenue_ttm": 6056884376.79,
+    "net_income_ttm": 215020876.20000005,
+    "ocf_ttm": 629681018.76,
+    "fcf_ttm": 532015415.52,
+    "revenue_cagr_5y": 0.06703864751030664,
+    "margin_ttm": 0.03550024448608607,
+    "margin_mean_5y": 0.03835814275243533,
+    "fcf_conversion": 0.05231988894735992
+  },
+  "discount": {
+    "beta": 1.001552284830006,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.07308537566565033
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.040223188506183984,
+      "average_growth": 0.03261159425309199,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03550024448608607,
+      "margin_terminal": -0.22255562412011978,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08808537566565033,
+      "exit_multiple": 3.289493743421703,
+      "exit_basis": "ps",
+      "per_share": 8.769587932710644
+    },
+    "base": {
+      "growth_start": 0.06703864751030664,
+      "average_growth": 0.04601932375515332,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03550024448608607,
+      "margin_terminal": 0.03550024448608607,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.07308537566565033,
+      "exit_multiple": 6.233319966679284,
+      "exit_basis": "ps",
+      "per_share": 23.581203143240476
+    },
+    "bull": {
+      "growth_start": 0.0837983093878833,
+      "average_growth": 0.054399154693941645,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03550024448608607,
+      "margin_terminal": 0.05792727813164279,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.06308537566565034,
+      "exit_multiple": 10.762866454964309,
+      "exit_basis": "ps",
+      "per_share": 45.699256021482434
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.08015361689709605,
+    "average_growth": -0.027576808448548023,
+    "converged": true
+  }
+}

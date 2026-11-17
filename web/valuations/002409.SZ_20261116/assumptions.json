@@ -1,0 +1,71 @@
+{
+  "name": "雅克科技",
+  "ts_code": "002409.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "雅克科技",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 79.3,
+    "total_mv": 37741058680.0,
+    "shares": 475927600.0,
+    "revenue_ttm": 8865587347.28,
+    "net_income_ttm": 1038074181.1899998,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.30525191424136344,
+    "margin_ttm": 0.11709028860997972,
+    "margin_mean_5y": 0.11716937916434676,
+    "fcf_conversion": -1.3226880856613206
+  },
+  "discount": {
+    "beta": 1.9174798353278129,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.12346139094302971
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.18315114854481807,
+      "average_growth": 0.10407557427240902,
+      "growth_terminal": 0.025,
+      "margin_start": 0.11709028860997972,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.13846139094302973,
+      "exit_multiple": 4.900196817702073,
+      "exit_basis": "ps",
+      "per_share": 76.74371469831154
+    },
+    "base": {
+      "growth_start": 0.30525191424136344,
+      "average_growth": 0.16512595712068173,
+      "growth_terminal": 0.025,
+      "margin_start": 0.11709028860997972,
+      "margin_terminal": 0.11709028860997972,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12346139094302971,
+      "exit_multiple": 7.800992834281568,
+      "exit_basis": "ps",
+      "per_share": 193.58237180878277
+    },
+    "bull": {
+      "growth_start": 0.3815648928017043,
+      "average_growth": 0.20328244640085216,
+      "growth_terminal": 0.025,
+      "margin_start": 0.11709028860997972,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11346139094302972,
+      "exit_multiple": 14.86165020833526,
+      "exit_basis": "ps",
+      "per_share": 477.42638618334814
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.01559865126458241,
+    "average_growth": 0.020299325632291206,
+    "converged": true
+  }
+}

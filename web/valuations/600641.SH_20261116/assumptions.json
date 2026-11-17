@@ -1,0 +1,71 @@
+{
+  "name": "先导基电",
+  "ts_code": "600641.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "先导基电",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 30.5,
+    "total_mv": 28919273450.000004,
+    "shares": 948172900.0000001,
+    "revenue_ttm": 2565235563.21,
+    "net_income_ttm": -143306323.41,
+    "ocf_ttm": -1363298431.0199995,
+    "fcf_ttm": -1737512211.4099994,
+    "revenue_cagr_5y": 0.14731901768371314,
+    "margin_ttm": -0.05586478117848719,
+    "margin_mean_5y": 0.17150492664674935,
+    "fcf_conversion": -2.4294933806613535
+  },
+  "discount": {
+    "beta": 1.7428468798553216,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.11385657839204269
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.08839141061022789,
+      "average_growth": 0.056695705305113954,
+      "growth_terminal": 0.025,
+      "margin_start": -0.05586478117848719,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12885657839204268,
+      "exit_multiple": 4.900196817702073,
+      "exit_basis": "ps",
+      "per_share": 8.175213831817775
+    },
+    "base": {
+      "growth_start": 0.14731901768371314,
+      "average_growth": 0.08615950884185655,
+      "growth_terminal": 0.025,
+      "margin_start": -0.05586478117848719,
+      "margin_terminal": 0.0,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11385657839204269,
+      "exit_multiple": 7.800992834281568,
+      "exit_basis": "ps",
+      "per_share": 17.37638444136024
+    },
+    "bull": {
+      "growth_start": 0.18414877210464142,
+      "average_growth": 0.10457438605232071,
+      "growth_terminal": 0.025,
+      "margin_start": -0.05586478117848719,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1038565783920427,
+      "exit_multiple": 14.86165020833526,
+      "exit_basis": "ps",
+      "per_share": 40.912366093427444
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.3357014658878449,
+    "average_growth": 0.18035073294392245,
+    "converged": true
+  }
+}

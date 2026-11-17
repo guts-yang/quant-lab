@@ -1,0 +1,71 @@
+{
+  "name": "兴森科技",
+  "ts_code": "002436.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "兴森科技",
+    "industry": "元器件",
+    "comp_type": "1",
+    "price": 24.31,
+    "total_mv": 41319065216.0,
+    "shares": 1699673600.0,
+    "revenue_ttm": 8591735825.670002,
+    "net_income_ttm": 442237320.86,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.12263956727571301,
+    "margin_ttm": 0.051472406721201,
+    "margin_mean_5y": 0.04501857163222135,
+    "fcf_conversion": -4.953105811324715
+  },
+  "discount": {
+    "beta": 2.452424031318039,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.15
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.07358374036542781,
+      "average_growth": 0.04929187018271391,
+      "growth_terminal": 0.025,
+      "margin_start": 0.051472406721201,
+      "margin_terminal": -0.013561133321328744,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.16499999999999998,
+      "exit_multiple": 1.7719592310727512,
+      "exit_basis": "ps",
+      "per_share": 4.52759476468493
+    },
+    "base": {
+      "growth_start": 0.12263956727571301,
+      "average_growth": 0.0738197836378565,
+      "growth_terminal": 0.025,
+      "margin_start": 0.051472406721201,
+      "margin_terminal": 0.04501857163222135,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.15,
+      "exit_multiple": 3.263550289888555,
+      "exit_basis": "ps",
+      "per_share": 10.871173783560465
+    },
+    "bull": {
+      "growth_start": 0.15329945909464127,
+      "average_growth": 0.08914972954732063,
+      "growth_terminal": 0.025,
+      "margin_start": 0.051472406721201,
+      "margin_terminal": 0.0936422101783956,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.13999999999999999,
+      "exit_multiple": 5.439979736189159,
+      "exit_basis": "ps",
+      "per_share": 21.06060884047741
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.4005155294606766,
+    "average_growth": 0.21275776473033828,
+    "converged": true
+  }
+}

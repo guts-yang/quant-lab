@@ -1,0 +1,71 @@
+{
+  "name": "华勤技术",
+  "ts_code": "603296.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "华勤技术",
+    "industry": "元器件",
+    "comp_type": "1",
+    "price": 67.47,
+    "total_mv": 102271228410.0,
+    "shares": 1515803000.0,
+    "revenue_ttm": 208568633728.47003,
+    "net_income_ttm": 5279019950.56,
+    "ocf_ttm": 1384542019.3400002,
+    "fcf_ttm": -2476453952.4899993,
+    "revenue_cagr_5y": 0.22770219600236485,
+    "margin_ttm": 0.025310708787749055,
+    "margin_mean_5y": 0.026673396722603684,
+    "fcf_conversion": -0.07864399775106343
+  },
+  "discount": {
+    "beta": 1.6075941575968389,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.10641767866782614
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.1348432820885536,
+      "average_growth": 0.07992164104427679,
+      "growth_terminal": 0.025,
+      "margin_start": 0.025310708787749055,
+      "margin_terminal": -0.013561133321328744,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12141767866782614,
+      "exit_multiple": 1.7719592310727512,
+      "exit_basis": "ps",
+      "per_share": 188.32592584283097
+    },
+    "base": {
+      "growth_start": 0.22473880348092268,
+      "average_growth": 0.12486940174046134,
+      "growth_terminal": 0.025,
+      "margin_start": 0.025310708787749055,
+      "margin_terminal": 0.025310708787749055,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10641767866782614,
+      "exit_multiple": 3.263550289888555,
+      "exit_basis": "ps",
+      "per_share": 512.587687040429
+    },
+    "bull": {
+      "growth_start": 0.2809235043511533,
+      "average_growth": 0.15296175217557664,
+      "growth_terminal": 0.025,
+      "margin_start": 0.025310708787749055,
+      "margin_terminal": 0.0936422101783956,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09641767866782615,
+      "exit_multiple": 5.439979736189159,
+      "exit_basis": "ps",
+      "per_share": 1088.4331569308383
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.33261139342909685,
+    "average_growth": -0.1538056967145484,
+    "converged": true
+  }
+}

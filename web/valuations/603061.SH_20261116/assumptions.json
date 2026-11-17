@@ -1,0 +1,71 @@
+{
+  "name": "金海通",
+  "ts_code": "603061.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "金海通",
+    "industry": "半导体",
+    "comp_type": "1",
+    "price": 212.75,
+    "total_mv": 18509250000.0,
+    "shares": 87000000.0,
+    "revenue_ttm": 1217252787.12,
+    "net_income_ttm": 375288130.58000004,
+    "ocf_ttm": 323605923.09,
+    "fcf_ttm": 151594135.01999995,
+    "revenue_cagr_5y": 0.13534744210235372,
+    "margin_ttm": 0.3083074728199437,
+    "margin_mean_5y": 0.28170929471197004,
+    "fcf_conversion": -0.17957351273764977
+  },
+  "discount": {
+    "beta": 1.6808293400066932,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.11044561370036812
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.08120846526141223,
+      "average_growth": 0.05310423263070612,
+      "growth_terminal": 0.025,
+      "margin_start": 0.3083074728199437,
+      "margin_terminal": 0.009321632668425476,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1254456137003681,
+      "exit_multiple": 4.900196817702073,
+      "exit_basis": "ps",
+      "per_share": 48.88112372757232
+    },
+    "base": {
+      "growth_start": 0.13534744210235372,
+      "average_growth": 0.08017372105117686,
+      "growth_terminal": 0.025,
+      "margin_start": 0.3083074728199437,
+      "margin_terminal": 0.28170929471197004,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11044561370036812,
+      "exit_multiple": 7.800992834281568,
+      "exit_basis": "ps",
+      "per_share": 103.37488121466514
+    },
+    "bull": {
+      "growth_start": 0.16918430262794215,
+      "average_growth": 0.09709215131397107,
+      "growth_terminal": 0.025,
+      "margin_start": 0.3083074728199437,
+      "margin_terminal": 0.18702078887557808,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10044561370036813,
+      "exit_multiple": 14.86165020833526,
+      "exit_basis": "ps",
+      "per_share": 214.8146576296549
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.38857636297297404,
+    "average_growth": 0.206788181486487,
+    "converged": true
+  }
+}

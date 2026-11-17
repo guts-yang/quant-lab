@@ -1,0 +1,71 @@
+{
+  "name": "中兴通讯",
+  "ts_code": "000063.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "中兴通讯",
+    "industry": "通信设备",
+    "comp_type": "1",
+    "price": 27.54,
+    "total_mv": 131738551146.00002,
+    "shares": 4783534900.000001,
+    "revenue_ttm": 150214327000.0,
+    "net_income_ttm": 4356002000.0,
+    "ocf_ttm": 2856238000.0,
+    "fcf_ttm": -769354000.0,
+    "revenue_cagr_5y": 0.057066200142386725,
+    "margin_ttm": 0.02899857881066165,
+    "margin_mean_5y": 0.06202012374194032,
+    "fcf_conversion": 0.8860888197595858
+  },
+  "discount": {
+    "beta": 1.6334312391788544,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.10783871815483699
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.03423972008543203,
+      "average_growth": 0.029619860042716016,
+      "growth_terminal": 0.025,
+      "margin_start": 0.02899857881066165,
+      "margin_terminal": -0.09149963436195706,
+      "cash_conversion": 0.8860888197595858,
+      "discount_rate": 0.12283871815483699,
+      "exit_multiple": 2.8549374345302847,
+      "exit_basis": "ps",
+      "per_share": 44.10535851818054
+    },
+    "base": {
+      "growth_start": 0.057066200142386725,
+      "average_growth": 0.04103310007119337,
+      "growth_terminal": 0.025,
+      "margin_start": 0.02899857881066165,
+      "margin_terminal": 0.02899857881066165,
+      "cash_conversion": 0.8860888197595858,
+      "discount_rate": 0.10783871815483699,
+      "exit_multiple": 4.890383407959183,
+      "exit_basis": "ps",
+      "per_share": 103.8579172585399
+    },
+    "bull": {
+      "growth_start": 0.0713327501779834,
+      "average_growth": 0.0481663750889917,
+      "growth_terminal": 0.025,
+      "margin_start": 0.02899857881066165,
+      "margin_terminal": 0.09346681940217566,
+      "cash_conversion": 0.8860888197595858,
+      "discount_rate": 0.097838718154837,
+      "exit_multiple": 8.328131329278774,
+      "exit_basis": "ps",
+      "per_share": 199.70270345733513
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.29478640950305113,
+    "average_growth": -0.13489320475152558,
+    "converged": true
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "科大讯飞",
+  "ts_code": "002230.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "科大讯飞",
+    "industry": "软件服务",
+    "comp_type": "1",
+    "price": 36.74,
+    "total_mv": 88252411852.0,
+    "shares": 2402079800.0,
+    "revenue_ttm": 28303192277.039993,
+    "net_income_ttm": 927953499.09,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.15786484745962626,
+    "margin_ttm": 0.03278617796914629,
+    "margin_mean_5y": 0.03892977794865981,
+    "fcf_conversion": -1.2939823517887028
+  },
+  "discount": {
+    "beta": 1.1682344240379332,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.08225289332208632
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.09471890847577576,
+      "average_growth": 0.05985945423788789,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03278617796914629,
+      "margin_terminal": -0.22255562412011978,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09725289332208632,
+      "exit_multiple": 3.289493743421703,
+      "exit_basis": "ps",
+      "per_share": 26.31927574934243
+    },
+    "base": {
+      "growth_start": 0.15786484745962626,
+      "average_growth": 0.09143242372981311,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03278617796914629,
+      "margin_terminal": 0.03278617796914629,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08225289332208632,
+      "exit_multiple": 6.233319966679284,
+      "exit_basis": "ps",
+      "per_share": 78.98359891427377
+    },
+    "bull": {
+      "growth_start": 0.19733105932453282,
+      "average_growth": 0.11116552966226642,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03278617796914629,
+      "margin_terminal": 0.05792727813164279,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.07225289332208633,
+      "exit_multiple": 10.762866454964309,
+      "exit_basis": "ps",
+      "per_share": 163.7353900332709
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.0700004853200987,
+    "average_growth": -0.02250024266004935,
+    "converged": true
+  }
+}

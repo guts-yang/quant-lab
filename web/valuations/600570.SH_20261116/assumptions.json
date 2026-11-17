@@ -1,0 +1,71 @@
+{
+  "name": "恒生电子",
+  "ts_code": "600570.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "恒生电子",
+    "industry": "软件服务",
+    "comp_type": "1",
+    "price": 20.4,
+    "total_mv": 38691382560.0,
+    "shares": 1896636400.0000002,
+    "revenue_ttm": 5585384062.65,
+    "net_income_ttm": 1351750995.6499999,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.06744935813122055,
+    "margin_ttm": 0.24201576480466022,
+    "margin_mean_5y": 0.19761596186641817,
+    "fcf_conversion": 0.4334490243291806
+  },
+  "discount": {
+    "beta": 1.389408654476064,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.09441747599618353
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.04046961487873233,
+      "average_growth": 0.032734807439366166,
+      "growth_terminal": 0.025,
+      "margin_start": 0.24201576480466022,
+      "margin_terminal": -0.22255562412011978,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10941747599618352,
+      "exit_multiple": 3.289493743421703,
+      "exit_basis": "ps",
+      "per_share": 5.833335421027352
+    },
+    "base": {
+      "growth_start": 0.06744935813122055,
+      "average_growth": 0.04622467906561028,
+      "growth_terminal": 0.025,
+      "margin_start": 0.24201576480466022,
+      "margin_terminal": 0.19761596186641817,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09441747599618353,
+      "exit_multiple": 6.233319966679284,
+      "exit_basis": "ps",
+      "per_share": 15.319722740016426
+    },
+    "bull": {
+      "growth_start": 0.08431169766402569,
+      "average_growth": 0.05465584883201284,
+      "growth_terminal": 0.025,
+      "margin_start": 0.24201576480466022,
+      "margin_terminal": 0.05792727813164279,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08441747599618353,
+      "exit_multiple": 10.762866454964309,
+      "exit_basis": "ps",
+      "per_share": 27.39759391098187
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.15950626375245813,
+    "average_growth": 0.09225313187622906,
+    "converged": true
+  }
+}
