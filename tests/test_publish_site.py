@@ -226,6 +226,60 @@ def _assert_chart_frames(valuation) -> None:
     assert len(heat) == 1
 
 
+def test_calculation_process_shows_published_value_and_tolerates_gaps(tmp_path):
+    module = _chart_module()
+    path = tmp_path / "valuation_002594_SZ"
+    _valuation(path)
+    assumptions = json.loads((path / "assumptions.json").read_text(encoding="utf-8"))
+    forecast = pd.read_parquet(path / "forecast.parquet")
+    scenarios = pd.read_parquet(path / "scenarios.parquet")
+
+    text = module.calculation_process(assumptions, forecast, scenarios)
+    assert "比亚迪" in text
+    assert "79.24" in text
+    assert f"{79.24 / 90.0 - 1.0:+.1%}" in text
+
+    sparse = module.calculation_process(
+        {"name": "宇树科技", "template": "fcfe", "fundamentals": {"price": 100.0, "fcf_ttm": None, "shares": None}},
+        pd.DataFrame(),
+        pd.DataFrame(),
+    )
+    assert "宇树科技" in sparse
+    assert "缺失" in sparse
+
+    bank = module.calculation_process(
+        {
+            "name": "招商银行",
+            "template": "net_income",
+            "fundamentals": {"price": 43.01, "shares": 2.5e10, "fcf_ttm": None, "fcf_conversion": 2.7},
+            "discount": {"beta": 0.5, "risk_free": 0.018, "equity_risk_premium": 0.055, "cost_of_equity": 0.06},
+            "scenarios": {"base": {"cash_conversion": 1.0, "discount_rate": 0.06, "exit_multiple": 6.3, "exit_basis": "pe", "per_share": 66.28}},
+        },
+        pd.DataFrame(
+            {
+                "scenario": ["base"],
+                "year": [1],
+                "growth": [0.03],
+                "revenue": [1.03e11],
+                "margin": [0.4],
+                "net_income": [4.12e10],
+                "fcfe": [4.12e10],
+            }
+        ),
+        pd.DataFrame({"scenario": ["base"], "per_share": [66.28], "exit_basis": ["pe"], "exit_multiple": [6.3]}),
+    )
+    assert "招商银行" in bank
+    assert "转换率取 1" in bank
+    assert "市盈率" in bank
+    assert f"{66.28 / 43.01 - 1.0:+.1%}" in bank
+
+    module.calculation_process(
+        {"fundamentals": None, "discount": None, "scenarios": None, "implied_growth": "x"},
+        pd.DataFrame({"scenario": ["base"], "year": [None]}),
+        pd.DataFrame({"scenario": [None]}),
+    )
+
+
 def test_valuation_ranking_sorts_by_base_upside_descending():
     module = _chart_module()
 

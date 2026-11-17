@@ -16,6 +16,7 @@ if str(_HERE) not in sys.path:
 
 from charts import (
     HISTORY_WINDOWS,
+    calculation_process,
     fcfe_frame,
     gap_label,
     growth_anchor_frame,
@@ -372,6 +373,8 @@ def _render_valuations() -> None:
     company = _valuation_company(run)
     st.header(f"**{company or run.code}**")
     _render_valuation_charts(run)
+    st.subheader("计算过程")
+    st.markdown(calculation_process(run.assumptions, run.forecast, run.scenarios))
     if not run.scenarios.empty:
         st.subheader("三情景")
         st.dataframe(run.scenarios, width="stretch", hide_index=True)
