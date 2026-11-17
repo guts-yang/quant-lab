@@ -225,16 +225,51 @@ def price_value_lines(window: pd.DataFrame | None) -> pd.DataFrame:
     return lines[columns]
 
 
-def valuation_ranking(runs) -> pd.DataFrame:
-    """把所有估值按基准情景相对现价的上行空间排序，最被低估的排最前。
+ALL_INDUSTRIES = "全部"
+UNCLASSIFIED_INDUSTRY = "未分类"
+_RANKING_COLUMNS = ["排名", "公司", "行业", "代码", "截面日", "现价", "熊市", "基准", "牛市", "估值机会"]
+
+
+def valuation_industry(source: object) -> str:
+    """行业取 assumptions.fundamentals.industry，否则取 assumptions 顶层 industry。都没有就是未分类。"""
+    assumptions = source if isinstance(source, dict) else getattr(source, "assumptions", None)
+    if not isinstance(assumptions, dict):
+        return UNCLASSIFIED_INDUSTRY
+    fundamentals = assumptions.get("fundamentals")
+    if isinstance(fundamentals, dict):
+        found = _industry_text(fundamentals.get("industry"))
+        if found:
+            return found
+    return _industry_text(assumptions.get("industry")) or UNCLASSIFIED_INDUSTRY
+
+
+def industry_filter_options(industries) -> list[str]:
+    """「全部」加上出现过的行业。中文名按拼音排序，「未分类」放最后。"""
+    seen: set[str] = set()
+    for item in industries or []:
+        seen.add(_industry_text(item) or UNCLASSIFIED_INDUSTRY)
+    classified = sorted((name for name in seen if name != UNCLASSIFIED_INDUSTRY), key=_chinese_name_key)
+    options = [ALL_INDUSTRIES, *classified]
+    if UNCLASSIFIED_INDUSTRY in seen:
+        options.append(UNCLASSIFIED_INDUSTRY)
+    return options
+
+
+def valuation_ranking(runs, industry: str | None = None) -> pd.DataFrame:
+    """把估值按基准情景相对现价的上行空间排序，最被低估的排最前。
 
     估值机会 = 基准每股价值 / 现价 − 1。现价或基准缺失的股票不进排名。
+    industry 为 None 或「全部」时保留全部；指定行业时只留该行业，排名从 1 重编。
     """
-    columns = ["公司", "代码", "截面日", "现价", "熊市", "基准", "牛市", "估值机会"]
+    columns = ["公司", "行业", "代码", "截面日", "现价", "熊市", "基准", "牛市", "估值机会"]
     rows: list[dict[str, object]] = []
     for run in runs or []:
         assumptions = getattr(run, "assumptions", None) or {}
+        if not isinstance(assumptions, dict):
+            assumptions = {}
         fundamentals = assumptions.get("fundamentals") or {}
+        if not isinstance(fundamentals, dict):
+            fundamentals = {}
         price = _number(fundamentals.get("price"))
         name = str(assumptions.get("name") or "").strip()
         if name in {"", "None", "nan", "<NA>"}:
@@ -253,6 +288,7 @@ def valuation_ranking(runs) -> pd.DataFrame:
         rows.append(
             {
                 "公司": name,
+                "行业": valuation_industry(assumptions),
                 "代码": str(getattr(run, "code", "") or ""),
                 "截面日": str(getattr(run, "asof", "") or ""),
                 "现价": price,
@@ -263,11 +299,33 @@ def valuation_ranking(runs) -> pd.DataFrame:
             }
         )
     frame = pd.DataFrame(rows, columns=columns)
+    chosen = _industry_text(industry)
+    if chosen and chosen != ALL_INDUSTRIES:
+        frame = frame.loc[frame["行业"].astype(str).eq(chosen)] if not frame.empty else frame
     if frame.empty:
-        return frame
+        return pd.DataFrame(columns=_RANKING_COLUMNS)
     frame = frame.sort_values("估值机会", ascending=False, kind="stable").reset_index(drop=True)
     frame.insert(0, "排名", range(1, len(frame) + 1))
     return frame
+
+
+def _industry_text(value: object) -> str:
+    if value is None or isinstance(value, (dict, list, tuple, set)):
+        return ""
+    if isinstance(value, float) and pd.isna(value):
+        return ""
+    text = str(value).strip()
+    if text in {"", "None", "nan", "NaN", "<NA>", "NaT"}:
+        return ""
+    return text
+
+
+def _chinese_name_key(text: str) -> bytes:
+    """GBK 一级汉字按拼音排列，用来给行业名一个稳定的中文顺序。"""
+    try:
+        return text.encode("gbk")
+    except UnicodeEncodeError:
+        return text.encode("utf-8")
 
 
 def _base_forecast(forecast: pd.DataFrame | None) -> pd.DataFrame:

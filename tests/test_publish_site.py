@@ -304,8 +304,9 @@ def test_valuation_ranking_sorts_by_base_upside_descending():
         _Run("丙", "000003.SZ", "20261116", 10.0, 15.0, bear=5.0, bull=20.0),
     ]
     ranking = module.valuation_ranking(runs)
-    assert list(ranking.columns) == ["排名", "公司", "代码", "截面日", "现价", "熊市", "基准", "牛市", "估值机会"]
+    assert list(ranking.columns) == ["排名", "公司", "行业", "代码", "截面日", "现价", "熊市", "基准", "牛市", "估值机会"]
     assert list(ranking["公司"]) == ["丙", "甲", "乙"]
+    assert list(ranking["行业"]) == ["未分类", "未分类", "未分类"]
     assert list(ranking["排名"]) == [1, 2, 3]
     assert ranking.loc[ranking["公司"].eq("丙"), "估值机会"].iloc[0] == pytest.approx(0.5)
     assert ranking.loc[ranking["公司"].eq("乙"), "估值机会"].iloc[0] == pytest.approx(-0.1)
@@ -317,6 +318,65 @@ def test_valuation_ranking_sorts_by_base_upside_descending():
     ]
     ranking_gap = module.valuation_ranking(runs_with_gap)
     assert list(ranking_gap["公司"]) == ["甲"]
+
+
+def test_valuation_ranking_filters_by_industry_and_renumbers():
+    module = _chart_module()
+    _OMIT = object()
+
+    class _Run:
+        def __init__(self, name, code, price, base, industry=None, top_industry=None, fundamentals=_OMIT):
+            self.code = code
+            self.asof = "20261116"
+            if fundamentals is _OMIT:
+                fundamentals = {"price": price}
+                if industry is not None:
+                    fundamentals["industry"] = industry
+            assumptions = {"name": name, "fundamentals": fundamentals}
+            if top_industry is not None:
+                assumptions["industry"] = top_industry
+            self.assumptions = assumptions
+            self.scenarios = pd.DataFrame({"scenario": ["bear", "base", "bull"], "per_share": [base - 1, base, base + 1]})
+
+    runs = [
+        _Run("甲", "000001.SZ", 10.0, 12.0, industry="半导体"),
+        _Run("乙", "000002.SZ", 10.0, 14.0, industry="白酒"),
+        _Run("丙", "000003.SZ", 10.0, 15.0, industry="半导体"),
+        _Run("丁", "000004.SZ", 20.0, 30.0),
+        _Run("戊", "000005.SZ", 10.0, 11.0, fundamentals={"price": 10.0, "industry": None}, top_industry="银行"),
+        _Run("己", "000006.SZ", 10.0, 8.0, fundamentals={"price": 10.0}),
+    ]
+    ranking = module.valuation_ranking(runs)
+    assert list(ranking["公司"]) == ["丙", "丁", "乙", "甲", "戊", "己"]
+    assert list(ranking["行业"]) == ["半导体", "未分类", "白酒", "半导体", "银行", "未分类"]
+    assert ranking.loc[ranking["公司"].eq("丙"), "估值机会"].iloc[0] == pytest.approx(0.5)
+    assert list(ranking["估值机会"]) == sorted(ranking["估值机会"], reverse=True)
+
+    semiconductor = module.valuation_ranking(runs, industry="半导体")
+    assert list(semiconductor["公司"]) == ["丙", "甲"]
+    assert list(semiconductor["行业"]) == ["半导体", "半导体"]
+    assert list(semiconductor["排名"]) == [1, 2]
+    assert list(semiconductor["估值机会"]) == sorted(semiconductor["估值机会"], reverse=True)
+    assert semiconductor["估值机会"].iloc[0] == pytest.approx(0.5)
+    assert semiconductor["估值机会"].iloc[1] == pytest.approx(0.2)
+
+    unclassified = module.valuation_ranking(runs, industry="未分类")
+    assert list(unclassified["公司"]) == ["丁", "己"]
+    assert list(unclassified["排名"]) == [1, 2]
+    assert list(unclassified["估值机会"]) == sorted(unclassified["估值机会"], reverse=True)
+
+    bank = module.valuation_ranking(runs, industry="银行")
+    assert list(bank["公司"]) == ["戊"]
+    assert list(bank["排名"]) == [1]
+
+    options = module.industry_filter_options(module.valuation_industry(item) for item in runs)
+    assert options[0] == "全部"
+    assert options[-1] == "未分类"
+    assert options == ["全部", "白酒", "半导体", "银行", "未分类"]
+    assert module.valuation_industry(_Run("空行业", "000007.SZ", 10.0, 10.0, industry="  ")) == "未分类"
+    missing = _Run("无基本面", "000008.SZ", 10.0, 10.0, fundamentals=None)
+    assert module.valuation_industry(missing) == "未分类"
+    assert module.valuation_ranking([missing]).empty
 
 
 def _chan(path: Path) -> None:
