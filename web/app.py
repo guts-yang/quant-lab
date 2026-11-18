@@ -14,9 +14,11 @@ _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
+from chains import available_chains, available_segments, matches
 from charts import (
     HISTORY_WINDOWS,
     calculation_process,
+    chain_valuation_ranking,
     fcfe_frame,
     gap_label,
     growth_anchor_frame,
@@ -31,9 +33,6 @@ from charts import (
     security_label,
     sensitivity_frame,
     value_frame,
-    industry_filter_options,
-    valuation_industry,
-    valuation_ranking,
 )
 from labels import FACTOR_LABELS, MISSING, factor_rows, format_score, holdings_view, pool_view, reason_label, rejected_view
 from load import (
@@ -360,10 +359,27 @@ def _render_valuations() -> None:
             "再运行 python -m strategy.publish_site。"
         )
         return
-    industries = industry_filter_options(valuation_industry(item) for item in runs)
+    chains = available_chains(item.code for item in runs)
     st.subheader("估值机会排名")
-    selected_industry = st.selectbox("行业", options=industries, index=0)
-    ranking = valuation_ranking(runs, industry=selected_industry)
+    selected_chain = st.segmented_control(
+        "大类",
+        chains,
+        default=chains[0],
+        required=True,
+        key="valuation_chain",
+    )
+    segments = available_segments((item.code for item in runs), selected_chain)
+    selected_segment = None
+    if segments:
+        selected_segment = st.pills(
+            "环节",
+            segments,
+            default=None,
+            key=f"valuation_segment_{selected_chain}",
+            wrap=True,
+        )
+        st.caption("未点环节时，排名和股票列表是这个大类里的全部已发布股票。再点一次已选环节，可以回到全部。")
+    ranking = chain_valuation_ranking(runs, chain=selected_chain, segment=selected_segment)
     if not ranking.empty:
         display = ranking.copy()
         for col in ("现价", "熊市", "基准", "牛市"):
@@ -371,16 +387,16 @@ def _render_valuations() -> None:
         display["估值机会"] = display["估值机会"].map(lambda v: f"{v:+.1%}" if pd.notna(v) else "")
         st.dataframe(display, width="stretch", hide_index=True)
         st.caption("估值机会 = 基准每股价值 ÷ 现价 − 1，按基准情景相对现价的上行空间排序，最被低估的排最前。")
-    visible = [item for item in runs if selected_industry == "全部" or valuation_industry(item) == selected_industry]
+    visible = [item for item in runs if matches(item.code, selected_chain, selected_segment)]
     if not visible:
-        st.info("这个行业没有估值。")
+        st.info("这个范围没有估值。")
         return
     labels = {item.name: f"{_valuation_title(item)}  {item.asof}" for item in visible}
     selected = st.selectbox(
         "股票",
         options=[item.name for item in visible],
         format_func=lambda key: labels[key],
-        key=f"valuation_stock_{selected_industry}",
+        key=f"valuation_stock_{selected_chain}_{selected_segment or '全部'}",
     )
     run = next(item for item in visible if item.name == selected)
     company = _valuation_company(run)

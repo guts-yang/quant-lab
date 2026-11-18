@@ -2,7 +2,16 @@
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import pandas as pd
+
+_WEB_DIR = Path(__file__).resolve().parent
+if str(_WEB_DIR) not in sys.path:
+    sys.path.insert(0, str(_WEB_DIR))
+
+from chains import matches, segment_label
 
 SCENARIO_ORDER = ("bear", "base", "bull")
 SCENARIO_LABELS = {"bear": "熊市", "base": "基准", "bull": "牛市"}
@@ -227,7 +236,9 @@ def price_value_lines(window: pd.DataFrame | None) -> pd.DataFrame:
 
 ALL_INDUSTRIES = "全部"
 UNCLASSIFIED_INDUSTRY = "未分类"
-_RANKING_COLUMNS = ["排名", "公司", "行业", "代码", "截面日", "现价", "熊市", "基准", "牛市", "估值机会"]
+_OPPORTUNITY_COLUMNS = ["公司", "行业", "代码", "截面日", "现价", "熊市", "基准", "牛市", "估值机会"]
+_RANKING_COLUMNS = ["排名", *_OPPORTUNITY_COLUMNS]
+_CHAIN_RANKING_COLUMNS = ["排名", "公司", "环节", "行业", "代码", "截面日", "现价", "熊市", "基准", "牛市", "估值机会"]
 
 
 def valuation_industry(source: object) -> str:
@@ -260,8 +271,37 @@ def valuation_ranking(runs, industry: str | None = None) -> pd.DataFrame:
 
     估值机会 = 基准每股价值 / 现价 − 1。现价或基准缺失的股票不进排名。
     industry 为 None 或「全部」时保留全部；指定行业时只留该行业，排名从 1 重编。
+    页面主导航不再调用这个行业筛选，测试仍用它。
     """
-    columns = ["公司", "行业", "代码", "截面日", "现价", "熊市", "基准", "牛市", "估值机会"]
+    frame = _opportunity_frame(runs)
+    chosen = _industry_text(industry)
+    if chosen and chosen != ALL_INDUSTRIES:
+        frame = frame.loc[frame["行业"].astype(str).eq(chosen)] if not frame.empty else frame
+    return _ranked(frame, _RANKING_COLUMNS)
+
+
+def chain_valuation_ranking(runs, chain: str | None = None, segment: str | None = None) -> pd.DataFrame:
+    """按产业链筛选后排序。估值机会 = 基准每股价值 / 现价 − 1，从高到低，排名从 1 编号。
+
+    chain 为空时不按大类收窄。segment 为空时保留该大类的全部股票。
+    「环节」列用产业链环节；分销商写成「环节·分销」；其他已估值写成「—」。
+    数据源行业仍留在「行业」列，不参与筛选。
+    """
+    frame = _opportunity_frame(runs)
+    if frame.empty:
+        return pd.DataFrame(columns=_CHAIN_RANKING_COLUMNS)
+    labeled = frame.copy()
+    labeled.insert(1, "环节", [segment_label(code) for code in labeled["代码"]])
+    if chain:
+        keep = [matches(code, chain, segment) for code in labeled["代码"]]
+        labeled = labeled.loc[keep]
+    elif segment:
+        keep = [segment_label(code) == segment or segment_label(code) == f"{segment}·分销" for code in labeled["代码"]]
+        labeled = labeled.loc[keep]
+    return _ranked(labeled, _CHAIN_RANKING_COLUMNS)
+
+
+def _opportunity_frame(runs) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
     for run in runs or []:
         assumptions = getattr(run, "assumptions", None) or {}
@@ -298,15 +338,15 @@ def valuation_ranking(runs, industry: str | None = None) -> pd.DataFrame:
                 "估值机会": base / price - 1.0,
             }
         )
-    frame = pd.DataFrame(rows, columns=columns)
-    chosen = _industry_text(industry)
-    if chosen and chosen != ALL_INDUSTRIES:
-        frame = frame.loc[frame["行业"].astype(str).eq(chosen)] if not frame.empty else frame
+    return pd.DataFrame(rows, columns=_OPPORTUNITY_COLUMNS)
+
+
+def _ranked(frame: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
     if frame.empty:
-        return pd.DataFrame(columns=_RANKING_COLUMNS)
-    frame = frame.sort_values("估值机会", ascending=False, kind="stable").reset_index(drop=True)
-    frame.insert(0, "排名", range(1, len(frame) + 1))
-    return frame
+        return pd.DataFrame(columns=columns)
+    ordered = frame.sort_values("估值机会", ascending=False, kind="stable").reset_index(drop=True)
+    ordered.insert(0, "排名", range(1, len(ordered) + 1))
+    return ordered.loc[:, columns]
 
 
 def _industry_text(value: object) -> str:
