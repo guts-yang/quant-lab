@@ -1,0 +1,71 @@
+{
+  "name": "埃斯顿",
+  "ts_code": "002747.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "埃斯顿",
+    "industry": "机械基件",
+    "comp_type": "1",
+    "price": 27.46,
+    "total_mv": 26590720748.0,
+    "shares": 968343800.0,
+    "revenue_ttm": 4783552536.99,
+    "net_income_ttm": 186728926.1,
+    "ocf_ttm": 415813858.9,
+    "fcf_ttm": 204819717.70999998,
+    "revenue_cagr_5y": 0.14257818076447637,
+    "margin_ttm": 0.03903561728570399,
+    "margin_mean_5y": -0.0167285407831462,
+    "fcf_conversion": 0.06256894251862666
+  },
+  "discount": {
+    "beta": 1.2955643111882817,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.0892560371153555
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.08554690845868582,
+      "average_growth": 0.05527345422934291,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03903561728570399,
+      "margin_terminal": 0.027153726336535594,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.1042560371153555,
+      "exit_multiple": 2.3596300724905452,
+      "exit_basis": "ps",
+      "per_share": 8.964044501253545
+    },
+    "base": {
+      "growth_start": 0.14257818076447637,
+      "average_growth": 0.08378909038223818,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03903561728570399,
+      "margin_terminal": 0.03903561728570399,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.0892560371153555,
+      "exit_multiple": 3.823644174842309,
+      "exit_basis": "ps",
+      "per_share": 18.861380808367674
+    },
+    "bull": {
+      "growth_start": 0.17822272595559546,
+      "average_growth": 0.10161136297779773,
+      "growth_terminal": 0.025,
+      "margin_start": 0.03903561728570399,
+      "margin_terminal": 0.1230962915447836,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.0792560371153555,
+      "exit_multiple": 6.595691095208875,
+      "exit_basis": "ps",
+      "per_share": 39.122930739614866
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.26734516927647844,
+    "average_growth": 0.1461725846382392,
+    "converged": true
+  }
+}

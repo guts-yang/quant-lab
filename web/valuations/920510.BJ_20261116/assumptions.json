@@ -1,0 +1,71 @@
+{
+  "name": "丰光精密",
+  "ts_code": "920510.BJ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "丰光精密",
+    "industry": "机械基件",
+    "comp_type": "1",
+    "price": 17.36,
+    "total_mv": 3194329038.9999995,
+    "shares": 184005128.97465435,
+    "revenue_ttm": 279018021.03999996,
+    "net_income_ttm": 5723395.779999999,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.027147811764763885,
+    "margin_ttm": 0.020512638426245216,
+    "margin_mean_5y": 0.1397192583064777,
+    "fcf_conversion": -0.17022629350568164
+  },
+  "discount": {
+    "beta": 0.9563343392358056,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.0705983886579693
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.01628868705885833,
+      "average_growth": 0.020644343529429166,
+      "growth_terminal": 0.025,
+      "margin_start": 0.020512638426245216,
+      "margin_terminal": 0.027153726336535594,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.0855983886579693,
+      "exit_multiple": 2.3596300724905452,
+      "exit_basis": "ps",
+      "per_share": 2.4231232511500753
+    },
+    "base": {
+      "growth_start": 0.027147811764763885,
+      "average_growth": 0.026073905882381943,
+      "growth_terminal": 0.025,
+      "margin_start": 0.020512638426245216,
+      "margin_terminal": 0.020512638426245216,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.0705983886579693,
+      "exit_multiple": 3.823644174842309,
+      "exit_basis": "ps",
+      "per_share": 4.399005986202987
+    },
+    "bull": {
+      "growth_start": 0.033934764705954856,
+      "average_growth": 0.02946738235297743,
+      "growth_terminal": 0.025,
+      "margin_start": 0.020512638426245216,
+      "margin_terminal": 0.1230962915447836,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.0605983886579693,
+      "exit_multiple": 6.595691095208875,
+      "exit_basis": "ps",
+      "per_share": 8.485784693313276
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.4933232575563993,
+    "average_growth": 0.25916162877819965,
+    "converged": true
+  }
+}

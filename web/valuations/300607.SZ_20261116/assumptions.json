@@ -1,0 +1,71 @@
+{
+  "name": "拓斯达",
+  "ts_code": "300607.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "拓斯达",
+    "industry": "专用机械",
+    "comp_type": "1",
+    "price": 30.18,
+    "total_mv": 14395027032.000002,
+    "shares": 476972400.00000006,
+    "revenue_ttm": 2791530113.4700003,
+    "net_income_ttm": 170761895.04,
+    "ocf_ttm": 630826132.99,
+    "fcf_ttm": 533030951.14,
+    "revenue_cagr_5y": -0.018479556165161948,
+    "margin_ttm": 0.061171432189114056,
+    "margin_mean_5y": 0.007782513504484175,
+    "fcf_conversion": -0.5285430812252807
+  },
+  "discount": {
+    "beta": 0.977006546582942,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.07173536006206181
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": -0.011087733699097168,
+      "average_growth": 0.006956133150451414,
+      "growth_terminal": 0.025,
+      "margin_start": 0.061171432189114056,
+      "margin_terminal": -0.00726235355829022,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08673536006206181,
+      "exit_multiple": 2.3175125996054167,
+      "exit_basis": "ps",
+      "per_share": 8.32158413243669
+    },
+    "base": {
+      "growth_start": -0.018479556165161948,
+      "average_growth": 0.0032602219174190264,
+      "growth_terminal": 0.025,
+      "margin_start": 0.061171432189114056,
+      "margin_terminal": 0.05252578057964537,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.07173536006206181,
+      "exit_multiple": 3.979144201758549,
+      "exit_basis": "ps",
+      "per_share": 15.52957619953179
+    },
+    "bull": {
+      "growth_start": -0.023099445206452435,
+      "average_growth": 0.0009502773967737856,
+      "growth_terminal": 0.025,
+      "margin_start": 0.061171432189114056,
+      "margin_terminal": 0.10155451608634361,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.06173536006206181,
+      "exit_multiple": 6.319043915186478,
+      "exit_basis": "ps",
+      "per_share": 25.76347734814669
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.1865671615690016,
+    "average_growth": 0.1057835807845008,
+    "converged": true
+  }
+}

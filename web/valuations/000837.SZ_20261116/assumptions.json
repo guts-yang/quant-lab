@@ -1,0 +1,71 @@
+{
+  "name": "秦川机床",
+  "ts_code": "000837.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "秦川机床",
+    "industry": "机床制造",
+    "comp_type": "1",
+    "price": 9.53,
+    "total_mv": 9750580427.0,
+    "shares": 1023145900.0000001,
+    "revenue_ttm": 4403382243.849999,
+    "net_income_ttm": 74678415.41,
+    "ocf_ttm": 318627197.46000004,
+    "fcf_ttm": 197270151.34000006,
+    "revenue_cagr_5y": -0.0002545575689942847,
+    "margin_ttm": 0.016959330640509324,
+    "margin_mean_5y": 0.03425727663751825,
+    "fcf_conversion": -0.8111787222639087
+  },
+  "discount": {
+    "beta": 1.3819017272892324,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.09400459500090778
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": -0.00015273454139657082,
+      "average_growth": 0.012423632729301717,
+      "growth_terminal": 0.025,
+      "margin_start": 0.016959330640509324,
+      "margin_terminal": 0.021657669225486637,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10900459500090778,
+      "exit_multiple": 2.529959638232889,
+      "exit_basis": "ps",
+      "per_share": 5.955422750723796
+    },
+    "base": {
+      "growth_start": -0.0002545575689942847,
+      "average_growth": 0.012372721215502858,
+      "growth_terminal": 0.025,
+      "margin_start": 0.016959330640509324,
+      "margin_terminal": 0.016959330640509324,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09400459500090778,
+      "exit_multiple": 4.22531460076166,
+      "exit_basis": "ps",
+      "per_share": 10.750909678780257
+    },
+    "bull": {
+      "growth_start": -0.0003181969612428559,
+      "average_growth": 0.012340901519378573,
+      "growth_terminal": 0.025,
+      "margin_start": 0.016959330640509324,
+      "margin_terminal": 0.1295012801116415,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08400459500090779,
+      "exit_multiple": 8.310694013996486,
+      "exit_basis": "ps",
+      "per_share": 23.029070048882023
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.03466323960840456,
+    "average_growth": -0.004831619804202282,
+    "converged": true
+  }
+}

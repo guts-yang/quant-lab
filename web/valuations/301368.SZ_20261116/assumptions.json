@@ -1,0 +1,71 @@
+{
+  "name": "丰立智能",
+  "ts_code": "301368.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "丰立智能",
+    "industry": "机械基件",
+    "comp_type": "1",
+    "price": 37.5,
+    "total_mv": 5293110000.0,
+    "shares": 141149600.0,
+    "revenue_ttm": 556755915.6999999,
+    "net_income_ttm": -59150980.47,
+    "ocf_ttm": -28630414.4,
+    "fcf_ttm": -209299825.65,
+    "revenue_cagr_5y": -0.030559342827548575,
+    "margin_ttm": -0.10624221279378857,
+    "margin_mean_5y": 0.04948985382036154,
+    "fcf_conversion": -6.1057014487902475
+  },
+  "discount": {
+    "beta": 1.5788810800587871,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.10483845940323329
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": -0.018335605696529145,
+      "average_growth": 0.003332197151735428,
+      "growth_terminal": 0.025,
+      "margin_start": -0.10624221279378857,
+      "margin_terminal": 0.027153726336535594,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11983845940323329,
+      "exit_multiple": 2.3596300724905452,
+      "exit_basis": "ps",
+      "per_share": 3.973559386991322
+    },
+    "base": {
+      "growth_start": -0.030559342827548575,
+      "average_growth": -0.0027796714137742844,
+      "growth_terminal": 0.025,
+      "margin_start": -0.10624221279378857,
+      "margin_terminal": 0.0,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10483845940323329,
+      "exit_multiple": 3.823644174842309,
+      "exit_basis": "ps",
+      "per_share": 6.888228932141715
+    },
+    "bull": {
+      "growth_start": -0.03819917853443572,
+      "average_growth": -0.006599589267217862,
+      "growth_terminal": 0.025,
+      "margin_start": -0.10624221279378857,
+      "margin_terminal": 0.1230962915447836,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.0948384594032333,
+      "exit_multiple": 6.595691095208875,
+      "exit_basis": "ps",
+      "per_share": 13.266930163610121
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.525748371434825,
+    "average_growth": 0.2753741857174125,
+    "converged": true
+  }
+}

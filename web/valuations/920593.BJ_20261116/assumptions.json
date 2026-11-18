@@ -1,0 +1,71 @@
+{
+  "name": "鼎智科技",
+  "ts_code": "920593.BJ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "鼎智科技",
+    "industry": "机械基件",
+    "comp_type": "1",
+    "price": 20.99,
+    "total_mv": 3993260853.0,
+    "shares": 190245871.98666033,
+    "revenue_ttm": 411181475.36,
+    "net_income_ttm": 36820654.41,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.08369915608292766,
+    "margin_ttm": 0.08954842719449499,
+    "margin_mean_5y": 0.23315324347640692,
+    "fcf_conversion": -0.26800507300933163
+  },
+  "discount": {
+    "beta": 1.2576100341658278,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.08716855187912054
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.05021949364975659,
+      "average_growth": 0.0376097468248783,
+      "growth_terminal": 0.025,
+      "margin_start": 0.08954842719449499,
+      "margin_terminal": 0.027153726336535594,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10216855187912054,
+      "exit_multiple": 2.3596300724905452,
+      "exit_basis": "ps",
+      "per_share": 3.6830531220520046
+    },
+    "base": {
+      "growth_start": 0.08369915608292766,
+      "average_growth": 0.054349578041463835,
+      "growth_terminal": 0.025,
+      "margin_start": 0.08954842719449499,
+      "margin_terminal": 0.08954842719449499,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08716855187912054,
+      "exit_multiple": 3.823644174842309,
+      "exit_basis": "ps",
+      "per_share": 7.283271505223134
+    },
+    "bull": {
+      "growth_start": 0.10462394510365958,
+      "average_growth": 0.06481197255182979,
+      "growth_terminal": 0.025,
+      "margin_start": 0.08954842719449499,
+      "margin_terminal": 0.1230962915447836,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.07716855187912054,
+      "exit_multiple": 6.595691095208875,
+      "exit_basis": "ps",
+      "per_share": 13.94335033434288
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.45055370898945324,
+    "average_growth": 0.2377768544947266,
+    "converged": true
+  }
+}

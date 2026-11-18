@@ -1,0 +1,71 @@
+{
+  "name": "雷赛智能",
+  "ts_code": "002979.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "雷赛智能",
+    "industry": "专用机械",
+    "comp_type": "1",
+    "price": 49.91,
+    "total_mv": 15773461571.0,
+    "shares": 316038100.0,
+    "revenue_ttm": 2482030450.27,
+    "net_income_ttm": 364397260.0,
+    "ocf_ttm": 42572276.03000003,
+    "fcf_ttm": -34949478.369999975,
+    "revenue_cagr_5y": 0.14638125894799314,
+    "margin_ttm": 0.14681417786810802,
+    "margin_mean_5y": 0.13527895117235433,
+    "fcf_conversion": 0.41772276652244855
+  },
+  "discount": {
+    "beta": 1.5484890474757438,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.10316689761116592
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.08019323443089607,
+      "average_growth": 0.05259661721544804,
+      "growth_terminal": 0.025,
+      "margin_start": 0.14681417786810802,
+      "margin_terminal": -0.00726235355829022,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11816689761116592,
+      "exit_multiple": 2.3175125996054167,
+      "exit_basis": "ps",
+      "per_share": 13.360625907456296
+    },
+    "base": {
+      "growth_start": 0.13365539071816013,
+      "average_growth": 0.07932769535908006,
+      "growth_terminal": 0.025,
+      "margin_start": 0.14681417786810802,
+      "margin_terminal": 0.13527895117235433,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10316689761116592,
+      "exit_multiple": 3.979144201758549,
+      "exit_basis": "ps",
+      "per_share": 30.495837937011622
+    },
+    "bull": {
+      "growth_start": 0.16706923839770016,
+      "average_growth": 0.09603461919885008,
+      "growth_terminal": 0.025,
+      "margin_start": 0.14681417786810802,
+      "margin_terminal": 0.10155451608634361,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09316689761116592,
+      "exit_multiple": 6.319043915186478,
+      "exit_basis": "ps",
+      "per_share": 53.87527078739258
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.3019965331053751,
+    "average_growth": 0.16349826655268757,
+    "converged": true
+  }
+}

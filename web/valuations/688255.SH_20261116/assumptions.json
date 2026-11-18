@@ -1,0 +1,71 @@
+{
+  "name": "凯尔达",
+  "ts_code": "688255.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "凯尔达",
+    "industry": "机械基件",
+    "comp_type": "1",
+    "price": 21.2,
+    "total_mv": 2329008680.0,
+    "shares": 109858900.0,
+    "revenue_ttm": 738512112.85,
+    "net_income_ttm": 49896414.599999994,
+    "ocf_ttm": 50495775.33999999,
+    "fcf_ttm": 21914358.039999988,
+    "revenue_cagr_5y": 0.018011087789971292,
+    "margin_ttm": 0.06756343427793514,
+    "margin_mean_5y": 0.06829239670528467,
+    "fcf_conversion": -0.557336846621062
+  },
+  "discount": {
+    "beta": 1.4709785795355703,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.09890382187445637
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.010806652673982774,
+      "average_growth": 0.017903326336991387,
+      "growth_terminal": 0.025,
+      "margin_start": 0.06756343427793514,
+      "margin_terminal": 0.027153726336535594,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11390382187445637,
+      "exit_multiple": 2.3596300724905452,
+      "exit_basis": "ps",
+      "per_share": 9.208287166978051
+    },
+    "base": {
+      "growth_start": 0.018011087789971292,
+      "average_growth": 0.021505543894985647,
+      "growth_terminal": 0.025,
+      "margin_start": 0.06756343427793514,
+      "margin_terminal": 0.06756343427793514,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09890382187445637,
+      "exit_multiple": 3.823644174842309,
+      "exit_basis": "ps",
+      "per_share": 16.60954867621809
+    },
+    "bull": {
+      "growth_start": 0.022513859737464115,
+      "average_growth": 0.023756929868732058,
+      "growth_terminal": 0.025,
+      "margin_start": 0.06756343427793514,
+      "margin_terminal": 0.1230962915447836,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08890382187445638,
+      "exit_multiple": 6.595691095208875,
+      "exit_basis": "ps",
+      "per_share": 30.589681069799404
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.09235577636208447,
+    "average_growth": 0.058677888181042234,
+    "converged": true
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "鸣志电器",
+  "ts_code": "603728.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "鸣志电器",
+    "industry": "电气设备",
+    "comp_type": "1",
+    "price": 54.83,
+    "total_mv": 22967327475.0,
+    "shares": 418882500.0,
+    "revenue_ttm": 3199112649.49,
+    "net_income_ttm": 111488692.19999999,
+    "ocf_ttm": 246899747.77999997,
+    "fcf_ttm": -69873126.00999999,
+    "revenue_cagr_5y": 0.04533191992917973,
+    "margin_ttm": 0.034849880080894756,
+    "margin_mean_5y": 0.060199041243775495,
+    "fcf_conversion": -0.6619502318603316
+  },
+  "discount": {
+    "beta": 1.6009454792388431,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.10605200135813637
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.027199151957507838,
+      "average_growth": 0.02609957597875392,
+      "growth_terminal": 0.025,
+      "margin_start": 0.034849880080894756,
+      "margin_terminal": -0.008873677530467403,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12105200135813637,
+      "exit_multiple": 1.102468367285517,
+      "exit_basis": "ps",
+      "per_share": 4.76183201968408
+    },
+    "base": {
+      "growth_start": 0.04533191992917973,
+      "average_growth": 0.03516595996458986,
+      "growth_terminal": 0.025,
+      "margin_start": 0.034849880080894756,
+      "margin_terminal": 0.034849880080894756,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10605200135813637,
+      "exit_multiple": 2.0513091816843403,
+      "exit_basis": "ps",
+      "per_share": 10.583215361832183
+    },
+    "bull": {
+      "growth_start": 0.056664899911474664,
+      "average_growth": 0.04083244995573733,
+      "growth_terminal": 0.025,
+      "margin_start": 0.034849880080894756,
+      "margin_terminal": 0.0685412713662748,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09605200135813638,
+      "exit_multiple": 3.690562906516753,
+      "exit_basis": "ps",
+      "per_share": 20.804883285989483
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.6334759429365342,
+    "average_growth": 0.3292379714682671,
+    "converged": true
+  }
+}

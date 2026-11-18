@@ -1,0 +1,71 @@
+{
+  "name": "长盛轴承",
+  "ts_code": "300718.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "长盛轴承",
+    "industry": "机械基件",
+    "comp_type": "1",
+    "price": 48.8,
+    "total_mv": 14580420080.0,
+    "shares": 298779100.0,
+    "revenue_ttm": 1479944754.4499998,
+    "net_income_ttm": 261175045.94,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.1411094821658334,
+    "margin_ttm": 0.1764762131523362,
+    "margin_mean_5y": 0.1763564441985766,
+    "fcf_conversion": 0.7500787937880184
+  },
+  "discount": {
+    "beta": 1.319336827837772,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.09056352553107747
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.08466568929950004,
+      "average_growth": 0.05483284464975002,
+      "growth_terminal": 0.025,
+      "margin_start": 0.1764762131523362,
+      "margin_terminal": 0.027153726336535594,
+      "cash_conversion": 0.7500787937880184,
+      "discount_rate": 0.10556352553107747,
+      "exit_multiple": 2.3596300724905452,
+      "exit_basis": "ps",
+      "per_share": 10.549706043672433
+    },
+    "base": {
+      "growth_start": 0.1411094821658334,
+      "average_growth": 0.0830547410829167,
+      "growth_terminal": 0.025,
+      "margin_start": 0.1764762131523362,
+      "margin_terminal": 0.1763564441985766,
+      "cash_conversion": 0.7500787937880184,
+      "discount_rate": 0.09056352553107747,
+      "exit_multiple": 3.823644174842309,
+      "exit_basis": "ps",
+      "per_share": 22.75127985196019
+    },
+    "bull": {
+      "growth_start": 0.17638685270729176,
+      "average_growth": 0.10069342635364588,
+      "growth_terminal": 0.025,
+      "margin_start": 0.1764762131523362,
+      "margin_terminal": 0.1230962915447836,
+      "cash_conversion": 0.7500787937880184,
+      "discount_rate": 0.08056352553107747,
+      "exit_multiple": 6.595691095208875,
+      "exit_basis": "ps",
+      "per_share": 41.36318872238096
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.41544878136288155,
+    "average_growth": 0.22022439068144078,
+    "converged": true
+  }
+}

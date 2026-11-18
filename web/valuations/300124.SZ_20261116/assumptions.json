@@ -1,0 +1,71 @@
+{
+  "name": "汇川技术",
+  "ts_code": "300124.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "汇川技术",
+    "industry": "电器仪表",
+    "comp_type": "1",
+    "price": 52.96,
+    "total_mv": 143578153389.0,
+    "shares": 2711067851.0007553,
+    "revenue_ttm": 51398466001.67999,
+    "net_income_ttm": 5194363383.060001,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.3140734369165963,
+    "margin_ttm": 0.10106066945441952,
+    "margin_mean_5y": 0.14311433985872665,
+    "fcf_conversion": 0.37433974350584287
+  },
+  "discount": {
+    "beta": 1.0992266598898914,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.07845746629394403
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.0806889103397591,
+      "average_growth": 0.05284445516987955,
+      "growth_terminal": 0.025,
+      "margin_start": 0.10106066945441952,
+      "margin_terminal": -0.010657549736859024,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09345746629394402,
+      "exit_multiple": 3.2270870707587616,
+      "exit_basis": "ps",
+      "per_share": 49.254048656527154
+    },
+    "base": {
+      "growth_start": 0.13448151723293184,
+      "average_growth": 0.07974075861646591,
+      "growth_terminal": 0.025,
+      "margin_start": 0.10106066945441952,
+      "margin_terminal": 0.10106066945441952,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.07845746629394403,
+      "exit_multiple": 5.070982630086268,
+      "exit_basis": "ps",
+      "per_share": 103.75288249717413
+    },
+    "bull": {
+      "growth_start": 0.1681018965411648,
+      "average_growth": 0.0965509482705824,
+      "growth_terminal": 0.025,
+      "margin_start": 0.10106066945441952,
+      "margin_terminal": 0.1653868211113262,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.06845746629394403,
+      "exit_multiple": 9.321309415309631,
+      "exit_basis": "ps",
+      "per_share": 221.60693732570172
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.06726880605249655,
+    "average_growth": -0.021134403026248274,
+    "converged": true
+  }
+}

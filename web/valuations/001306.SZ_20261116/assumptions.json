@@ -1,0 +1,71 @@
+{
+  "name": "夏厦精密",
+  "ts_code": "001306.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "夏厦精密",
+    "industry": "机械基件",
+    "comp_type": "1",
+    "price": 59.1,
+    "total_mv": 3716730562.0,
+    "shares": 62888841.9966159,
+    "revenue_ttm": 847372850.4899999,
+    "net_income_ttm": -114090210.03999999,
+    "ocf_ttm": -14702666.480000004,
+    "fcf_ttm": -280291878.09000003,
+    "revenue_cagr_5y": 0.1421374803396056,
+    "margin_ttm": -0.1346399167427024,
+    "margin_mean_5y": 0.08261078192947416,
+    "fcf_conversion": -2.520516112288609
+  },
+  "discount": {
+    "beta": 1.1742037134657608,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.08258120424061685
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.08528248820376336,
+      "average_growth": 0.05514124410188168,
+      "growth_terminal": 0.025,
+      "margin_start": -0.1346399167427024,
+      "margin_terminal": 0.027153726336535594,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.09758120424061685,
+      "exit_multiple": 2.3596300724905452,
+      "exit_basis": "ps",
+      "per_share": 22.15392474473588
+    },
+    "base": {
+      "growth_start": 0.1421374803396056,
+      "average_growth": 0.0835687401698028,
+      "growth_terminal": 0.025,
+      "margin_start": -0.1346399167427024,
+      "margin_terminal": 0.0,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.08258120424061685,
+      "exit_multiple": 3.823644174842309,
+      "exit_basis": "ps",
+      "per_share": 48.65281092781796
+    },
+    "bull": {
+      "growth_start": 0.177671850424507,
+      "average_growth": 0.10133592521225351,
+      "growth_terminal": 0.025,
+      "margin_start": -0.1346399167427024,
+      "margin_terminal": 0.1230962915447836,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.07258120424061686,
+      "exit_multiple": 6.595691095208875,
+      "exit_basis": "ps",
+      "per_share": 106.99463183256816
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.20353462640075842,
+    "average_growth": 0.11426731320037921,
+    "converged": true
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "南方精工",
+  "ts_code": "002553.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "南方精工",
+    "industry": "汽车配件",
+    "comp_type": "1",
+    "price": 15.88,
+    "total_mv": 5612144448.000001,
+    "shares": 353409600.00000006,
+    "revenue_ttm": 885760509.8299999,
+    "net_income_ttm": -56017133.860000014,
+    "ocf_ttm": 143959022.19,
+    "fcf_ttm": 25629799.150000006,
+    "revenue_cagr_5y": 0.12884230572091915,
+    "margin_ttm": -0.06324185063381425,
+    "margin_mean_5y": 0.1837644489261131,
+    "fcf_conversion": 0.9677950453123019
+  },
+  "discount": {
+    "beta": 0.8415203462606063,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.06428361904433334
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.04618782397195409,
+      "average_growth": 0.03559391198597704,
+      "growth_terminal": 0.025,
+      "margin_start": -0.06324185063381425,
+      "margin_terminal": 0.008565065639304337,
+      "cash_conversion": 0.9677950453123019,
+      "discount_rate": 0.07928361904433334,
+      "exit_multiple": 1.0993787803134158,
+      "exit_basis": "ps",
+      "per_share": 1.7120680091038072
+    },
+    "base": {
+      "growth_start": 0.07697970661992348,
+      "average_growth": 0.050989853309961745,
+      "growth_terminal": 0.025,
+      "margin_start": -0.06324185063381425,
+      "margin_terminal": 0.0,
+      "cash_conversion": 0.9677950453123019,
+      "discount_rate": 0.06428361904433334,
+      "exit_multiple": 2.0362323181804722,
+      "exit_basis": "ps",
+      "per_share": 4.206824242257021
+    },
+    "bull": {
+      "growth_start": 0.09622463327490435,
+      "average_growth": 0.06061231663745218,
+      "growth_terminal": 0.025,
+      "margin_start": -0.06324185063381425,
+      "margin_terminal": 0.09666126899552072,
+      "cash_conversion": 0.9677950453123019,
+      "discount_rate": 0.05428361904433334,
+      "exit_multiple": 3.3096499048543464,
+      "exit_basis": "ps",
+      "per_share": 9.146395898038381
+    }
+  },
+  "implied_growth": {
+    "growth_start": 0.5227445220047175,
+    "average_growth": 0.2738722610023588,
+    "converged": true
+  }
+}

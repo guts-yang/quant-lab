@@ -1,0 +1,71 @@
+{
+  "name": "斯菱智驱",
+  "ts_code": "301550.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "斯菱智驱",
+    "industry": "汽车配件",
+    "comp_type": "1",
+    "price": 109.92,
+    "total_mv": 36861529104.0,
+    "shares": 335348700.0,
+    "revenue_ttm": 853030350.98,
+    "net_income_ttm": 147439838.06,
+    "ocf_ttm": 199183064.43000004,
+    "fcf_ttm": -133294444.67999998,
+    "revenue_cagr_5y": 0.016804786509942105,
+    "margin_ttm": 0.17284242921792223,
+    "margin_mean_5y": 0.2081568705792781,
+    "fcf_conversion": 0.49506728428687796
+  },
+  "discount": {
+    "beta": 1.7629948968836167,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.11496471932859892
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.010082871905965263,
+      "average_growth": 0.01754143595298263,
+      "growth_terminal": 0.025,
+      "margin_start": 0.17284242921792223,
+      "margin_terminal": 0.008565065639304337,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.12996471932859893,
+      "exit_multiple": 1.0993787803134158,
+      "exit_basis": "ps",
+      "per_share": 1.8677517168731474
+    },
+    "base": {
+      "growth_start": 0.016804786509942105,
+      "average_growth": 0.020902393254971053,
+      "growth_terminal": 0.025,
+      "margin_start": 0.17284242921792223,
+      "margin_terminal": 0.17284242921792223,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11496471932859892,
+      "exit_multiple": 2.0362323181804722,
+      "exit_basis": "ps",
+      "per_share": 3.8871827345199423
+    },
+    "bull": {
+      "growth_start": 0.02100598313742763,
+      "average_growth": 0.023002991568713816,
+      "growth_terminal": 0.025,
+      "margin_start": 0.17284242921792223,
+      "margin_terminal": 0.09666126899552072,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10496471932859892,
+      "exit_multiple": 3.3096499048543464,
+      "exit_basis": "ps",
+      "per_share": 5.784056183286571
+    }
+  },
+  "implied_growth": {
+    "growth_start": 1.4800623735808136,
+    "average_growth": 0.7525311867904068,
+    "converged": true
+  }
+}

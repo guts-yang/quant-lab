@@ -1,0 +1,71 @@
+{
+  "name": "绿的谐波",
+  "ts_code": "688017.SH",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "绿的谐波",
+    "industry": "机械基件",
+    "comp_type": "1",
+    "price": 265.26,
+    "total_mv": 48630142326.0,
+    "shares": 183330100.0,
+    "revenue_ttm": 754942124.29,
+    "net_income_ttm": 152780860.97000003,
+    "ocf_ttm": null,
+    "fcf_ttm": null,
+    "revenue_cagr_5y": 0.21391216551155234,
+    "margin_ttm": 0.20237426956892327,
+    "margin_mean_5y": 0.27647264315394726,
+    "fcf_conversion": 0.4201982612568907
+  },
+  "discount": {
+    "beta": 1.8293833989454407,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.11861608694199924
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": 0.0865459954812069,
+      "average_growth": 0.05577299774060345,
+      "growth_terminal": 0.025,
+      "margin_start": 0.20237426956892327,
+      "margin_terminal": 0.027153726336535594,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.13361608694199922,
+      "exit_multiple": 2.3596300724905452,
+      "exit_basis": "ps",
+      "per_share": 7.14802290275199
+    },
+    "base": {
+      "growth_start": 0.1442433258020115,
+      "average_growth": 0.08462166290100574,
+      "growth_terminal": 0.025,
+      "margin_start": 0.20237426956892327,
+      "margin_terminal": 0.20237426956892327,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.11861608694199924,
+      "exit_multiple": 3.823644174842309,
+      "exit_basis": "ps",
+      "per_share": 15.40386731138897
+    },
+    "bull": {
+      "growth_start": 0.18030415725251436,
+      "average_growth": 0.10265207862625716,
+      "growth_terminal": 0.025,
+      "margin_start": 0.20237426956892327,
+      "margin_terminal": 0.1230962915447836,
+      "cash_conversion": 0.5,
+      "discount_rate": 0.10861608694199924,
+      "exit_multiple": 6.595691095208875,
+      "exit_basis": "ps",
+      "per_share": 28.39159399064755
+    }
+  },
+  "implied_growth": {
+    "growth_start": 1.3966647247765183,
+    "average_growth": 0.7108323623882591,
+    "converged": true
+  }
+}

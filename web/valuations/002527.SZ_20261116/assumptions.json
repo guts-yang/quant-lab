@@ -1,0 +1,71 @@
+{
+  "name": "新时达",
+  "ts_code": "002527.SZ",
+  "asof": "20261116",
+  "template": "fcfe",
+  "fundamentals": {
+    "name": "新时达",
+    "industry": "电器仪表",
+    "comp_type": "1",
+    "price": 10.15,
+    "total_mv": 6730072195.0,
+    "shares": 663061300.0,
+    "revenue_ttm": 3748045935.16,
+    "net_income_ttm": -39944985.96999999,
+    "ocf_ttm": 31697817.82,
+    "fcf_ttm": -26473971.980000004,
+    "revenue_cagr_5y": -0.02231332241075712,
+    "margin_ttm": -0.010657549736859024,
+    "margin_mean_5y": -0.08890445522334417,
+    "fcf_conversion": 7.35315918652311
+  },
+  "discount": {
+    "beta": 1.678497693511754,
+    "risk_free": 0.018,
+    "equity_risk_premium": 0.055,
+    "cost_of_equity": 0.11031737314314646
+  },
+  "scenarios": {
+    "bear": {
+      "growth_start": -0.013387993446454272,
+      "average_growth": 0.005806003276772865,
+      "growth_terminal": 0.025,
+      "margin_start": -0.010657549736859024,
+      "margin_terminal": -0.010657549736859024,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.12531737314314645,
+      "exit_multiple": 3.2270870707587616,
+      "exit_basis": "ps",
+      "per_share": 7.985497245055744
+    },
+    "base": {
+      "growth_start": -0.02231332241075712,
+      "average_growth": 0.0013433387946214432,
+      "growth_terminal": 0.025,
+      "margin_start": -0.010657549736859024,
+      "margin_terminal": 0.0,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.11031737314314646,
+      "exit_multiple": 5.070982630086268,
+      "exit_basis": "ps",
+      "per_share": 13.736262480715164
+    },
+    "bull": {
+      "growth_start": -0.0278916530134464,
+      "average_growth": -0.001445826506723197,
+      "growth_terminal": 0.025,
+      "margin_start": -0.010657549736859024,
+      "margin_terminal": 0.1653868211113262,
+      "cash_conversion": 1.2,
+      "discount_rate": 0.10031737314314647,
+      "exit_multiple": 9.321309415309631,
+      "exit_basis": "ps",
+      "per_share": 29.22968089094335
+    }
+  },
+  "implied_growth": {
+    "growth_start": -0.1048667837038866,
+    "average_growth": -0.0399333918519433,
+    "converged": true
+  }
+}
