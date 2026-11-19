@@ -34,9 +34,15 @@
       "margin_terminal": -0.026630768848564648,
       "cash_conversion": 1.2,
       "discount_rate": 0.09237333307587495,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 0.4261895710039486,
       "exit_basis": "ps",
-      "per_share": 28.50609937436039
+      "per_share": 5.3553682284251,
+      "terminal_weight": 0.0,
+      "terminal_warning": "稳定期净利率非正，永续终值按 0 计"
     },
     "base": {
       "growth_start": 0.08463117752613547,
@@ -46,26 +52,38 @@
       "margin_terminal": 0.039341673719251555,
       "cash_conversion": 1.2,
       "discount_rate": 0.07737333307587495,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 0.6769712483619672,
       "exit_basis": "ps",
-      "per_share": 79.2432078698759
+      "per_share": 71.68590334473672,
+      "terminal_weight": 0.6118185345396789,
+      "terminal_warning": null
     },
     "bull": {
       "growth_start": 0.10578897190766934,
       "average_growth": 0.06539448595383467,
       "growth_terminal": 0.025,
       "margin_start": 0.039341673719251555,
-      "margin_terminal": 0.026327690855900476,
+      "margin_terminal": 0.039341673719251555,
       "cash_conversion": 1.2,
       "discount_rate": 0.06737333307587495,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 1.0195263891237254,
       "exit_basis": "ps",
-      "per_share": 113.24970406908055
+      "per_share": 96.3191322858536,
+      "terminal_weight": 0.6843795472885085,
+      "terminal_warning": null
     }
   },
   "implied_growth": {
-    "growth_start": 0.106019565782879,
-    "average_growth": 0.0655097828914395,
+    "growth_start": 0.14085409569839535,
+    "average_growth": 0.08292704784919767,
     "converged": true
   }
 }

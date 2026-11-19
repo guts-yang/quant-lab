@@ -34,9 +34,15 @@
       "margin_terminal": -0.09149963436195706,
       "cash_conversion": 0.5,
       "discount_rate": 0.15774423018538447,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 2.890086972236606,
       "exit_basis": "ps",
-      "per_share": 114.7807682692743
+      "per_share": 23.48414606368653,
+      "terminal_weight": 0.0,
+      "terminal_warning": "稳定期净利率非正，永续终值按 0 计"
     },
     "base": {
       "growth_start": 0.09692065832600283,
@@ -46,26 +52,38 @@
       "margin_terminal": 0.22453246302889449,
       "cash_conversion": 0.5,
       "discount_rate": 0.14274423018538446,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 5.185804502253211,
       "exit_basis": "ps",
-      "per_share": 267.8639380216687
+      "per_share": 114.0373145609741,
+      "terminal_weight": 0.536261877187739,
+      "terminal_warning": null
     },
     "bull": {
       "growth_start": 0.12115082290750354,
       "average_growth": 0.07307541145375177,
       "growth_terminal": 0.025,
       "margin_start": 0.31290861095422573,
-      "margin_terminal": 0.09346681940217566,
+      "margin_terminal": 0.22453246302889449,
       "cash_conversion": 0.5,
       "discount_rate": 0.13274423018538445,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 9.050790820261225,
       "exit_basis": "ps",
-      "per_share": 475.425470472763
+      "per_share": 133.1865269126117,
+      "terminal_weight": 0.5674835532370163,
+      "terminal_warning": null
     }
   },
   "implied_growth": {
-    "growth_start": 0.29140312708067273,
-    "average_growth": 0.15820156354033638,
+    "growth_start": 0.6730991124147894,
+    "average_growth": 0.3490495562073947,
     "converged": true
   }
 }

@@ -34,9 +34,15 @@
       "margin_terminal": -0.008873677530467403,
       "cash_conversion": 0.8223864274416809,
       "discount_rate": 0.1564518128046017,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 1.102468367285517,
       "exit_basis": "ps",
-      "per_share": 8.175417026019163
+      "per_share": 2.601910591108276,
+      "terminal_weight": 0.0,
+      "terminal_warning": "稳定期净利率非正，永续终值按 0 计"
     },
     "base": {
       "growth_start": 0.15910770659207346,
@@ -46,26 +52,38 @@
       "margin_terminal": 0.11431789056424167,
       "cash_conversion": 0.8223864274416809,
       "discount_rate": 0.14145181280460167,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 2.0513091816843403,
       "exit_basis": "ps",
-      "per_share": 20.995102310754003
+      "per_share": 11.524089421694336,
+      "terminal_weight": 0.4783231619334742,
+      "terminal_warning": null
     },
     "bull": {
       "growth_start": 0.1988846332400918,
       "average_growth": 0.11194231662004592,
       "growth_terminal": 0.025,
       "margin_start": 0.11431789056424167,
-      "margin_terminal": 0.0685412713662748,
+      "margin_terminal": 0.11431789056424167,
       "cash_conversion": 0.8223864274416809,
       "discount_rate": 0.13145181280460166,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 3.690562906516753,
       "exit_basis": "ps",
-      "per_share": 37.707368011164846
+      "per_share": 13.941814657753648,
+      "terminal_weight": 0.5117691232182207,
+      "terminal_warning": null
     }
   },
   "implied_growth": {
-    "growth_start": 0.22207849813208952,
-    "average_growth": 0.12353924906604476,
+    "growth_start": 0.46950593730997625,
+    "average_growth": 0.2472529686549881,
     "converged": true
   }
 }

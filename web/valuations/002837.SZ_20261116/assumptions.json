@@ -34,9 +34,15 @@
       "margin_terminal": -0.00726235355829022,
       "cash_conversion": 0.5,
       "discount_rate": 0.14943834496425595,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 2.3175125996054167,
       "exit_basis": "ps",
-      "per_share": 7.255621752768891
+      "per_share": 0.5125318793713831,
+      "terminal_weight": 0.0,
+      "terminal_warning": "稳定期净利率非正，永续终值按 0 计"
     },
     "base": {
       "growth_start": 0.13365539071816013,
@@ -46,9 +52,15 @@
       "margin_terminal": 0.07030086815462466,
       "cash_conversion": 0.5,
       "discount_rate": 0.13443834496425597,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 3.979144201758549,
       "exit_basis": "ps",
-      "per_share": 16.46564978855666
+      "per_share": 3.0803498436979893,
+      "terminal_weight": 0.6156902313202638,
+      "terminal_warning": null
     },
     "bull": {
       "growth_start": 0.16706923839770016,
@@ -58,14 +70,20 @@
       "margin_terminal": 0.10155451608634361,
       "cash_conversion": 0.5,
       "discount_rate": 0.12443834496425597,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 6.319043915186478,
       "exit_basis": "ps",
-      "per_share": 30.322989879234438
+      "per_share": 5.121264558538058,
+      "terminal_weight": 0.687035739595699,
+      "terminal_warning": null
     }
   },
   "implied_growth": {
-    "growth_start": 0.3930941477519675,
-    "average_growth": 0.20904707387598376,
-    "converged": true
+    "growth_start": 1.0,
+    "average_growth": 0.5125,
+    "converged": false
   }
 }

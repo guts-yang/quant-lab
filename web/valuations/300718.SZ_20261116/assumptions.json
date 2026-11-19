@@ -34,9 +34,15 @@
       "margin_terminal": 0.027153726336535594,
       "cash_conversion": 0.7500787937880184,
       "discount_rate": 0.10556352553107747,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 2.3596300724905452,
       "exit_basis": "ps",
-      "per_share": 10.549706043672433
+      "per_share": 3.324657463949507,
+      "terminal_weight": 0.27705661296279616,
+      "terminal_warning": null
     },
     "base": {
       "growth_start": 0.1411094821658334,
@@ -46,26 +52,38 @@
       "margin_terminal": 0.1763564441985766,
       "cash_conversion": 0.7500787937880184,
       "discount_rate": 0.09056352553107747,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 3.823644174842309,
       "exit_basis": "ps",
-      "per_share": 22.75127985196019
+      "per_share": 14.502020301820652,
+      "terminal_weight": 0.6699366898259523,
+      "terminal_warning": null
     },
     "bull": {
       "growth_start": 0.17638685270729176,
       "average_growth": 0.10069342635364588,
       "growth_terminal": 0.025,
       "margin_start": 0.1764762131523362,
-      "margin_terminal": 0.1230962915447836,
+      "margin_terminal": 0.1763564441985766,
       "cash_conversion": 0.7500787937880184,
       "discount_rate": 0.08056352553107747,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 6.595691095208875,
       "exit_basis": "ps",
-      "per_share": 41.36318872238096
+      "per_share": 19.46673680930499,
+      "terminal_weight": 0.7227749647074448,
+      "terminal_warning": null
     }
   },
   "implied_growth": {
-    "growth_start": 0.41544878136288155,
-    "average_growth": 0.22022439068144078,
+    "growth_start": 0.6101647981112428,
+    "average_growth": 0.31758239905562136,
     "converged": true
   }
 }

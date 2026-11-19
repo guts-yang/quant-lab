@@ -31,12 +31,18 @@
       "average_growth": 0.003332197151735428,
       "growth_terminal": 0.025,
       "margin_start": -0.10624221279378857,
-      "margin_terminal": 0.027153726336535594,
+      "margin_terminal": 0.0,
       "cash_conversion": 0.5,
       "discount_rate": 0.11983845940323329,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 2.3596300724905452,
       "exit_basis": "ps",
-      "per_share": 3.973559386991322
+      "per_share": -0.5362208333206754,
+      "terminal_weight": -0.0,
+      "terminal_warning": "稳定期净利率非正，永续终值按 0 计"
     },
     "base": {
       "growth_start": -0.030559342827548575,
@@ -46,9 +52,15 @@
       "margin_terminal": 0.0,
       "cash_conversion": 0.5,
       "discount_rate": 0.10483845940323329,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 3.823644174842309,
       "exit_basis": "ps",
-      "per_share": 6.888228932141715
+      "per_share": -0.540653968313838,
+      "terminal_weight": -0.0,
+      "terminal_warning": "稳定期净利率非正，永续终值按 0 计"
     },
     "bull": {
       "growth_start": -0.03819917853443572,
@@ -58,14 +70,20 @@
       "margin_terminal": 0.1230962915447836,
       "cash_conversion": 0.5,
       "discount_rate": 0.0948384594032333,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 6.595691095208875,
       "exit_basis": "ps",
-      "per_share": 13.266930163610121
+      "per_share": 2.676805011738507,
+      "terminal_weight": 1.0196525044831404,
+      "terminal_warning": "终值占股权价值 102%，估值几乎由永续假设决定"
     }
   },
   "implied_growth": {
-    "growth_start": 0.525748371434825,
-    "average_growth": 0.2753741857174125,
-    "converged": true
+    "growth_start": 1.0,
+    "average_growth": 0.5125,
+    "converged": false
   }
 }
