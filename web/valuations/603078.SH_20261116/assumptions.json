@@ -34,9 +34,15 @@
       "margin_terminal": 0.009321632668425476,
       "cash_conversion": 0.5,
       "discount_rate": 0.11279864632769666,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 4.900196817702073,
       "exit_basis": "ps",
-      "per_share": 13.29773067329641
+      "per_share": 0.6640138392455985,
+      "terminal_weight": 0.3260008262390001,
+      "terminal_warning": null
     },
     "base": {
       "growth_start": 0.16957434645759029,
@@ -46,9 +52,15 @@
       "margin_terminal": 0.06706356706159222,
       "cash_conversion": 0.5,
       "discount_rate": 0.09779864632769666,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 7.800992834281568,
       "exit_basis": "ps",
-      "per_share": 28.92408349864205
+      "per_share": 3.4666277140575104,
+      "terminal_weight": 0.7332266628138379,
+      "terminal_warning": null
     },
     "bull": {
       "growth_start": 0.21196793307198786,
@@ -58,14 +70,20 @@
       "margin_terminal": 0.18702078887557808,
       "cash_conversion": 0.5,
       "discount_rate": 0.08779864632769667,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 14.86165020833526,
       "exit_basis": "ps",
-      "per_share": 66.90581370514485
+      "per_share": 12.185373630092675,
+      "terminal_weight": 0.8341721752793234,
+      "terminal_warning": null
     }
   },
   "implied_growth": {
-    "growth_start": 0.08736999200417428,
-    "average_growth": 0.056184996002087144,
+    "growth_start": 0.9372390632753762,
+    "average_growth": 0.4811195316376881,
     "converged": true
   }
 }

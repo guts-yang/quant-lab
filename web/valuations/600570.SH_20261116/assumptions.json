@@ -34,9 +34,15 @@
       "margin_terminal": -0.22255562412011978,
       "cash_conversion": 0.5,
       "discount_rate": 0.10941747599618352,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 3.289493743421703,
       "exit_basis": "ps",
-      "per_share": 5.833335421027352
+      "per_share": 0.2537386331132054,
+      "terminal_weight": 0.0,
+      "terminal_warning": "稳定期净利率非正，永续终值按 0 计"
     },
     "base": {
       "growth_start": 0.06744935813122055,
@@ -46,26 +52,38 @@
       "margin_terminal": 0.19761596186641817,
       "cash_conversion": 0.5,
       "discount_rate": 0.09441747599618353,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 6.233319966679284,
       "exit_basis": "ps",
-      "per_share": 15.319722740016426
+      "per_share": 6.664326350033211,
+      "terminal_weight": 0.7051256928546171,
+      "terminal_warning": null
     },
     "bull": {
       "growth_start": 0.08431169766402569,
       "average_growth": 0.05465584883201284,
       "growth_terminal": 0.025,
       "margin_start": 0.24201576480466022,
-      "margin_terminal": 0.05792727813164279,
+      "margin_terminal": 0.19761596186641817,
       "cash_conversion": 0.5,
       "discount_rate": 0.08441747599618353,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 10.762866454964309,
       "exit_basis": "ps",
-      "per_share": 27.39759391098187
+      "per_share": 8.454806317112666,
+      "terminal_weight": 0.7496346797820875,
+      "terminal_warning": null
     }
   },
   "implied_growth": {
-    "growth_start": 0.15950626375245813,
-    "average_growth": 0.09225313187622906,
+    "growth_start": 0.475941632290689,
+    "average_growth": 0.2504708161453445,
     "converged": true
   }
 }

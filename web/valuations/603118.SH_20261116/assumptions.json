@@ -34,9 +34,15 @@
       "margin_terminal": -0.09149963436195706,
       "cash_conversion": 0.5,
       "discount_rate": 0.09851269444573214,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 2.8549374345302847,
       "exit_basis": "ps",
-      "per_share": 20.771530413065033
+      "per_share": -1.233777783038749,
+      "terminal_weight": -0.0,
+      "terminal_warning": "稳定期净利率非正，永续终值按 0 计"
     },
     "base": {
       "growth_start": 0.007920442256238003,
@@ -46,9 +52,15 @@
       "margin_terminal": 0.00971987324614503,
       "cash_conversion": 0.5,
       "discount_rate": 0.08351269444573214,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 4.890383407959183,
       "exit_basis": "ps",
-      "per_share": 42.842811307006116
+      "per_share": 1.4662259871134062,
+      "terminal_weight": 0.7566547812589949,
+      "terminal_warning": null
     },
     "bull": {
       "growth_start": 0.009900552820297503,
@@ -58,14 +70,20 @@
       "margin_terminal": 0.09346681940217566,
       "cash_conversion": 0.5,
       "discount_rate": 0.07351269444573215,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 8.328131329278774,
       "exit_basis": "ps",
-      "per_share": 79.83728782084276
+      "per_share": 16.314856006853535,
+      "terminal_weight": 0.8860422676607186,
+      "terminal_warning": "终值占股权价值 89%，估值几乎由永续假设决定"
     }
   },
   "implied_growth": {
-    "growth_start": -0.26970915207048696,
-    "average_growth": -0.12235457603524347,
+    "growth_start": 0.9024761587034813,
+    "average_growth": 0.4637380793517406,
     "converged": true
   }
 }
