@@ -34,9 +34,15 @@
       "margin_terminal": 0.009321632668425476,
       "cash_conversion": 0.7019132423342238,
       "discount_rate": 0.1508477528035333,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 4.900196817702073,
       "exit_basis": "ps",
-      "per_share": 117.86611153753407
+      "per_share": 35.903596925761484,
+      "terminal_weight": 0.029557824989101124,
+      "terminal_warning": null
     },
     "base": {
       "growth_start": 0.15400504764365586,
@@ -46,26 +52,38 @@
       "margin_terminal": 0.18739678051489897,
       "cash_conversion": 0.7019132423342238,
       "discount_rate": 0.13584775280353328,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 7.800992834281568,
       "exit_basis": "ps",
-      "per_share": 235.52872585854158
+      "per_share": 83.58617566709975,
+      "terminal_weight": 0.3720083926856645,
+      "terminal_warning": null
     },
     "bull": {
       "growth_start": 0.19250630955456982,
       "average_growth": 0.1087531547772849,
       "growth_terminal": 0.025,
       "margin_start": 0.5130521647972627,
-      "margin_terminal": 0.18702078887557808,
+      "margin_terminal": 0.18739678051489897,
       "cash_conversion": 0.7019132423342238,
       "discount_rate": 0.12584775280353327,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 14.86165020833526,
       "exit_basis": "ps",
-      "per_share": 480.6568596110809
+      "per_share": 98.91489129712735,
+      "terminal_weight": 0.40865608881577714,
+      "terminal_warning": null
     }
   },
   "implied_growth": {
-    "growth_start": 0.13569008722154308,
-    "average_growth": 0.08034504361077154,
+    "growth_start": 0.585637305513784,
+    "average_growth": 0.305318652756892,
     "converged": true
   }
 }

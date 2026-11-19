@@ -34,9 +34,15 @@
       "margin_terminal": 0.009321632668425476,
       "cash_conversion": 0.5,
       "discount_rate": 0.14216779432250382,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 4.900196817702073,
       "exit_basis": "ps",
-      "per_share": 65.89275577208154
+      "per_share": 16.143290852617223,
+      "terminal_weight": 0.042031111699552565,
+      "terminal_warning": null
     },
     "base": {
       "growth_start": 0.2687471865666238,
@@ -46,26 +52,38 @@
       "margin_terminal": 0.2642885870186106,
       "cash_conversion": 0.5,
       "discount_rate": 0.12716779432250383,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 7.800992834281568,
       "exit_basis": "ps",
-      "per_share": 152.8972056636486
+      "per_share": 59.81889736974397,
+      "terminal_weight": 0.5411918893115084,
+      "terminal_warning": null
     },
     "bull": {
       "growth_start": 0.3359339832082797,
       "average_growth": 0.18046699160413987,
       "growth_terminal": 0.025,
       "margin_start": 0.6068791157230345,
-      "margin_terminal": 0.18702078887557808,
+      "margin_terminal": 0.2642885870186106,
       "cash_conversion": 0.5,
       "discount_rate": 0.11716779432250383,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 14.86165020833526,
       "exit_basis": "ps",
-      "per_share": 339.4113913145323
+      "per_share": 78.34549939453699,
+      "terminal_weight": 0.5861490044438359,
+      "terminal_warning": null
     }
   },
   "implied_growth": {
-    "growth_start": 0.8471352575203752,
-    "average_growth": 0.4360676287601876,
-    "converged": true
+    "growth_start": 1.0,
+    "average_growth": 0.5125,
+    "converged": false
   }
 }
