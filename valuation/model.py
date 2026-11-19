@@ -2,10 +2,16 @@
 
 公式骨架（N 年预测期）：
     Rev_t  = Rev_{t-1} × (1 + g_t)，g_t 从 growth_start 线性收敛到 growth_terminal
-    m_t    = margin_start + (margin_terminal − margin_start) × t/N
+    m_t    = margin_start + (margin_terminal − margin_start) × (t-1)/(N-1)，第 1 年等于起点
     FCFE_t = Rev_t × m_t × cash_conversion
-    TV     = Rev_N × 退出 P/S（或 NI_N × 退出 P/E，或 Gordon 永续）
+    TV     = FCFE_{N+1} / (r − g)（Gordon 永续，默认）
+             FCFE_{N+1} = Rev_N × (1+g) × margin_terminal × stable_cash_conversion
+             stable_cash_conversion = 1 − g/ROE_stable（Damodaran 稳定期再投资一致性）
     V/share = [Σ FCFE_t/(1+r)^t + TV/(1+r)^N] / shares
+
+终值默认用 Gordon 永续增长，不用行业中位市销率退出倍数：P/S = P/E × 净利率，
+行业 P/S 隐含行业典型利润率，直接套到利润率差异大的公司会把估值打飞。
+退出倍数法保留作交叉校验（terminal_method="multiple"）。
 """
 
 from __future__ import annotations
@@ -17,9 +23,10 @@ import pandas as pd
 EXIT_BASES = ("ps", "pe")
 TERMINAL_METHODS = ("multiple", "gordon")
 
-# 反向 DCF 二分法求解的增速边界。上限 500% 是为了能包住极端成长股。
-REVERSE_GROWTH_FLOOR = -0.9
-REVERSE_GROWTH_CAP = 5.0
+# 反向 DCF 二分法求解的增速边界。收紧到 [-0.5, 1.0]：超出即标「未收敛」，
+# 不再报 140% 这种无意义的隐含增速。
+REVERSE_GROWTH_FLOOR = -0.5
+REVERSE_GROWTH_CAP = 1.0
 
 
 @dataclass(frozen=True)
@@ -29,14 +36,16 @@ class DcfInputs:
     growth_terminal: float  # 第 N 年收入增速（线性收敛目标）
     margin_start: float  # 当前净利率
     margin_terminal: float  # 第 N 年净利率
-    cash_conversion: float  # FCFE / 净利润
+    cash_conversion: float  # 高成长期 FCFE / 净利润
     forecast_years: int  # 预测年数 N
     discount_rate: float  # 股权成本
-    exit_multiple: float  # 退出倍数
+    exit_multiple: float  # 退出倍数（仅 multiple 法或交叉校验用）
     exit_basis: str  # "ps"（收入倍数）或 "pe"（利润倍数）
     shares: float  # 总股本，股
-    terminal_method: str = "multiple"  # "multiple" 或 "gordon"
+    terminal_method: str = "gordon"  # "gordon"（默认）或 "multiple"
     perpetuity_growth: float = 0.025  # gordon 法的永续增速
+    stable_roe: float = 0.10  # 稳定期 ROE，用于推导再投资率 g/ROE
+    stable_cash_conversion: float | None = None  # 稳定期 FCFE/NI；缺省按 1 - g/ROE 推导
 
 
 @dataclass(frozen=True)
@@ -49,6 +58,7 @@ class DcfResult:
     equity_value: float
     per_share: float
     terminal_weight: float  # 终值现值占股权价值的比例
+    terminal_warning: str | None = None  # 终值占比过高或稳定期不可持续时的提示
 
 
 @dataclass(frozen=True)
@@ -70,11 +80,13 @@ def growth_path(growth_start: float, growth_terminal: float, years: int) -> list
 
 
 def margin_path(margin_start: float, margin_terminal: float, years: int) -> list[float]:
-    """从当前净利率线性衰减/爬升到终值净利率，第 N 年恰好等于终值。"""
+    """从当前净利率线性衰减/爬升到终值净利率，第 1 年等于起点，第 N 年等于终值。"""
     if years < 1:
         raise ValueError("forecast_years 至少为 1")
-    step = (margin_terminal - margin_start) / years
-    return [float(margin_start + step * t) for t in range(1, years + 1)]
+    if years == 1:
+        return [float(margin_start)]
+    step = (margin_terminal - margin_start) / (years - 1)
+    return [float(margin_start + step * t) for t in range(years)]
 
 
 def average_growth(inputs: DcfInputs) -> float:
@@ -110,15 +122,39 @@ def project_fcfe(inputs: DcfInputs) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def stable_conversion(inputs: DcfInputs) -> float:
+    """稳定期 FCFE/净利润。Damodaran：稳定期再投资率 = g/ROE，故 FCFE/NI = 1 - g/ROE。
+
+    显式给定的 stable_cash_conversion 优先；否则用 perpetuity_growth / stable_roe 推导，
+    并夹到 [0, 1] 防止再投资率为负或超过 100%。
+    """
+    if inputs.stable_cash_conversion is not None:
+        return float(inputs.stable_cash_conversion)
+    if inputs.stable_roe <= 0:
+        return 1.0
+    reinvestment = inputs.perpetuity_growth / inputs.stable_roe
+    return min(1.0, max(0.0, 1.0 - reinvestment))
+
+
 def terminal_value(inputs: DcfInputs, projection: pd.DataFrame) -> float:
-    """退出倍数或 Gordon 永续两种终值。"""
+    """Gordon 永续（默认）或退出倍数两种终值。
+
+    Gordon：TV = FCFE_{N+1} / (r - g)，其中 FCFE_{N+1} 用稳定期现金转换率，
+    而不是高成长期的 cash_conversion，保证稳定期再投资与永续增速自洽。
+    终值净利率非正时，永续期生意不可持续，终值按 0 计。
+    """
     _validate(inputs)
     last = projection.iloc[-1]
     if inputs.terminal_method == "gordon":
         r, g = inputs.discount_rate, inputs.perpetuity_growth
         if r <= g:
             raise ValueError(f"Gordon 终值要求折现率大于永续增速，得到 r={r}、g={g}")
-        return float(last["fcfe"]) * (1.0 + g) / (r - g)
+        if inputs.margin_terminal <= 0:
+            return 0.0
+        stable_rev = float(last["revenue"]) * (1.0 + g)
+        stable_ni = stable_rev * inputs.margin_terminal
+        stable_fcfe = stable_ni * stable_conversion(inputs)
+        return float(stable_fcfe) / (r - g)
     if inputs.exit_basis == "ps":
         return float(last["revenue"]) * inputs.exit_multiple
     return float(last["net_income"]) * inputs.exit_multiple
@@ -134,6 +170,7 @@ def dcf_value(inputs: DcfInputs) -> DcfResult:
     equity = pv_explicit + pv_terminal
     per_share = equity / inputs.shares
     weight = pv_terminal / equity if equity else 0.0
+    warning = _terminal_warning(inputs, weight, equity)
     return DcfResult(
         inputs=inputs,
         projection=projection,
@@ -143,7 +180,17 @@ def dcf_value(inputs: DcfInputs) -> DcfResult:
         equity_value=equity,
         per_share=per_share,
         terminal_weight=weight,
+        terminal_warning=warning,
     )
+
+
+def _terminal_warning(inputs: DcfInputs, weight: float, equity: float) -> str | None:
+    """终值占比过高或稳定期不可持续时给出可审计的提示。"""
+    if inputs.terminal_method == "gordon" and inputs.margin_terminal <= 0:
+        return "稳定期净利率非正，永续终值按 0 计"
+    if equity > 0 and weight > 0.85:
+        return f"终值占股权价值 {weight:.0%}，估值几乎由永续假设决定"
+    return None
 
 
 def reverse_dcf(inputs: DcfInputs, price: float) -> ImpliedGrowth:

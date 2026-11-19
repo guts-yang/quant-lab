@@ -459,7 +459,8 @@ def _calc_now(fundamentals: dict) -> str:
 def _calc_revenue(base: dict, records: list[dict]) -> str:
     lines = ["**2. 未来各年收入与增速**"]
     lines.append(
-        "基准情景的收入从最近十二个月出发，第 1 年用起始增速，最后一年收到终值增速，中间按年线性过渡。"
+        "基准情景的收入从最近十二个月出发，第 1 年用起始增速，最后一年收到预测期末增速，中间按年线性过渡。"
+        "预测期末增速和 Gordon 永续增速是两个输入：基准情景里通常相同，熊市和牛市只改永续增速。"
     )
     lines.append(r"$$g_t=g_1+\frac{t-1}{N-1}(g_N-g_1),\qquad Rev_t=Rev_{t-1}(1+g_t)$$")
     if not records:
@@ -497,10 +498,10 @@ def _calc_margin_cash(template: str, fundamentals: dict, base: dict, records: li
     lines = ["**3. 净利率与股权现金流**"]
     if template == "fcfe":
         lines.append("这家公司用股权自由现金流模板。每年股权现金流 = 收入 × 净利率 × 转换率。")
-        lines.append(r"$$m_t=m_0+\frac{t}{N}(m_N-m_0),\qquad FCFE_t=Rev_t\times m_t\times c$$")
+        lines.append(r"$$m_t=m_0+\frac{t-1}{N-1}(m_N-m_0),\qquad FCFE_t=Rev_t\times m_t\times c$$")
     elif template:
-        lines.append("这家公司用净利润模板：转换率取 1，退出倍数用市盈率。每年股权现金流等于归母净利。")
-        lines.append(r"$$m_t=m_0+\frac{t}{N}(m_N-m_0),\qquad NI_t=Rev_t\times m_t$$")
+        lines.append("这家公司用净利润模板：转换率取 1，终值用 Gordon 永续。每年股权现金流等于归母净利。")
+        lines.append(r"$$m_t=m_0+\frac{t-1}{N-1}(m_N-m_0),\qquad NI_t=Rev_t\times m_t$$")
     else:
         lines.append("假设里没有写模板。下面按预测表里的净利率和股权现金流列示。")
     margin_start = _number(base.get("margin_start"))
@@ -511,8 +512,10 @@ def _calc_margin_cash(template: str, fundamentals: dict, base: dict, records: li
         if margin_terminal is None:
             margin_terminal = records[-1]["margin"]
     if margin_start is not None or margin_terminal is not None:
+        year = _fmt_year(records[-1]["year"]) if records else "N"
         lines.append(
-            f"净利率从 {_fmt_pct(margin_start)} 走到第 {_fmt_year(records[-1]['year']) if records else 'N'} 年的 {_fmt_pct(margin_terminal)}。"
+            f"第 1 年净利率等于起始净利率 {_fmt_pct(margin_start)}，"
+            f"第 {year} 年等于终值净利率 {_fmt_pct(margin_terminal)}，中间按年线性过渡。"
         )
     lines.append(_conversion_sentence(template, fundamentals, base))
     if not records:
@@ -565,7 +568,13 @@ def _conversion_sentence(template: str, fundamentals: dict, base: dict) -> str:
 
 def _calc_discount(discount: dict, base: dict, records: list[dict]) -> str:
     lines = ["**4. 折现率与各年现值**"]
-    lines.append("折现率用资本资产定价模型，再限制在 6% 到 15%。")
+    lines.append(
+        "折现率用资本资产定价模型。"
+        "β 取最近约 104 周周收益对沪深 300 的回归斜率，"
+        "做 Blume 调整（0.67×原始 β + 0.33）后限制在 0.5 到 2.5；"
+        "不足 52 周时按 1 计。"
+        "算出来的折现率再限制在 6% 到 15%。"
+    )
     lines.append(r"$$r=r_f+\beta\times ERP$$")
     beta = _number(discount.get("beta"))
     risk_free = _number(discount.get("risk_free"))
@@ -625,36 +634,62 @@ def _discount_bound_sentence(raw: float | None, used: float | None) -> str:
 
 
 def _calc_terminal(template: str, base: dict, records: list[dict]) -> str:
-    lines = ["**5. 终值**"]
-    basis = str(base.get("exit_basis") or "").strip().lower()
-    if basis not in {"ps", "pe"}:
-        basis = "pe" if template and template != "fcfe" else ("ps" if template == "fcfe" else "")
-    multiple = _number(base.get("exit_multiple"))
+    method = str(base.get("terminal_method") or "gordon").strip().lower()
+    lines = ["**5. 终值（Gordon 永续）**" if method == "gordon" else "**5. 终值（退出倍数）**"]
     last = records[-1] if records else None
-    amount = None
-    amount_name = "基数"
-    if basis == "ps":
-        amount_name = "收入"
-        amount = None if last is None else last["revenue"]
-        lines.append("终值用退出市销率，基数是最后一年的收入。")
-        lines.append(r"$$TV_N=Rev_N\times P/S$$")
-    elif basis == "pe":
-        amount_name = "归母净利"
-        amount = None if last is None else last["net_income"]
-        lines.append("终值用退出市盈率，基数是最后一年的归母净利。")
-        lines.append(r"$$TV_N=NI_N\times P/E$$")
-    else:
-        lines.append("退出口径缺失。")
-    terminal = amount * multiple if amount is not None and multiple is not None else None
+    g = _number(base.get("perpetuity_growth"))
+    r = _number(base.get("discount_rate"))
+    margin_terminal = _number(base.get("margin_terminal"))
+    stable_conv = _number(base.get("stable_cash_conversion"))
+    stable_roe = _number(base.get("stable_roe"))
     year = _fmt_year(last["year"]) if last else "N"
-    multiple_text = "退出倍数缺失" if multiple is None else f"退出倍数 {_fmt_multiple(multiple)} 倍"
-    lines.append(f"第 {year} 年{amount_name} {_fmt_yi(amount)}，{multiple_text}，终值 {_fmt_yi(terminal)}。")
+    rev_n = None if last is None else last["revenue"]
+    if method == "gordon":
+        lines.append(
+            "终值用 Gordon 永续增长。行业中位市销率不进入股权价值："
+            "市销率 = 市盈率 × 净利率，行业市销率隐含的是行业典型利润率，"
+            "直接乘到利润率差很多的公司上会把估值打飞。"
+        )
+        lines.append(r"$$TV_N=\frac{FCFE_{N+1}}{r-g},\qquad FCFE_{N+1}=Rev_N\times(1+g)\times m_N\times c_{\text{stable}}$$")
+        stable_conv = _explained_stable_conversion(stable_conv, g, stable_roe)
+        sentence = _stable_conversion_sentence(g, stable_roe, stable_conv)
+        if sentence:
+            lines.append(sentence)
+        if margin_terminal is not None and margin_terminal <= 0:
+            lines.append(
+                f"终值净利率 {_fmt_pct(margin_terminal)} 非正，永续期生意不可持续，终值按 0 计。"
+            )
+            lines.append(f"第 {year} 年收入 {_fmt_yi(rev_n)}，永续终值 0。")
+        else:
+            stable_rev = rev_n * (1 + g) if rev_n is not None and g is not None else None
+            stable_ni = stable_rev * margin_terminal if stable_rev is not None and margin_terminal is not None else None
+            stable_fcfe = stable_ni * stable_conv if stable_ni is not None and stable_conv is not None else None
+            terminal = stable_fcfe / (r - g) if stable_fcfe is not None and r is not None and g is not None and r > g else None
+            lines.append(
+                f"第 {year} 年收入 {_fmt_yi(rev_n)}，永续增速 {_fmt_pct(g)}，"
+                f"终值净利率 {_fmt_pct(margin_terminal)}，稳定现金转换 {_fmt_pct(stable_conv)}，"
+                f"折现率 {_fmt_pct(r)}，永续终值 {_fmt_yi(terminal)}。"
+            )
+    else:
+        basis = str(base.get("exit_basis") or "").strip().lower()
+        if basis not in {"ps", "pe"}:
+            basis = "pe" if template and template != "fcfe" else "ps"
+        multiple = _number(base.get("exit_multiple"))
+        amount_name = "收入" if basis == "ps" else "归母净利"
+        amount = None if last is None else (last["revenue"] if basis == "ps" else last["net_income"])
+        lines.append(f"终值用退出{'市销率' if basis == 'ps' else '市盈率'}，基数是最后一年的{amount_name}。")
+        terminal = amount * multiple if amount is not None and multiple is not None else None
+        multiple_text = "退出倍数缺失" if multiple is None else f"退出倍数 {_fmt_multiple(multiple)} 倍"
+        lines.append(f"第 {year} 年{amount_name} {_fmt_yi(amount)}，{multiple_text}，终值 {_fmt_yi(terminal)}。")
     terminal_pv = _number(base.get("pv_terminal"))
     weight = _number(base.get("terminal_weight"))
     equity = _resolved_equity(base, records)
     if weight is None and terminal_pv is not None and equity not in (None, 0.0):
         weight = terminal_pv / equity
     lines.append(f"终值现值 {_fmt_yi(terminal_pv)}，终值现值占股权价值 {_fmt_pct(weight)}。")
+    warning = base.get("terminal_warning")
+    if warning:
+        lines.append(f"> ⚠ {warning}。")
     return "\n\n".join(lines)
 
 
@@ -688,8 +723,45 @@ def _calc_per_share(fundamentals: dict, base: dict, records: list[dict]) -> str:
     return "\n\n".join(lines)
 
 
+def _explained_stable_conversion(
+    published: float | None,
+    perpetuity_growth: float | None,
+    stable_roe: float | None,
+) -> float | None:
+    """讲解终值时用的稳定转换率。缺公布值时按 1−g/ROE 推导；结果夹到 [0, 1]，与引擎一致。"""
+    if stable_roe is not None and stable_roe <= 0 and published is None:
+        return 1.0
+    if published is None:
+        if perpetuity_growth is None or stable_roe is None:
+            return None
+        raw = 1.0 - perpetuity_growth / stable_roe
+    else:
+        raw = published
+    return min(1.0, max(0.0, raw))
+
+
+def _stable_conversion_sentence(perpetuity_growth: float | None, stable_roe: float | None, stable_conv: float | None) -> str:
+    if stable_conv is None:
+        return ""
+    if stable_roe is not None and stable_roe <= 0:
+        return f"稳定期 ROE 非正，稳定期现金转换率按 1 计，这里是 {_fmt_pct(stable_conv)}。高成长期转换率不用于终值。"
+    reinvestment = None
+    if perpetuity_growth is not None and stable_roe is not None and stable_roe > 0:
+        reinvestment = perpetuity_growth / stable_roe
+    return (
+        "第 1 年到第 N 年仍用高成长期转换率；终值里的下一年现金流改用稳定期转换率。"
+        f"再投资率 = g/ROE = {_fmt_pct(reinvestment)}，"
+        f"稳定期现金转换率 = 1 − g/ROE，并限制在 0 到 1，这里是 {_fmt_pct(stable_conv)}。"
+    )
+
+
 def _calc_aside(fundamentals: dict, implied: dict, bear: dict, bull: dict) -> str:
     lines = ["**7. 熊市、牛市与反向 DCF**"]
+    lines.append(
+        "熊市和牛市沿用同一套公式，预测年数和预测期末增速不动。"
+        "变动的是第 1 年增速、终值净利率、折现率和永续增速。"
+        "终值净利率非正时，永续终值按 0 计。"
+    )
     price = _number(fundamentals.get("price"))
     parts = []
     for label, row in (("熊市", bear), ("牛市", bull)):
@@ -703,6 +775,10 @@ def _calc_aside(fundamentals: dict, implied: dict, bear: dict, bull: dict) -> st
         upside = value / price - 1.0
         parts.append(f"{label}每股价值 {_fmt_yuan(value)}，相对现价 {upside:+.1%}")
     lines.append("；".join(parts) + "。同一组每股价值在三情景表里。")
+    for label, row in (("熊市", bear), ("牛市", bull)):
+        warning = str(row.get("terminal_warning") or "").strip()
+        if warning and warning not in {"None", "nan", "<NA>"}:
+            lines.append(f"{label}：{warning}。")
     implied_line = _implied_sentence(implied)
     if implied_line:
         lines.append(implied_line)
@@ -723,7 +799,7 @@ def _implied_sentence(implied: dict) -> str:
     converged = implied.get("converged")
     if converged is False or converged == 0:
         suffix = "（触及求解边界，未收敛）"
-    return "反向 DCF 的隐含增速：" + "，".join(bits) + suffix + "。"
+    return "反向 DCF 在 −50% 到 100% 之间反解第 1 年增速，使每股价值等于现价：" + "，".join(bits) + suffix + "。"
 
 
 def _opportunity_sentence(opportunity: float) -> str:

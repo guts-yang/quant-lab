@@ -143,18 +143,19 @@ def render_report(report: ValuationReport) -> str:
         "",
         "## 三情景",
         "",
-        "| 情景 | 平均增速 | 净利率路径 | 转换率 | 折现率 | 退出倍数 | 每股价值 | 相对现价 |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| 情景 | 平均增速 | 净利率路径 | 转换率 | 折现率 | 永续增速 | 稳定现金转换 | 每股价值 | 相对现价 |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     price = fundamentals.price
     for name in ("bear", "base", "bull"):
         result = report.scenarios[name]
         inputs = result.inputs
         upside = result.per_share / price - 1.0 if price else None
+        stable_conv = 1.0 - inputs.perpetuity_growth / inputs.stable_roe if inputs.stable_roe > 0 else 1.0
         lines.append(
             f"| {SCENARIO_NAMES[name]} | {average_growth(inputs):.1%} | "
             f"{inputs.margin_start:.1%}→{inputs.margin_terminal:.1%} | {inputs.cash_conversion:.0%} | "
-            f"{inputs.discount_rate:.1%} | {inputs.exit_multiple:.1f}x {inputs.exit_basis.upper()} | "
+            f"{inputs.discount_rate:.1%} | {inputs.perpetuity_growth:.1%} | {stable_conv:.0%} | "
             f"{result.per_share:.2f} | {_fmt_pct(upside)} |"
         )
     lines += ["", "## 反向 DCF", ""]
@@ -180,6 +181,8 @@ def render_report(report: ValuationReport) -> str:
         "完整预测见 forecast.parquet，假设见 assumptions.json。",
         "",
     ]
+    if base_result.terminal_warning:
+        lines.insert(len(lines) - 1, f"> ⚠ {base_result.terminal_warning}。")
     return "\n".join(lines)
 
 
@@ -188,6 +191,7 @@ def _scenarios_frame(report: ValuationReport) -> pd.DataFrame:
     price = report.fundamentals.price
     for name, result in report.scenarios.items():
         inputs = result.inputs
+        stable_conv = 1.0 - inputs.perpetuity_growth / inputs.stable_roe if inputs.stable_roe > 0 else 1.0
         rows.append(
             {
                 "scenario": name,
@@ -198,6 +202,10 @@ def _scenarios_frame(report: ValuationReport) -> pd.DataFrame:
                 "margin_terminal": inputs.margin_terminal,
                 "cash_conversion": inputs.cash_conversion,
                 "discount_rate": inputs.discount_rate,
+                "terminal_method": inputs.terminal_method,
+                "perpetuity_growth": inputs.perpetuity_growth,
+                "stable_roe": inputs.stable_roe,
+                "stable_cash_conversion": stable_conv,
                 "exit_multiple": inputs.exit_multiple,
                 "exit_basis": inputs.exit_basis,
                 "per_share": result.per_share,
@@ -205,6 +213,7 @@ def _scenarios_frame(report: ValuationReport) -> pd.DataFrame:
                 "pv_explicit": result.pv_explicit,
                 "pv_terminal": result.pv_terminal,
                 "terminal_weight": result.terminal_weight,
+                "terminal_warning": result.terminal_warning,
                 "upside": result.per_share / price - 1.0 if price else None,
             }
         )
@@ -249,9 +258,18 @@ def _assumptions_json(report: ValuationReport) -> str:
                 "margin_terminal": result.inputs.margin_terminal,
                 "cash_conversion": result.inputs.cash_conversion,
                 "discount_rate": result.inputs.discount_rate,
+                "terminal_method": result.inputs.terminal_method,
+                "perpetuity_growth": result.inputs.perpetuity_growth,
+                "stable_roe": result.inputs.stable_roe,
+                "stable_cash_conversion": (
+                    1.0 - result.inputs.perpetuity_growth / result.inputs.stable_roe
+                    if result.inputs.stable_roe > 0 else 1.0
+                ),
                 "exit_multiple": result.inputs.exit_multiple,
                 "exit_basis": result.inputs.exit_basis,
                 "per_share": result.per_share,
+                "terminal_weight": result.terminal_weight,
+                "terminal_warning": result.terminal_warning,
             }
             for name, result in report.scenarios.items()
         },

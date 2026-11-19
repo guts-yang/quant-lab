@@ -40,7 +40,10 @@ class ValuationConfig:
     bull_growth_scale: float = 1.25
     bear_discount_spread: float = 0.015
     bull_discount_spread: float = -0.01
-    exit_basis: str = "ps"  # 非金融业的默认退出倍数口径
+    exit_basis: str = "ps"  # 交叉校验用的退出倍数口径（主估值已改用 Gordon 永续）
+    bear_perpetuity_spread: float = -0.01  # 熊市永续增速相对基准的下移
+    bull_perpetuity_spread: float = 0.005  # 牛市永续增速相对基准的上移
+    stable_roe: float = 0.10  # 稳定期 ROE，推导再投资率 g/ROE 用
     min_industry_peers: int = 5  # 行业分位数统计的最小样本数
 
 
@@ -163,8 +166,10 @@ def derive_base_inputs(
         exit_multiple=_exit_multiple(industry, exit_basis),
         exit_basis=exit_basis,
         shares=_require(fundamentals.shares, "shares"),
-        terminal_method="multiple",
+        terminal_method="gordon",
         perpetuity_growth=config.perpetuity_growth,
+        stable_roe=config.stable_roe,
+        stable_cash_conversion=None,
     )
 
 
@@ -173,24 +178,39 @@ def derive_scenarios(
     industry: IndustryStats | None,
     config: ValuationConfig,
 ) -> dict[str, DcfInputs]:
-    """熊市压增速、压终值利润率、加折现率、压退出倍数；牛市反向。"""
+    """熊市压增速、压终值利润率、加折现率、压永续增速；牛市反向。
+
+    终值已改用 Gordon 永续，不再调退出倍数。退出倍数仍记录在 inputs 里供交叉校验。
+    """
     bear_margin = _industry(industry, "margin_p25")
     bull_margin = _industry(industry, "margin_p75")
     bear_exit = _exit_multiple(industry, base.exit_basis, quantile="p25")
     bull_exit = _exit_multiple(industry, base.exit_basis, quantile="p75")
+    # 熊市终值净利率不高于基准，牛市不低于基准：高利润率公司的行业分位可能低于自身，
+    # 直接套会让牛市比基准还低，故用 max/min 夹住方向。
+    bear_margin_terminal = (
+        min(bear_margin, base.margin_terminal) if bear_margin is not None else base.margin_terminal * 0.8
+    )
+    bull_margin_terminal = (
+        max(bull_margin, base.margin_terminal) if bull_margin is not None else min(base.margin_terminal * 1.1, base.margin_start)
+    )
+    bear_g = max(0.0, base.perpetuity_growth + config.bear_perpetuity_spread)
+    bull_g = min(base.discount_rate - 0.01, base.perpetuity_growth + config.bull_perpetuity_spread)
     bear = replace(
         base,
         growth_start=_clamp_growth(base.growth_start * config.bear_growth_scale),
-        margin_terminal=bear_margin if bear_margin is not None else base.margin_terminal * 0.8,
+        margin_terminal=bear_margin_terminal,
         discount_rate=base.discount_rate + config.bear_discount_spread,
         exit_multiple=bear_exit,
+        perpetuity_growth=min(bear_g, base.discount_rate + config.bear_discount_spread - 0.01),
     )
     bull = replace(
         base,
         growth_start=_clamp_growth(base.growth_start * config.bull_growth_scale),
-        margin_terminal=bull_margin if bull_margin is not None else min(base.margin_terminal * 1.1, base.margin_start),
+        margin_terminal=bull_margin_terminal,
         discount_rate=max(0.01, base.discount_rate + config.bull_discount_spread),
         exit_multiple=bull_exit,
+        perpetuity_growth=min(bull_g, max(0.01, base.discount_rate + config.bull_discount_spread - 0.01)),
     )
     return {"bear": bear, "base": base, "bull": bull}
 

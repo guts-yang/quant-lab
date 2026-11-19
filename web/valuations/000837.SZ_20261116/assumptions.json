@@ -31,12 +31,18 @@
       "average_growth": 0.012423632729301717,
       "growth_terminal": 0.025,
       "margin_start": 0.016959330640509324,
-      "margin_terminal": 0.021657669225486637,
+      "margin_terminal": 0.016959330640509324,
       "cash_conversion": 0.5,
       "discount_rate": 0.10900459500090778,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.015000000000000001,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.85,
       "exit_multiple": 2.529959638232889,
       "exit_basis": "ps",
-      "per_share": 5.955422750723796
+      "per_share": 0.5312094085021645,
+      "terminal_weight": 0.6662326338650282,
+      "terminal_warning": null
     },
     "base": {
       "growth_start": -0.0002545575689942847,
@@ -46,9 +52,15 @@
       "margin_terminal": 0.016959330640509324,
       "cash_conversion": 0.5,
       "discount_rate": 0.09400459500090778,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.025,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.75,
       "exit_multiple": 4.22531460076166,
       "exit_basis": "ps",
-      "per_share": 10.750909678780257
+      "per_share": 0.6587393397561969,
+      "terminal_weight": 0.7171251496630848,
+      "terminal_warning": null
     },
     "bull": {
       "growth_start": -0.0003181969612428559,
@@ -58,14 +70,20 @@
       "margin_terminal": 0.1295012801116415,
       "cash_conversion": 0.5,
       "discount_rate": 0.08400459500090779,
+      "terminal_method": "gordon",
+      "perpetuity_growth": 0.030000000000000002,
+      "stable_roe": 0.1,
+      "stable_cash_conversion": 0.7,
       "exit_multiple": 8.310694013996486,
       "exit_basis": "ps",
-      "per_share": 23.029070048882023
+      "per_share": 5.384533955774805,
+      "terminal_weight": 0.8559399402487282,
+      "terminal_warning": "终值占股权价值 86%，估值几乎由永续假设决定"
     }
   },
   "implied_growth": {
-    "growth_start": -0.03466323960840456,
-    "average_growth": -0.004831619804202282,
-    "converged": true
+    "growth_start": 1.0,
+    "average_growth": 0.5125,
+    "converged": false
   }
 }

@@ -52,10 +52,11 @@ def test_growth_path_is_linear_between_endpoints():
         growth_path(0.1, 0.0, 0)
 
 
-def test_margin_path_lands_on_terminal_at_final_year():
+def test_margin_path_starts_at_start_and_lands_on_terminal():
     path = margin_path(0.5, 0.4, 5)
-    assert path[0] == pytest.approx(0.48)
-    assert path[-1] == pytest.approx(0.4)
+    assert path[0] == pytest.approx(0.5)  # 第 1 年等于起点
+    assert path[-1] == pytest.approx(0.4)  # 第 N 年等于终值
+    assert len(path) == 5
 
 
 def test_security_label_leads_with_the_company_name():
@@ -75,28 +76,40 @@ def test_forecast_table_stacks_three_scenarios_and_keeps_base_numbers():
     assert "scenario" in table.columns
 
 
-def test_dcf_value_matches_hand_computation():
-    # 收入 100，增速 10% 不变，净利率 10%，转换率 1，两年，折现率 10%，退出 1x P/S，10 股。
-    # FCFE1 = 110×0.1 = 11，FCFE2 = 121×0.1 = 12.1，TV = 121×1 = 121
-    result = dcf_value(_inputs())
-    expected_pv = 11 / 1.1 + 12.1 / 1.21 + 121 / 1.21
-    assert result.pv_explicit == pytest.approx(11 / 1.1 + 12.1 / 1.21)
-    assert result.terminal_value == pytest.approx(121.0)
-    assert result.equity_value == pytest.approx(expected_pv)
-    assert result.per_share == pytest.approx(expected_pv / 10)
-    assert result.terminal_weight == pytest.approx(100 / expected_pv)
+def test_dcf_value_matches_hand_computation_gordon():
+    # 收入 100，增速 10% 不变，净利率 10%，转换率 1，两年，折现率 10%，10 股。
+    # 默认终值用 Gordon 永续：稳定期再投资率 = g/ROE = 0.03/0.10 = 30%，稳定现金转换 = 70%。
+    # FCFE1 = 110×0.1×1 = 11，FCFE2 = 121×0.1×1 = 12.1
+    # TV = 121×1.03×0.10×0.70 / (0.10-0.03) = 121×1.03×0.07/0.07 = 121×1.03 = 124.63
+    inputs = _inputs(perpetuity_growth=0.03, stable_roe=0.10)
+    result = dcf_value(inputs)
+    expected_pv_explicit = 11 / 1.1 + 12.1 / 1.21
+    expected_tv = 121.0 * 1.03 * 0.10 * 0.70 / 0.07
+    expected_equity = expected_pv_explicit + expected_tv / 1.21
+    assert result.pv_explicit == pytest.approx(expected_pv_explicit)
+    assert result.terminal_value == pytest.approx(expected_tv)
+    assert result.equity_value == pytest.approx(expected_equity)
+    assert result.per_share == pytest.approx(expected_equity / 10)
 
 
 def test_pe_exit_basis_uses_net_income():
-    result = dcf_value(_inputs(exit_basis="pe", exit_multiple=8.0))
+    result = dcf_value(_inputs(terminal_method="multiple", exit_basis="pe", exit_multiple=8.0))
     assert result.terminal_value == pytest.approx(12.1 * 8.0)
 
 
 def test_gordon_terminal_requires_discount_above_growth():
-    result = dcf_value(_inputs(terminal_method="gordon", perpetuity_growth=0.03))
-    assert result.terminal_value == pytest.approx(12.1 * 1.03 / 0.07)
+    result = dcf_value(_inputs(terminal_method="gordon", perpetuity_growth=0.03, stable_roe=0.10))
+    # 稳定期现金转换 = 1 - 0.03/0.10 = 0.70
+    assert result.terminal_value == pytest.approx(121.0 * 1.03 * 0.10 * 0.70 / 0.07)
     with pytest.raises(ValueError):
         dcf_value(_inputs(terminal_method="gordon", perpetuity_growth=0.10))
+
+
+def test_gordon_zero_terminal_when_margin_nonpositive():
+    # 终值净利率非正时，永续生意不可持续，终值按 0 计。
+    result = dcf_value(_inputs(margin_terminal=-0.01, terminal_method="gordon"))
+    assert result.terminal_value == 0.0
+    assert result.terminal_warning is not None
 
 
 def test_invalid_inputs_raise():
