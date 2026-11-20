@@ -3,6 +3,20 @@
   "ts_code": "603078.SH",
   "asof": "20261116",
   "template": "fcfe",
+  "status": "incomplete",
+  "approvals_path": "valuation/fallback_approvals.json",
+  "formulas": {
+    "growth_start": "股权再投资率 × ROE",
+    "equity_reinvestment_rate": "（净资本开支 + 运营资本变动 − 净债务发行）/ 归母净利",
+    "roe": "归母净利 / 平均归属母公司股东权益",
+    "margin_start": "TTM 归母净利 / TTM 收入",
+    "margin_terminal": "min(TTM 净利率, 近 5 年合计净利率)",
+    "cash_conversion": "近 5 个盈利年度 (经营现金流 − 资本开支) / 归母净利 的中位数",
+    "stable_roe": "历史年度 ROE 的中位数",
+    "stable_cash_conversion": "1 − 永续增速 / ROE_stable，再夹到 [0, 1]",
+    "discount_rate": "rf + β × ERP，再夹到 6%–15%",
+    "perpetuity_growth": "2.5%，且低于折现率 1 个百分点"
+  },
   "fundamentals": {
     "name": "江化微",
     "industry": "半导体",
@@ -17,8 +31,37 @@
     "revenue_cagr_5y": 0.16957434645759029,
     "margin_ttm": 0.06706356706159222,
     "margin_mean_5y": 0.09245302704339278,
-    "fcf_conversion": -0.6976230599255198
+    "fcf_conversion": -0.6976230599255198,
+    "equity_reinvestment_rate": null,
+    "reinvestment_reason": "股权再投资率 =（净资本开支 + 运营资本变动 − 净债务发行）/ 归母净利。缺少净资本开支（只有购建长期资产支付的现金不够，还要折旧或处置收回）、运营资本变动、净债务发行，股权再投资率无法计算。不用行业中位数，也不用 2.5%。",
+    "roe_for_growth": 0.05435298680383726,
+    "roe_median": 0.05591167163810093,
+    "roe_reason": null,
+    "revenue_growth_low": 0.06731837756928538,
+    "revenue_growth_high": 0.4050226525969707,
+    "revenue_growth_samples": 5,
+    "margin_low": 0.07133509879799786,
+    "margin_high": 0.11263180449850976,
+    "margin_samples": 5
   },
+  "fallbacks": [
+    {
+      "field": "growth_start",
+      "reason": "股权再投资率 =（净资本开支 + 运营资本变动 − 净债务发行）/ 归母净利。缺少净资本开支（只有购建长期资产支付的现金不够，还要折旧或处置收回）、运营资本变动、净债务发行，股权再投资率无法计算。不用行业中位数，也不用 2.5%。起始增速 = 股权再投资率 × ROE。缺了其中一项就不能算，不用行业中位数，也不用 2.5%。建议兜底改用本公司收入复合增速，审核通过前不进入估值。",
+      "proposed": 0.16957434645759029,
+      "status": "pending_review",
+      "approved_value": null,
+      "computed": null
+    },
+    {
+      "field": "cash_conversion",
+      "reason": "近 5 个盈利年度 (经营现金流−资本开支)/归母净利 的中位数为 -69.8%。这个负值按财报保留，不再夹到 50%。若不愿把现金流出外推到预测期，可在审核文件里把 cash_conversion 批准为 1.0 或 0；若接受外推，把批准值写成这个中位数。1.0 和 0 不是财报里的另一条口径，建议兜底留空。审核通过前，负值也不进入估值。",
+      "proposed": null,
+      "status": "pending_review",
+      "approved_value": null,
+      "computed": -0.6976230599255198
+    }
+  ],
   "discount": {
     "beta": 1.4508844786853938,
     "risk_free": 0.018,
@@ -27,63 +70,62 @@
   },
   "scenarios": {
     "bear": {
-      "growth_start": 0.10174460787455417,
-      "average_growth": 0.06337230393727708,
+      "growth_start": 0.06731837756928538,
+      "average_growth": 0.046159188784642695,
       "growth_terminal": 0.025,
       "margin_start": 0.06706356706159222,
-      "margin_terminal": 0.009321632668425476,
-      "cash_conversion": 0.5,
+      "margin_terminal": 0.07133509879799786,
+      "cash_conversion": null,
       "discount_rate": 0.11279864632769666,
       "terminal_method": "gordon",
       "perpetuity_growth": 0.015000000000000001,
-      "stable_roe": 0.1,
-      "stable_cash_conversion": 0.85,
+      "stable_roe": 0.05591167163810093,
+      "stable_cash_conversion": 0.7317197007256304,
       "exit_multiple": 4.900196817702073,
       "exit_basis": "ps",
-      "per_share": 0.6640138392455985,
-      "terminal_weight": 0.3260008262390001,
-      "terminal_warning": null
+      "per_share": null,
+      "terminal_weight": null,
+      "terminal_warning": null,
+      "approved_fallback": false
     },
     "base": {
-      "growth_start": 0.16957434645759029,
-      "average_growth": 0.09728717322879514,
+      "growth_start": null,
+      "average_growth": null,
       "growth_terminal": 0.025,
       "margin_start": 0.06706356706159222,
       "margin_terminal": 0.06706356706159222,
-      "cash_conversion": 0.5,
+      "cash_conversion": null,
       "discount_rate": 0.09779864632769666,
       "terminal_method": "gordon",
       "perpetuity_growth": 0.025,
-      "stable_roe": 0.1,
-      "stable_cash_conversion": 0.75,
+      "stable_roe": 0.05591167163810093,
+      "stable_cash_conversion": 0.5528661678760507,
       "exit_multiple": 7.800992834281568,
       "exit_basis": "ps",
-      "per_share": 3.4666277140575104,
-      "terminal_weight": 0.7332266628138379,
-      "terminal_warning": null
+      "per_share": null,
+      "terminal_weight": null,
+      "terminal_warning": null,
+      "approved_fallback": false
     },
     "bull": {
-      "growth_start": 0.21196793307198786,
-      "average_growth": 0.11848396653599393,
+      "growth_start": 0.4050226525969707,
+      "average_growth": 0.21501132629848535,
       "growth_terminal": 0.025,
       "margin_start": 0.06706356706159222,
-      "margin_terminal": 0.18702078887557808,
-      "cash_conversion": 0.5,
+      "margin_terminal": 0.11263180449850976,
+      "cash_conversion": null,
       "discount_rate": 0.08779864632769667,
       "terminal_method": "gordon",
       "perpetuity_growth": 0.030000000000000002,
-      "stable_roe": 0.1,
-      "stable_cash_conversion": 0.7,
+      "stable_roe": 0.05591167163810093,
+      "stable_cash_conversion": 0.4634394014512607,
       "exit_multiple": 14.86165020833526,
       "exit_basis": "ps",
-      "per_share": 12.185373630092675,
-      "terminal_weight": 0.8341721752793234,
-      "terminal_warning": null
+      "per_share": null,
+      "terminal_weight": null,
+      "terminal_warning": null,
+      "approved_fallback": false
     }
   },
-  "implied_growth": {
-    "growth_start": 0.9372390632753762,
-    "average_growth": 0.4811195316376881,
-    "converged": true
-  }
+  "implied_growth": null
 }

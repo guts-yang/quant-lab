@@ -3,6 +3,20 @@
   "ts_code": "600183.SH",
   "asof": "20261116",
   "template": "fcfe",
+  "status": "incomplete",
+  "approvals_path": "valuation/fallback_approvals.json",
+  "formulas": {
+    "growth_start": "股权再投资率 × ROE",
+    "equity_reinvestment_rate": "（净资本开支 + 运营资本变动 − 净债务发行）/ 归母净利",
+    "roe": "归母净利 / 平均归属母公司股东权益",
+    "margin_start": "TTM 归母净利 / TTM 收入",
+    "margin_terminal": "min(TTM 净利率, 近 5 年合计净利率)",
+    "cash_conversion": "近 5 个盈利年度 (经营现金流 − 资本开支) / 归母净利 的中位数",
+    "stable_roe": "历史年度 ROE 的中位数",
+    "stable_cash_conversion": "1 − 永续增速 / ROE_stable，再夹到 [0, 1]",
+    "discount_rate": "rf + β × ERP，再夹到 6%–15%",
+    "perpetuity_growth": "2.5%，且低于折现率 1 个百分点"
+  },
   "fundamentals": {
     "name": "生益科技",
     "industry": "元器件",
@@ -17,8 +31,29 @@
     "revenue_cagr_5y": 0.1412222010594053,
     "margin_ttm": 0.1856954871228166,
     "margin_mean_5y": 0.10219556808671357,
-    "fcf_conversion": 0.8399943568287811
+    "fcf_conversion": 0.8399943568287811,
+    "equity_reinvestment_rate": null,
+    "reinvestment_reason": "股权再投资率 =（净资本开支 + 运营资本变动 − 净债务发行）/ 归母净利。缺少净资本开支（只有购建长期资产支付的现金不够，还要折旧或处置收回）、运营资本变动、净债务发行，股权再投资率无法计算。不用行业中位数，也不用 2.5%。",
+    "roe_for_growth": 0.2108210815504002,
+    "roe_median": 0.12037230986853995,
+    "roe_reason": null,
+    "revenue_growth_low": -0.11146253542812712,
+    "revenue_growth_high": 0.39448096835957824,
+    "revenue_growth_samples": 5,
+    "margin_low": 0.07017907818555,
+    "margin_high": 0.13957023003295801,
+    "margin_samples": 5
   },
+  "fallbacks": [
+    {
+      "field": "growth_start",
+      "reason": "股权再投资率 =（净资本开支 + 运营资本变动 − 净债务发行）/ 归母净利。缺少净资本开支（只有购建长期资产支付的现金不够，还要折旧或处置收回）、运营资本变动、净债务发行，股权再投资率无法计算。不用行业中位数，也不用 2.5%。起始增速 = 股权再投资率 × ROE。缺了其中一项就不能算，不用行业中位数，也不用 2.5%。建议兜底改用本公司收入复合增速，审核通过前不进入估值。",
+      "proposed": 0.1412222010594053,
+      "status": "pending_review",
+      "approved_value": null,
+      "computed": null
+    }
+  ],
   "discount": {
     "beta": 2.275217660807725,
     "risk_free": 0.018,
@@ -27,26 +62,27 @@
   },
   "scenarios": {
     "bear": {
-      "growth_start": 0.08473332063564318,
-      "average_growth": 0.05486666031782159,
+      "growth_start": -0.11146253542812712,
+      "average_growth": -0.043231267714063555,
       "growth_terminal": 0.025,
       "margin_start": 0.1856954871228166,
-      "margin_terminal": -0.013561133321328744,
+      "margin_terminal": 0.07017907818555,
       "cash_conversion": 0.8399943568287811,
       "discount_rate": 0.1581369713444249,
       "terminal_method": "gordon",
       "perpetuity_growth": 0.015000000000000001,
-      "stable_roe": 0.1,
-      "stable_cash_conversion": 0.85,
+      "stable_roe": 0.12037230986853995,
+      "stable_cash_conversion": 0.875386623249303,
       "exit_multiple": 1.7719592310727512,
       "exit_basis": "ps",
-      "per_share": 7.145265775875106,
-      "terminal_weight": 0.0,
-      "terminal_warning": "稳定期净利率非正，永续终值按 0 计"
+      "per_share": 8.26795994957004,
+      "terminal_weight": 0.2318632065469175,
+      "terminal_warning": null,
+      "approved_fallback": false
     },
     "base": {
-      "growth_start": 0.1412222010594053,
-      "average_growth": 0.08311110052970265,
+      "growth_start": null,
+      "average_growth": null,
       "growth_terminal": 0.025,
       "margin_start": 0.1856954871228166,
       "margin_terminal": 0.10219556808671357,
@@ -54,36 +90,34 @@
       "discount_rate": 0.14313697134442488,
       "terminal_method": "gordon",
       "perpetuity_growth": 0.025,
-      "stable_roe": 0.1,
-      "stable_cash_conversion": 0.75,
+      "stable_roe": 0.12037230986853995,
+      "stable_cash_conversion": 0.7923110387488385,
       "exit_multiple": 3.263550289888555,
       "exit_basis": "ps",
-      "per_share": 20.407740021446205,
-      "terminal_weight": 0.37560764274632474,
-      "terminal_warning": null
+      "per_share": null,
+      "terminal_weight": null,
+      "terminal_warning": null,
+      "approved_fallback": false
     },
     "bull": {
-      "growth_start": 0.17652775132425663,
-      "average_growth": 0.10076387566212831,
+      "growth_start": 0.39448096835957824,
+      "average_growth": 0.20974048417978913,
       "growth_terminal": 0.025,
       "margin_start": 0.1856954871228166,
-      "margin_terminal": 0.10219556808671357,
+      "margin_terminal": 0.13957023003295801,
       "cash_conversion": 0.8399943568287811,
       "discount_rate": 0.13313697134442487,
       "terminal_method": "gordon",
       "perpetuity_growth": 0.030000000000000002,
-      "stable_roe": 0.1,
-      "stable_cash_conversion": 0.7,
+      "stable_roe": 0.12037230986853995,
+      "stable_cash_conversion": 0.7507732464986061,
       "exit_multiple": 5.439979736189159,
       "exit_basis": "ps",
-      "per_share": 23.94538416980252,
-      "terminal_weight": 0.4083464545324684,
-      "terminal_warning": null
+      "per_share": 52.15737052975677,
+      "terminal_weight": 0.5164157064411398,
+      "terminal_warning": null,
+      "approved_fallback": false
     }
   },
-  "implied_growth": {
-    "growth_start": 0.6176885204861902,
-    "average_growth": 0.3213442602430951,
-    "converged": true
-  }
+  "implied_growth": null
 }
