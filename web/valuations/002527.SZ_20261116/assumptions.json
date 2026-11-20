@@ -3,6 +3,20 @@
   "ts_code": "002527.SZ",
   "asof": "20261116",
   "template": "fcfe",
+  "status": "incomplete",
+  "approvals_path": "valuation/fallback_approvals.json",
+  "formulas": {
+    "growth_start": "股权再投资率 × ROE",
+    "equity_reinvestment_rate": "（净资本开支 + 运营资本变动 − 净债务发行）/ 归母净利",
+    "roe": "归母净利 / 平均归属母公司股东权益",
+    "margin_start": "TTM 归母净利 / TTM 收入",
+    "margin_terminal": "min(TTM 净利率, 近 5 年合计净利率)",
+    "cash_conversion": "近 5 个盈利年度 (经营现金流 − 资本开支) / 归母净利 的中位数",
+    "stable_roe": "历史年度 ROE 的中位数",
+    "stable_cash_conversion": "1 − 永续增速 / ROE_stable，再夹到 [0, 1]",
+    "discount_rate": "rf + β × ERP，再夹到 6%–15%",
+    "perpetuity_growth": "2.5%，且低于折现率 1 个百分点"
+  },
   "fundamentals": {
     "name": "新时达",
     "industry": "电器仪表",
@@ -17,8 +31,37 @@
     "revenue_cagr_5y": -0.02231332241075712,
     "margin_ttm": -0.010657549736859024,
     "margin_mean_5y": -0.08890445522334417,
-    "fcf_conversion": 7.35315918652311
+    "fcf_conversion": 7.35315918652311,
+    "equity_reinvestment_rate": null,
+    "reinvestment_reason": "股权再投资率 =（净资本开支 + 运营资本变动 − 净债务发行）/ 归母净利。缺少净资本开支（只有购建长期资产支付的现金不够，还要折旧或处置收回）、运营资本变动、净债务发行，股权再投资率无法计算。不用行业中位数，也不用 2.5%。",
+    "roe_for_growth": 0.0044035336126339916,
+    "roe_median": -0.20716109598134966,
+    "roe_reason": null,
+    "revenue_growth_low": -0.2736534658150859,
+    "revenue_growth_high": 0.09368076764193645,
+    "revenue_growth_samples": 5,
+    "margin_low": -0.34124974379954687,
+    "margin_high": 0.03521747840185076,
+    "margin_samples": 5
   },
+  "fallbacks": [
+    {
+      "field": "growth_start",
+      "reason": "股权再投资率 =（净资本开支 + 运营资本变动 − 净债务发行）/ 归母净利。缺少净资本开支（只有购建长期资产支付的现金不够，还要折旧或处置收回）、运营资本变动、净债务发行，股权再投资率无法计算。不用行业中位数，也不用 2.5%。起始增速 = 股权再投资率 × ROE。缺了其中一项就不能算，不用行业中位数，也不用 2.5%。建议兜底改用本公司收入复合增速，审核通过前不进入估值。",
+      "proposed": -0.02231332241075712,
+      "status": "pending_review",
+      "approved_value": null,
+      "computed": null
+    },
+    {
+      "field": "stable_cash_conversion",
+      "reason": "历史 ROE 中位数为 -20.7%，不是正数，稳定期再投资率 = 永续增速 / ROE 没有定义。稳定期现金转换率无法计算。建议兜底留空。",
+      "proposed": null,
+      "status": "pending_review",
+      "approved_value": null,
+      "computed": -0.20716109598134966
+    }
+  ],
   "discount": {
     "beta": 1.678497693511754,
     "risk_free": 0.018,
@@ -27,63 +70,62 @@
   },
   "scenarios": {
     "bear": {
-      "growth_start": -0.013387993446454272,
-      "average_growth": 0.005806003276772865,
+      "growth_start": -0.2736534658150859,
+      "average_growth": -0.12432673290754294,
       "growth_terminal": 0.025,
       "margin_start": -0.010657549736859024,
-      "margin_terminal": -0.010657549736859024,
-      "cash_conversion": 1.2,
+      "margin_terminal": -0.34124974379954687,
+      "cash_conversion": 7.35315918652311,
       "discount_rate": 0.12531737314314645,
       "terminal_method": "gordon",
       "perpetuity_growth": 0.015000000000000001,
-      "stable_roe": 0.1,
-      "stable_cash_conversion": 0.85,
+      "stable_roe": null,
+      "stable_cash_conversion": null,
       "exit_multiple": 3.2270870707587616,
       "exit_basis": "ps",
-      "per_share": -0.32238341364180106,
-      "terminal_weight": -0.0,
-      "terminal_warning": "稳定期净利率非正，永续终值按 0 计"
+      "per_share": null,
+      "terminal_weight": null,
+      "terminal_warning": null,
+      "approved_fallback": false
     },
     "base": {
-      "growth_start": -0.02231332241075712,
-      "average_growth": 0.0013433387946214432,
+      "growth_start": null,
+      "average_growth": null,
       "growth_terminal": 0.025,
       "margin_start": -0.010657549736859024,
-      "margin_terminal": 0.0,
-      "cash_conversion": 1.2,
+      "margin_terminal": -0.08890445522334417,
+      "cash_conversion": 7.35315918652311,
       "discount_rate": 0.11031737314314646,
       "terminal_method": "gordon",
       "perpetuity_growth": 0.025,
-      "stable_roe": 0.1,
-      "stable_cash_conversion": 0.75,
+      "stable_roe": null,
+      "stable_cash_conversion": null,
       "exit_multiple": 5.070982630086268,
       "exit_basis": "ps",
-      "per_share": -0.18738869113256257,
-      "terminal_weight": -0.0,
-      "terminal_warning": "稳定期净利率非正，永续终值按 0 计"
+      "per_share": null,
+      "terminal_weight": null,
+      "terminal_warning": null,
+      "approved_fallback": false
     },
     "bull": {
-      "growth_start": -0.0278916530134464,
-      "average_growth": -0.001445826506723197,
+      "growth_start": 0.09368076764193645,
+      "average_growth": 0.05934038382096822,
       "growth_terminal": 0.025,
       "margin_start": -0.010657549736859024,
-      "margin_terminal": 0.1653868211113262,
-      "cash_conversion": 1.2,
+      "margin_terminal": 0.03521747840185076,
+      "cash_conversion": 7.35315918652311,
       "discount_rate": 0.10031737314314647,
       "terminal_method": "gordon",
       "perpetuity_growth": 0.030000000000000002,
-      "stable_roe": 0.1,
-      "stable_cash_conversion": 0.7,
+      "stable_roe": null,
+      "stable_cash_conversion": null,
       "exit_multiple": 9.321309415309631,
       "exit_basis": "ps",
-      "per_share": 6.954257171144456,
-      "terminal_weight": 0.6980325114546712,
-      "terminal_warning": null
+      "per_share": null,
+      "terminal_weight": null,
+      "terminal_warning": null,
+      "approved_fallback": false
     }
   },
-  "implied_growth": {
-    "growth_start": 1.0,
-    "average_growth": 0.5125,
-    "converged": false
-  }
+  "implied_growth": null
 }
