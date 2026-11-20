@@ -1,0 +1,14 @@
+{
+  "approvals": [
+    {
+      "ts_code": "000034.SZ",
+      "field": "growth_start",
+      "value": 0.09322005286778401
+    },
+    {
+      "ts_code": "000034.SZ",
+      "field": "cash_conversion",
+      "value": -0.47719636502996515
+    }
+  ]
+}

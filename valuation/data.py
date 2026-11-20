@@ -14,7 +14,13 @@ import pandas as pd
 from core.pit import visible_history
 from core.provider import HS300, recent_period_ends
 from factors.fundamental.common import CONSOLIDATED_REPORTS, shift_quarter_end
-from valuation.assumptions import CompanyFundamentals, IndustryStats, cagr
+from valuation.assumptions import (
+    SCENARIO_MIN_SAMPLES,
+    CompanyFundamentals,
+    IndustryStats,
+    cagr,
+    equity_reinvestment_rate,
+)
 
 # 5 年 CAGR + TTM 需要 6 年出头的季度报告期。
 LOOKBACK_QUARTERS = 28
@@ -115,6 +121,7 @@ def company_fundamentals(
     cashflow_visible: pd.DataFrame,
     instruments: pd.DataFrame,
     daily_basic: pd.DataFrame,
+    balance_visible: pd.DataFrame | None = None,
 ) -> CompanyFundamentals:
     """单票估值所需的全部历史输入，全部来自 asof 前已公告数据。"""
     code = str(ts_code)
@@ -144,6 +151,26 @@ def company_fundamentals(
     comp_type = _latest_comp_type(income)
     price, total_mv = _market_snapshot(daily_basic, code)
     shares = total_mv / price if total_mv is not None and price else None
+    roes, roe_median, roe_gap = _roe_history(balance_visible, code, income_annual)
+    reinvestment, reinvestment_year, reinvestment_reason = _company_reinvestment(
+        code, cashflow, balance_visible, income_annual
+    )
+    if reinvestment is None:
+        roe_for_growth = roes[max(roes)] if roes else None
+        roe_reason = None if roes else roe_gap
+    else:
+        paired = roes.get(reinvestment_year) if reinvestment_year is not None else None
+        if paired is None:
+            roe_for_growth = None
+            roe_reason = (
+                f"{reinvestment_year} 年股权再投资率可以计算，但该年归母净利 / 平均归属母公司股东权益无法计算。"
+                "没有改用别的年度 ROE，也没有编造股东权益。"
+            )
+        else:
+            roe_for_growth = paired
+            roe_reason = None
+    growth_low, growth_high, growth_samples = _growth_band(revenue_annual)
+    margin_low, margin_high, margin_samples = _margin_band(income_annual, revenue_annual)
     return CompanyFundamentals(
         ts_code=code,
         industry=industry,
@@ -160,6 +187,17 @@ def company_fundamentals(
         margin_mean_5y=margin_mean_5y,
         fcf_conversion=conversion,
         name=name,
+        equity_reinvestment_rate=reinvestment,
+        reinvestment_reason=reinvestment_reason,
+        roe_for_growth=roe_for_growth,
+        roe_median=roe_median,
+        roe_reason=roe_reason,
+        revenue_growth_low=growth_low,
+        revenue_growth_high=growth_high,
+        revenue_growth_samples=growth_samples,
+        margin_low=margin_low,
+        margin_high=margin_high,
+        margin_samples=margin_samples,
     )
 
 
@@ -231,10 +269,14 @@ def load_valuation_inputs(
     periods = recent_period_ends(asof, n=lookback_quarters)
     income_visible = visible_frame(provider.get_income_statements(periods), asof)
     cashflow_visible = visible_frame(provider.get_cash_flows(periods), asof)
+    get_balance = getattr(provider, "get_balance_sheets", None)
+    balance_visible = None if get_balance is None else visible_frame(get_balance(periods), asof)
     instruments = provider.get_instruments(asof)
     daily_basic = provider.get_daily_basic(asof)
 
-    fundamentals = company_fundamentals(code, income_visible, cashflow_visible, instruments, daily_basic)
+    fundamentals = company_fundamentals(
+        code, income_visible, cashflow_visible, instruments, daily_basic, balance_visible
+    )
     industry = None
     if fundamentals.industry:
         industry = industry_stats(income_visible, instruments, daily_basic, fundamentals.industry)
@@ -286,6 +328,141 @@ def _revenue_cagr(revenue_annual: dict[int, float]) -> float | None:
         return None
     first, last = years[0], years[-1]
     return cagr(revenue_annual[first], revenue_annual[last], last - first)
+
+
+def _annual_for_code(frame: pd.DataFrame | None, code: str, column: str) -> dict[int, float]:
+    if frame is None or column not in frame.columns:
+        return {}
+    scoped = frame.loc[frame["ts_code"].astype(str).eq(code)] if "ts_code" in frame.columns else frame
+    return annual_values(scoped, column).get(code, {})
+
+
+def _roe_history(
+    balance: pd.DataFrame | None,
+    code: str,
+    income_annual: dict[int, float],
+) -> tuple[dict[int, float], float | None, str | None]:
+    """年度 ROE = 归母净利 / 平均归属母公司股东权益。没有权益就不编造。"""
+    if balance is None:
+        return {}, None, "没有读到资产负债表，归属母公司股东权益无法计算，ROE 无法计算。没有编造股东权益。"
+    if "equity" not in balance.columns:
+        return {}, None, "资产负债表没有归属母公司股东权益这一列，ROE 无法计算。没有编造股东权益。"
+    equity_annual = _annual_for_code(balance, code, "equity")
+    roes: dict[int, float] = {}
+    for year, profit in income_annual.items():
+        if year not in equity_annual or (year - 1) not in equity_annual:
+            continue
+        average = (equity_annual[year - 1] + equity_annual[year]) / 2.0
+        if average <= 0:
+            continue
+        roes[year] = profit / average
+    if not roes:
+        if not equity_annual:
+            reason = "资产负债表没有可用的归属母公司股东权益，ROE 无法计算。没有编造股东权益。"
+        else:
+            reason = "有归属母公司股东权益，但凑不出归母净利除以平均股东权益的年度，ROE 无法计算。没有编造股东权益。"
+        return {}, None, reason
+    median = float(pd.Series(list(roes.values())).median())
+    return roes, median, None
+
+
+def _company_reinvestment(
+    code: str,
+    cashflow: pd.DataFrame,
+    balance: pd.DataFrame | None,
+    income_annual: dict[int, float],
+) -> tuple[float | None, int | None, str | None]:
+    """最近一个三项齐全且归母净利为正的年度。字段不够就返回原因，不另找口径。"""
+    net_capex, have_capex = _net_capex_by_year(cashflow, code)
+    delta_nwc, have_nwc = _delta_nwc_by_year(cashflow, balance, code)
+    net_debt, have_debt = _net_debt_by_year(cashflow, code)
+    if not (have_capex and have_nwc and have_debt):
+        return None, None, _missing_reinvestment_reason(have_capex, have_nwc, have_debt)
+    for year in sorted(set(net_capex) & set(delta_nwc) & set(net_debt), reverse=True):
+        rate = equity_reinvestment_rate(income_annual.get(year), net_capex.get(year), delta_nwc.get(year), net_debt.get(year))
+        if rate is not None:
+            return rate, year, None
+    return None, None, "同一年度没有同时具备净资本开支、运营资本变动、净债务发行和正的归母净利，股权再投资率无法计算。不用行业中位数，也不用 2.5%。"
+
+
+def _net_capex_by_year(cashflow: pd.DataFrame | None, code: str) -> tuple[dict[int, float], bool]:
+    if cashflow is not None and "net_capex" in cashflow.columns:
+        return _annual_for_code(cashflow, code, "net_capex"), True
+    if cashflow is not None and {"capex", "depreciation"} <= set(cashflow.columns):
+        capex = _annual_for_code(cashflow, code, "capex")
+        depreciation = _annual_for_code(cashflow, code, "depreciation")
+        disposal = _annual_for_code(cashflow, code, "disposal") if "disposal" in cashflow.columns else {}
+        net = {
+            year: capex[year] - depreciation[year] - disposal.get(year, 0.0)
+            for year in set(capex) & set(depreciation)
+        }
+        return net, True
+    return {}, False
+
+
+def _delta_nwc_by_year(
+    cashflow: pd.DataFrame | None,
+    balance: pd.DataFrame | None,
+    code: str,
+) -> tuple[dict[int, float], bool]:
+    if cashflow is not None and "delta_nwc" in cashflow.columns:
+        return _annual_for_code(cashflow, code, "delta_nwc"), True
+    if balance is not None and "nwc" in balance.columns:
+        levels = _annual_for_code(balance, code, "nwc")
+        deltas = {year: level - levels[year - 1] for year, level in levels.items() if year - 1 in levels}
+        return deltas, True
+    return {}, False
+
+
+def _net_debt_by_year(cashflow: pd.DataFrame | None, code: str) -> tuple[dict[int, float], bool]:
+    if cashflow is not None and "net_debt_issued" in cashflow.columns:
+        return _annual_for_code(cashflow, code, "net_debt_issued"), True
+    if cashflow is not None and {"debt_issued", "debt_repaid"} <= set(cashflow.columns):
+        issued = _annual_for_code(cashflow, code, "debt_issued")
+        repaid = _annual_for_code(cashflow, code, "debt_repaid")
+        return {year: issued[year] - repaid[year] for year in set(issued) & set(repaid)}, True
+    return {}, False
+
+
+def _missing_reinvestment_reason(have_capex: bool, have_nwc: bool, have_debt: bool) -> str:
+    missing: list[str] = []
+    if not have_capex:
+        missing.append("净资本开支（只有购建长期资产支付的现金不够，还要折旧或处置收回）")
+    if not have_nwc:
+        missing.append("运营资本变动")
+    if not have_debt:
+        missing.append("净债务发行")
+    joined = "、".join(missing)
+    return (
+        "股权再投资率 =（净资本开支 + 运营资本变动 − 净债务发行）/ 归母净利。"
+        f"缺少{joined}，股权再投资率无法计算。不用行业中位数，也不用 2.5%。"
+    )
+
+
+def _growth_band(revenue_annual: dict[int, float]) -> tuple[float | None, float | None, int]:
+    years = sorted(revenue_annual)
+    growths: list[float] = []
+    for earlier, later in zip(years, years[1:]):
+        if later != earlier + 1:
+            continue
+        base = revenue_annual[earlier]
+        if base > 0:
+            growths.append(revenue_annual[later] / base - 1.0)
+    growths = growths[-5:]
+    if len(growths) < SCENARIO_MIN_SAMPLES:
+        return None, None, len(growths)
+    return min(growths), max(growths), len(growths)
+
+
+def _margin_band(
+    income_annual: dict[int, float],
+    revenue_annual: dict[int, float],
+) -> tuple[float | None, float | None, int]:
+    years = [year for year in sorted(set(income_annual) & set(revenue_annual)) if revenue_annual[year] > 0][-5:]
+    margins = [income_annual[year] / revenue_annual[year] for year in years]
+    if len(margins) < SCENARIO_MIN_SAMPLES:
+        return None, None, len(margins)
+    return min(margins), max(margins), len(margins)
 
 
 def _fcf_conversion(

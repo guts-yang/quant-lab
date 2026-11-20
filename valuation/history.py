@@ -120,9 +120,9 @@ def build_history(
     return align_history(prices, pd.DataFrame(points, columns=["trade_date", "intrinsic"]))
 
 
-def _base_per_share(provider, ts_code: str, asof: pd.Timestamp, config, estimates) -> float:
+def _base_per_share(provider, ts_code: str, asof: pd.Timestamp, config, estimates) -> float | None:
     report = run_valuation(provider, ts_code, asof, config, estimates)
-    return float(report.scenarios["base"].per_share)
+    return report.scenarios["base"].per_share
 
 
 def _normalize_dates(values: pd.Series) -> pd.Series:

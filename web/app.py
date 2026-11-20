@@ -416,7 +416,7 @@ def _render_valuations() -> None:
 
 def _render_valuation_charts(run) -> None:
     _render_price_history(run)
-    values = value_frame(run.scenarios)
+    values = value_frame(run.scenarios, run.assumptions)
     if not values.empty:
         st.subheader("价值对照")
         bars = (
@@ -437,7 +437,7 @@ def _render_valuation_charts(run) -> None:
         if price is not None:
             st.caption(f"横线是现价 {price:.2f} 元/股。")
 
-    present = present_value_frame(run.scenarios)
+    present = present_value_frame(run.scenarios, run.assumptions)
     if not present.empty:
         st.subheader("现值构成")
         st.altair_chart(
@@ -453,9 +453,9 @@ def _render_valuation_charts(run) -> None:
         )
         st.caption("基准情景。显式期是预测期内股权现金流的现值，终值是退出倍数折现回来的部分。")
 
-    revenue = revenue_frame(run.forecast)
-    margin = margin_frame(run.forecast)
-    cash = fcfe_frame(run.forecast)
+    revenue = revenue_frame(run.forecast, run.assumptions)
+    margin = margin_frame(run.forecast, run.assumptions)
+    cash = fcfe_frame(run.forecast, run.assumptions)
     if not revenue.empty or not margin.empty or not cash.empty:
         st.subheader("预测路径")
     if not revenue.empty:
@@ -513,7 +513,7 @@ def _render_valuation_charts(run) -> None:
             use_container_width=True,
         )
 
-    heat = sensitivity_frame(run.sensitivity)
+    heat = sensitivity_frame(run.sensitivity, run.assumptions)
     if not heat.empty:
         st.subheader("敏感性")
         growth_order = heat.sort_values("起始增速")["增速标签"].drop_duplicates().tolist()

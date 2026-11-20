@@ -44,7 +44,7 @@ class DcfInputs:
     shares: float  # 总股本，股
     terminal_method: str = "gordon"  # "gordon"（默认）或 "multiple"
     perpetuity_growth: float = 0.025  # gordon 法的永续增速
-    stable_roe: float = 0.10  # 稳定期 ROE，用于推导再投资率 g/ROE
+    stable_roe: float = 0.10  # 仅供直接调用引擎时的缺省。假设层必须改写为该公司历史 ROE
     stable_cash_conversion: float | None = None  # 稳定期 FCFE/NI；缺省按 1 - g/ROE 推导
 
 
@@ -125,13 +125,14 @@ def project_fcfe(inputs: DcfInputs) -> pd.DataFrame:
 def stable_conversion(inputs: DcfInputs) -> float:
     """稳定期 FCFE/净利润。Damodaran：稳定期再投资率 = g/ROE，故 FCFE/NI = 1 - g/ROE。
 
-    显式给定的 stable_cash_conversion 优先；否则用 perpetuity_growth / stable_roe 推导，
-    并夹到 [0, 1] 防止再投资率为负或超过 100%。
+    显式给定的 stable_cash_conversion 优先。否则用 perpetuity_growth / stable_roe 推导，
+    并夹到 [0, 1]。ROE 缺失或非正时不把转换率改成 1，直接报错。
+    假设层必须传入该公司自己的历史 ROE，不能依赖 DcfInputs 上 0.10 的引擎缺省。
     """
     if inputs.stable_cash_conversion is not None:
         return float(inputs.stable_cash_conversion)
-    if inputs.stable_roe <= 0:
-        return 1.0
+    if inputs.stable_roe is None or inputs.stable_roe <= 0:
+        raise ValueError("稳定期 ROE 非正或缺失，稳定期现金转换率无法计算")
     reinvestment = inputs.perpetuity_growth / inputs.stable_roe
     return min(1.0, max(0.0, 1.0 - reinvestment))
 

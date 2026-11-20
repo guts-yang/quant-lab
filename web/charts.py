@@ -25,9 +25,11 @@ def security_label(name: str | None, code: str) -> str:
     return f"{company}（{code}）"
 
 
-def value_frame(scenarios: pd.DataFrame | None) -> pd.DataFrame:
-    """熊、基准、牛的每股价值，顺序固定。"""
+def value_frame(scenarios: pd.DataFrame | None, assumptions: dict | None = None) -> pd.DataFrame:
+    """熊、基准、牛的每股价值，顺序固定。待审兜底时不画价值柱。"""
     columns = ["情景", "每股价值"]
+    if has_pending_fallback(assumptions):
+        return pd.DataFrame(columns=columns)
     if scenarios is None or scenarios.empty or "scenario" not in scenarios.columns or "per_share" not in scenarios.columns:
         return pd.DataFrame(columns=columns)
     rows: list[dict[str, object]] = []
@@ -47,9 +49,11 @@ def quoted_price(assumptions: dict | None) -> float | None:
     return _number(fundamentals.get("price"))
 
 
-def present_value_frame(scenarios: pd.DataFrame | None) -> pd.DataFrame:
+def present_value_frame(scenarios: pd.DataFrame | None, assumptions: dict | None = None) -> pd.DataFrame:
     """基准情景的显式期现值与终值现值，单位是亿元。"""
     columns = ["构成", "现值"]
+    if has_pending_fallback(assumptions):
+        return pd.DataFrame(columns=columns)
     if scenarios is None or scenarios.empty or "scenario" not in scenarios.columns:
         return pd.DataFrame(columns=columns)
     matched = scenarios.loc[scenarios["scenario"].astype(str).eq("base")]
@@ -69,9 +73,11 @@ def present_value_frame(scenarios: pd.DataFrame | None) -> pd.DataFrame:
     )
 
 
-def revenue_frame(forecast: pd.DataFrame | None) -> pd.DataFrame:
+def revenue_frame(forecast: pd.DataFrame | None, assumptions: dict | None = None) -> pd.DataFrame:
     """三情景收入路径，单位是亿元。没有 scenario 列时全部记为基准。"""
     columns = ["年份", "情景", "收入"]
+    if has_pending_fallback(assumptions):
+        return pd.DataFrame(columns=columns)
     if forecast is None or forecast.empty or "revenue" not in forecast.columns or "year" not in forecast.columns:
         return pd.DataFrame(columns=columns)
     frame = forecast.copy()
@@ -89,9 +95,11 @@ def revenue_frame(forecast: pd.DataFrame | None) -> pd.DataFrame:
     return frame[columns].reset_index(drop=True)
 
 
-def margin_frame(forecast: pd.DataFrame | None) -> pd.DataFrame:
+def margin_frame(forecast: pd.DataFrame | None, assumptions: dict | None = None) -> pd.DataFrame:
     """基准情景净利率，仍是比率。"""
     columns = ["年份", "净利率"]
+    if has_pending_fallback(assumptions):
+        return pd.DataFrame(columns=columns)
     base = _base_forecast(forecast)
     if base.empty or "margin" not in base.columns:
         return pd.DataFrame(columns=columns)
@@ -104,9 +112,11 @@ def margin_frame(forecast: pd.DataFrame | None) -> pd.DataFrame:
     return frame.sort_values("年份", kind="mergesort").reset_index(drop=True)
 
 
-def fcfe_frame(forecast: pd.DataFrame | None) -> pd.DataFrame:
+def fcfe_frame(forecast: pd.DataFrame | None, assumptions: dict | None = None) -> pd.DataFrame:
     """基准情景股权现金流，单位是亿元。"""
     columns = ["年份", "股权现金流"]
+    if has_pending_fallback(assumptions):
+        return pd.DataFrame(columns=columns)
     base = _base_forecast(forecast)
     if base.empty or "fcfe" not in base.columns:
         return pd.DataFrame(columns=columns)
@@ -137,9 +147,11 @@ def growth_anchor_frame(assumptions: dict | None) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=columns)
 
 
-def sensitivity_frame(sensitivity: pd.DataFrame | None) -> pd.DataFrame:
+def sensitivity_frame(sensitivity: pd.DataFrame | None, assumptions: dict | None = None) -> pd.DataFrame:
     """折现率 × 起始增速的长表。标签按数值排序，避免百分号字符串的字典序。"""
     columns = ["折现率", "起始增速", "每股价值", "折现率标签", "增速标签"]
+    if has_pending_fallback(assumptions):
+        return pd.DataFrame(columns=columns)
     if sensitivity is None or sensitivity.empty:
         return pd.DataFrame(columns=columns)
     grid = sensitivity.copy()
@@ -388,6 +400,68 @@ def _number(value: object) -> float | None:
     return number
 
 
+def has_pending_fallback(assumptions: dict | None) -> bool:
+    """旧假设没有 fallbacks 字段时返回 False，已发布页面仍按原样打开。"""
+    return bool(_pending_fallbacks(assumptions))
+
+
+def _pending_fallbacks(assumptions: dict | None) -> list[dict]:
+    if not isinstance(assumptions, dict):
+        return []
+    raw = assumptions.get("fallbacks")
+    if not isinstance(raw, list):
+        return []
+    pending: list[dict] = []
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        if str(item.get("status") or "pending_review") == "pending_review":
+            pending.append(item)
+    return pending
+
+
+def _pending_process(name: str, code: str, asof: object, fundamentals: dict, pending: list[dict], approvals_path: object) -> str:
+    who = security_label(name or None, code) if code else (name or "这家公司")
+    when = _fmt_asof(asof)
+    dated = f"在 {when} " if when else ""
+    lines = [
+        f"{who}{dated}的正式每股价值无法计算。主路径还有待审兜底，这里不把空价值画成一条估值曲线。",
+        "**无法计算**",
+    ]
+    for item in pending:
+        field = str(item.get("field") or "输入")
+        reason = str(item.get("reason") or "").strip()
+        lines.append(
+            f"- {field}：{reason} "
+            f"财报算出的数 {_fmt_fallback(field, item.get('computed'))}；"
+            f"建议兜底 {_fmt_fallback(field, item.get('proposed'))}。"
+        )
+    path = str(approvals_path or "valuation/fallback_approvals.json")
+    lines.append(f"审核文件：`{path}`。写入批准值之前，这些数不进入估值。")
+    lines.append(_calc_now(fundamentals))
+    return "\n\n".join(lines)
+
+
+def _approved_fallback_line(assumptions: dict) -> str:
+    raw = assumptions.get("fallbacks")
+    if not isinstance(raw, list):
+        return ""
+    names = [str(item.get("field") or "输入") for item in raw if isinstance(item, dict) and item.get("status") == "approved"]
+    if not names:
+        return ""
+    return "已审核兜底：" + "、".join(names) + "。这些数来自审核文件，审核通过后才进入估值。"
+
+
+def _fmt_fallback(field: str, value: object) -> str:
+    if value is None:
+        return "无"
+    if field in {"revenue_base"}:
+        return _fmt_yi(value)
+    if field == "shares":
+        return _fmt_shares(value)
+    return _fmt_pct(value)
+
+
 # 只用来说明已经写进 assumptions 的折现率和转换率，页面不重算估值。
 _DISCOUNT_FLOOR = 0.06
 _DISCOUNT_CAP = 0.15
@@ -412,15 +486,19 @@ def calculation_process(
     if not isinstance(scenarios, pd.DataFrame):
         scenarios = None
 
+    name = _company_name(payload, fundamentals)
+    code = str(payload.get("ts_code") or "").strip()
+    pending = _pending_fallbacks(payload)
+    if pending:
+        return _pending_process(name, code, payload.get("asof"), fundamentals, pending, payload.get("approvals_path"))
     base = _published_scenario(payload, scenarios, "base")
     discount_rate = _number(base.get("discount_rate"))
     if discount_rate is None:
         discount_rate = _number(discount.get("cost_of_equity"))
     records = _year_records(forecast, discount_rate)
-    name = _company_name(payload, fundamentals)
-    code = str(payload.get("ts_code") or "").strip()
     sections = [
         _calc_intro(name, code, payload.get("asof")),
+        _approved_fallback_line(payload),
         _calc_now(fundamentals),
         _calc_revenue(base, records),
         _calc_margin_cash(template, fundamentals, base, records),

@@ -10,12 +10,13 @@ import pandas as pd
 
 from core.tushare_provider import TushareProvider
 from valuation.assumptions import FileEstimatesProvider, ValuationConfig
+from valuation.fallbacks import field_label, format_quantity
 from valuation.scenario import run_valuation, security_label, write_outputs
 
 logger = logging.getLogger(__name__)
 
 
-def main() -> None:
+def main() -> int:
     parser = argparse.ArgumentParser(description="AlphaSpread 式 DCF 三情景估值（A 股）")
     parser.add_argument("--code", required=True, help="证券代码，如 600519.SH")
     parser.add_argument("--asof", required=True, help="截面日 YYYYMMDD，只用该日前已公告数据")
@@ -43,15 +44,32 @@ def main() -> None:
         history.to_parquet(out_dir / "history.parquet", index=False)
         print(f"股价与内在价值 {len(history)} 个交易日，已写入 {out_dir / 'history.parquet'}")
 
-    base = report.scenarios["base"]
     print(security_label(report.fundamentals.name, report.ts_code))
     print(f"行业 {report.fundamentals.industry}，模板 {report.template}，β {report.beta:.2f}，折现率 {report.discount_rate:.2%}")
     for name in ("bear", "base", "bull"):
-        print(f"  {name}: {report.scenarios[name].per_share:.2f} 元/股")
+        value = report.scenarios[name].per_share
+        shown = "无法计算" if value is None else f"{value:.2f} 元/股"
+        print(f"  {name}: {shown}")
+    if report.pending:
+        print("无法计算，未产出正式基准每股价值。待审兜底在审核通过前不进入估值：")
+        for item in report.pending:
+            print(
+                f"- {field_label(item.field)}：{item.reason}"
+                f" 财报算出的数 {format_quantity(item.field, item.computed)}；"
+                f"建议兜底 {format_quantity(item.field, item.proposed)}。"
+            )
+        print(f"审核文件 {report.approvals_path}")
+        print(f"产物已写入 {out_dir}")
+        return 1
     if report.implied is not None:
         print(f"现价隐含平均增速 {report.implied.average_growth:.1%}")
-    print(f"基准情景每股价值 {base.per_share:.2f} 元，产物已写入 {out_dir}")
+    approved = [item for item in report.fallbacks if item.status == "approved"]
+    if approved:
+        print("已审核兜底：" + "、".join(field_label(item.field) for item in approved))
+    base = report.scenarios["base"].per_share
+    print(f"基准情景每股价值 {base:.2f} 元，产物已写入 {out_dir}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

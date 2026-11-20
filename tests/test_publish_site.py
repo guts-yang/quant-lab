@@ -280,6 +280,40 @@ def test_calculation_process_shows_published_value_and_tolerates_gaps(tmp_path):
     )
 
 
+def test_pending_fallback_says_uncalculable_and_skips_the_value_curve():
+    module = _chart_module()
+    assumptions = {
+        "name": "神州数码",
+        "ts_code": "000034.SZ",
+        "asof": "20261116",
+        "template": "fcfe",
+        "approvals_path": "valuation/fallback_approvals.json",
+        "fundamentals": {"price": 21.55, "revenue_ttm": 1.781e11, "fcf_conversion": -0.477},
+        "fallbacks": [
+            {
+                "field": "cash_conversion",
+                "reason": "历史中位数为负，不再夹到 50%",
+                "proposed": None,
+                "status": "pending_review",
+                "computed": -0.477,
+            }
+        ],
+        "scenarios": {"base": {"per_share": None, "growth_start": 0.09, "discount_rate": 0.12}},
+    }
+    forecast = pd.DataFrame(
+        {"scenario": ["base"], "year": [1], "growth": [0.09], "revenue": [1e11], "margin": [0.01], "net_income": [1e9], "fcfe": [5e8]}
+    )
+    scenarios = pd.DataFrame({"scenario": ["bear", "base", "bull"], "per_share": [1.0, 4.86, 8.0]})
+    text = module.calculation_process(assumptions, forecast, scenarios)
+    assert "无法计算" in text
+    assert "待审" in text or "审核" in text
+    assert "fallback_approvals.json" in text
+    assert "4.86" not in text
+    assert module.value_frame(scenarios, assumptions).empty
+    assert module.revenue_frame(forecast, assumptions).empty
+    assert not module.value_frame(scenarios).empty
+
+
 def test_valuation_ranking_sorts_by_base_upside_descending():
     module = _chart_module()
 
