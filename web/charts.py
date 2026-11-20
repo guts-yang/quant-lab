@@ -389,20 +389,57 @@ def _base_forecast(forecast: pd.DataFrame | None) -> pd.DataFrame:
 
 
 def _number(value: object) -> float | None:
-    if value is None or isinstance(value, (dict, list)):
+    if _is_missing(value) or isinstance(value, (dict, list)):
         return None
     try:
         number = float(value)  # type: ignore[arg-type]
     except (TypeError, ValueError):
         return None
-    if pd.isna(number):
+    if _is_missing(number):
         return None
     return number
+
+
+def _is_missing(value: object) -> bool:
+    """None、NaN、pd.NA 都算缺。pd.NA 不能放进 if 或 or，否则是 TypeError。"""
+    if value is None:
+        return True
+    if isinstance(value, (str, bytes, dict, list, tuple, set)):
+        return False
+    try:
+        missing = pd.isna(value)
+    except (TypeError, ValueError):
+        return False
+    try:
+        return bool(missing)
+    except (TypeError, ValueError):
+        return False
+
+
+def _fallback_status(item: dict) -> str:
+    status = item.get("status")
+    if _is_missing(status):
+        return "pending_review"
+    text = str(status).strip()
+    return text or "pending_review"
+
+
+def _fallback_text(value: object, default: str = "") -> str:
+    if _is_missing(value):
+        return default
+    return str(value).strip()
 
 
 def has_pending_fallback(assumptions: dict | None) -> bool:
     """旧假设没有 fallbacks 字段时返回 False，已发布页面仍按原样打开。"""
     return bool(_pending_fallbacks(assumptions))
+
+
+def skipped_value_note(assumptions: dict | None) -> str:
+    """价值对照没有柱子时说明原因。有待审兜底时写明无法计算。"""
+    if has_pending_fallback(assumptions):
+        return "正式每股价值无法计算。还有待审兜底，所以不画价值对照。待审项写在下面的计算过程里。"
+    return "情景表里没有可用的每股价值，所以不画价值对照。"
 
 
 def _pending_fallbacks(assumptions: dict | None) -> list[dict]:
@@ -415,7 +452,7 @@ def _pending_fallbacks(assumptions: dict | None) -> list[dict]:
     for item in raw:
         if not isinstance(item, dict):
             continue
-        if str(item.get("status") or "pending_review") == "pending_review":
+        if _fallback_status(item) == "pending_review":
             pending.append(item)
     return pending
 
@@ -429,14 +466,14 @@ def _pending_process(name: str, code: str, asof: object, fundamentals: dict, pen
         "**无法计算**",
     ]
     for item in pending:
-        field = str(item.get("field") or "输入")
-        reason = str(item.get("reason") or "").strip()
+        field = _fallback_text(item.get("field"), "输入") or "输入"
+        reason = _fallback_text(item.get("reason"))
         lines.append(
             f"- {field}：{reason} "
             f"财报算出的数 {_fmt_fallback(field, item.get('computed'))}；"
             f"建议兜底 {_fmt_fallback(field, item.get('proposed'))}。"
         )
-    path = str(approvals_path or "valuation/fallback_approvals.json")
+    path = _fallback_text(approvals_path, "valuation/fallback_approvals.json") or "valuation/fallback_approvals.json"
     lines.append(f"审核文件：`{path}`。写入批准值之前，这些数不进入估值。")
     lines.append(_calc_now(fundamentals))
     return "\n\n".join(lines)
@@ -446,14 +483,18 @@ def _approved_fallback_line(assumptions: dict) -> str:
     raw = assumptions.get("fallbacks")
     if not isinstance(raw, list):
         return ""
-    names = [str(item.get("field") or "输入") for item in raw if isinstance(item, dict) and item.get("status") == "approved"]
+    names = [
+        _fallback_text(item.get("field"), "输入") or "输入"
+        for item in raw
+        if isinstance(item, dict) and _fallback_status(item) == "approved"
+    ]
     if not names:
         return ""
     return "已审核兜底：" + "、".join(names) + "。这些数来自审核文件，审核通过后才进入估值。"
 
 
 def _fmt_fallback(field: str, value: object) -> str:
-    if value is None:
+    if _is_missing(value):
         return "无"
     if field in {"revenue_base"}:
         return _fmt_yi(value)
@@ -480,14 +521,14 @@ def calculation_process(
     discount = _mapping(payload.get("discount"))
     implied = payload.get("implied_growth")
     implied = implied if isinstance(implied, dict) else {}
-    template = str(payload.get("template") or "").strip()
+    template = _fallback_text(payload.get("template"))
     if not isinstance(forecast, pd.DataFrame):
         forecast = None
     if not isinstance(scenarios, pd.DataFrame):
         scenarios = None
 
     name = _company_name(payload, fundamentals)
-    code = str(payload.get("ts_code") or "").strip()
+    code = _fallback_text(payload.get("ts_code"))
     pending = _pending_fallbacks(payload)
     if pending:
         return _pending_process(name, code, payload.get("asof"), fundamentals, pending, payload.get("approvals_path"))
@@ -765,8 +806,8 @@ def _calc_terminal(template: str, base: dict, records: list[dict]) -> str:
     if weight is None and terminal_pv is not None and equity not in (None, 0.0):
         weight = terminal_pv / equity
     lines.append(f"终值现值 {_fmt_yi(terminal_pv)}，终值现值占股权价值 {_fmt_pct(weight)}。")
-    warning = base.get("terminal_warning")
-    if warning:
+    warning = _fallback_text(base.get("terminal_warning"))
+    if warning and warning not in {"None", "nan", "NaN", "<NA>"}:
         lines.append(f"> ⚠ {warning}。")
     return "\n\n".join(lines)
 
@@ -854,8 +895,8 @@ def _calc_aside(fundamentals: dict, implied: dict, bear: dict, bull: dict) -> st
         parts.append(f"{label}每股价值 {_fmt_yuan(value)}，相对现价 {upside:+.1%}")
     lines.append("；".join(parts) + "。同一组每股价值在三情景表里。")
     for label, row in (("熊市", bear), ("牛市", bull)):
-        warning = str(row.get("terminal_warning") or "").strip()
-        if warning and warning not in {"None", "nan", "<NA>"}:
+        warning = _fallback_text(row.get("terminal_warning"))
+        if warning and warning not in {"None", "nan", "NaN", "<NA>"}:
             lines.append(f"{label}：{warning}。")
     implied_line = _implied_sentence(implied)
     if implied_line:
@@ -875,7 +916,7 @@ def _implied_sentence(implied: dict) -> str:
         return ""
     suffix = ""
     converged = implied.get("converged")
-    if converged is False or converged == 0:
+    if not _is_missing(converged) and (converged is False or converged == 0):
         suffix = "（触及求解边界，未收敛）"
     return "反向 DCF 在 −50% 到 100% 之间反解第 1 年增速，使每股价值等于现价：" + "，".join(bits) + suffix + "。"
 
@@ -952,10 +993,10 @@ def _published_scenario(assumptions: dict, scenarios: pd.DataFrame | None, name:
         return stored
     merged = dict(stored)
     for key, value in row.items():
-        if key == "scenario" or value is None:
+        if key == "scenario" or _is_missing(value):
             continue
         plain = value.item() if hasattr(value, "item") else value
-        if plain is None or (isinstance(plain, float) and pd.isna(plain)):
+        if _is_missing(plain):
             continue
         merged[key] = plain
     return merged
@@ -972,7 +1013,7 @@ def _scenario_row(scenarios: pd.DataFrame | None, name: str) -> dict | None:
 
 def _company_name(assumptions: dict, fundamentals: dict) -> str:
     for source in (assumptions.get("name"), fundamentals.get("name")):
-        text = str(source or "").strip()
+        text = _fallback_text(source)
         if text and text not in {"None", "nan", "<NA>"}:
             return text
     return ""
@@ -983,7 +1024,7 @@ def _mapping(value: object) -> dict:
 
 
 def _fmt_asof(value: object) -> str:
-    text = str(value or "").strip()
+    text = _fallback_text(value)
     if len(text) == 8 and text.isdigit():
         return f"{text[:4]}-{text[4:6]}-{text[6:8]}"
     if text in {"", "None", "nan", "<NA>"}:

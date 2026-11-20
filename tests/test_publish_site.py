@@ -314,6 +314,113 @@ def test_pending_fallback_says_uncalculable_and_skips_the_value_curve():
     assert not module.value_frame(scenarios).empty
 
 
+def test_published_runs_and_missing_values_do_not_raise_typeerror():
+    """旧 Gordon 产物、已审核的神州数码，以及每股价值为空的待审兜底，打开时都不能抛 TypeError。"""
+    module = _chart_module()
+    root = ROOT / "web" / "valuations"
+
+    def load(name: str):
+        directory = root / name
+        assumptions = json.loads((directory / "assumptions.json").read_text(encoding="utf-8"))
+        scenarios = pd.read_parquet(directory / "scenarios.parquet")
+        forecast = pd.read_parquet(directory / "forecast.parquet")
+        sensitivity = pd.read_parquet(directory / "sensitivity.parquet")
+        return assumptions, scenarios, forecast, sensitivity
+
+    class _Run:
+        def __init__(self, code, asof, assumptions, scenarios):
+            self.code = code
+            self.asof = asof
+            self.assumptions = assumptions
+            self.scenarios = scenarios
+
+    old_assumptions, old_scenarios, old_forecast, old_sensitivity = load("600900.SH_20261116")
+    old_values = module.value_frame(old_scenarios, old_assumptions)
+    assert list(old_values["情景"]) == ["熊市", "基准", "牛市"]
+    assert old_values["每股价值"].tolist() == pytest.approx([6.220043396495222, 36.260516116450574, 58.509602724758615])
+    old_text = module.calculation_process(old_assumptions, old_forecast, old_scenarios)
+    assert "长江电力" in old_text
+    assert "无法计算" not in old_text
+    assert not module.present_value_frame(old_scenarios, old_assumptions).empty
+    assert not module.sensitivity_frame(old_sensitivity, old_assumptions).empty
+
+    new_assumptions, new_scenarios, new_forecast, new_sensitivity = load("000034.SZ_20261116")
+    new_values = module.value_frame(new_scenarios, new_assumptions)
+    assert list(new_values["情景"]) == ["熊市", "基准", "牛市"]
+    assert new_values["每股价值"].tolist() == pytest.approx([-0.12521392045880603, 1.1660340016953978, 12.870292388249931])
+    new_text = module.calculation_process(new_assumptions, new_forecast, new_scenarios)
+    assert "神州数码" in new_text
+    assert "247%" in new_text
+    assert "已审核兜底" in new_text
+    assert "无法计算" not in new_text
+    assert not module.present_value_frame(new_scenarios, new_assumptions).empty
+    assert not module.sensitivity_frame(new_sensitivity, new_assumptions).empty
+
+    ranking = module.chain_valuation_ranking(
+        [
+            _Run("600900.SH", "20261116", old_assumptions, old_scenarios),
+            _Run("000034.SZ", "20261116", new_assumptions, new_scenarios),
+        ]
+    )
+    assert set(ranking["代码"]) == {"600900.SH", "000034.SZ"}
+
+    # 缺失状态如果是 pd.NA，`status or "pending_review"` 会 TypeError: boolean value of NA is ambiguous。
+    pending = {
+        "name": "神州数码",
+        "ts_code": "000034.SZ",
+        "asof": "20261116",
+        "template": "fcfe",
+        "approvals_path": "valuation/fallback_approvals.json",
+        "fundamentals": {"price": 21.55, "revenue_ttm": 1.781e11},
+        "fallbacks": [
+            {
+                "field": "cash_conversion",
+                "reason": "历史中位数为负，不再夹到 50%",
+                "proposed": None,
+                "status": pd.NA,
+                "computed": -0.477,
+            }
+        ],
+        "scenarios": {
+            "base": {"per_share": None, "terminal_warning": pd.NA, "discount_rate": 0.12},
+            "bear": {"per_share": None, "terminal_warning": pd.NA},
+            "bull": {"per_share": None, "terminal_warning": pd.NA},
+        },
+        "implied_growth": {"growth_start": 1.0, "average_growth": 0.51, "converged": pd.NA},
+    }
+    null_per_share = pd.DataFrame(
+        {
+            "scenario": ["bear", "base", "bull"],
+            "per_share": [None, None, None],
+            "terminal_warning": [pd.NA, pd.NA, pd.NA],
+        }
+    )
+    assert module.value_frame(null_per_share, pending).empty
+    assert "无法计算" in module.skipped_value_note(pending)
+    pending_text = module.calculation_process(pending, pd.DataFrame(), null_per_share)
+    assert "无法计算" in pending_text
+    assert "待审" in pending_text
+    assert "cash_conversion" in pending_text
+    assert module.present_value_frame(null_per_share, pending).empty
+    assert module.revenue_frame(pd.DataFrame({"scenario": ["base"], "year": [1], "revenue": [1.0]}), pending).empty
+
+    # 没有待审项时，字符串每股价值和 pd.NA 终值提示仍然能画出数字。
+    priced = {
+        "name": "神州数码",
+        "ts_code": "000034.SZ",
+        "template": "fcfe",
+        "fundamentals": {"price": 21.55, "shares": 1.0e9},
+        "scenarios": {"base": {"per_share": "1.17", "terminal_warning": pd.NA, "terminal_weight": pd.NA}},
+        "implied_growth": {"growth_start": 1.0, "average_growth": 0.51, "converged": pd.NA},
+    }
+    string_values = pd.DataFrame({"scenario": ["bear", "base", "bull"], "per_share": ["-0.13", "1.17", "12.87"]})
+    framed = module.value_frame(string_values, priced)
+    assert framed["每股价值"].tolist() == pytest.approx([-0.13, 1.17, 12.87])
+    module.calculation_process(priced, pd.DataFrame(), string_values)
+    module.chain_valuation_ranking([_Run("000034.SZ", "20261116", priced, string_values)])
+
+
+
 def test_valuation_ranking_sorts_by_base_upside_descending():
     module = _chart_module()
 

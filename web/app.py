@@ -32,6 +32,7 @@ from charts import (
     revenue_frame,
     security_label,
     sensitivity_frame,
+    skipped_value_note,
     value_frame,
 )
 from labels import FACTOR_LABELS, MISSING, factor_rows, format_score, holdings_view, pool_view, reason_label, rejected_view
@@ -417,7 +418,9 @@ def _render_valuations() -> None:
 def _render_valuation_charts(run) -> None:
     _render_price_history(run)
     values = value_frame(run.scenarios, run.assumptions)
-    if not values.empty:
+    if values.empty:
+        st.caption(skipped_value_note(run.assumptions))
+    else:
         st.subheader("价值对照")
         bars = (
             alt.Chart(values)
