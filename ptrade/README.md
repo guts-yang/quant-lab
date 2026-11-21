@@ -7,6 +7,7 @@
 | `__init__.py` | 把本目录标成 Python 包，方便测试导入里面的纯函数。 |
 | `export_book.py` | 在本机按截面日打分，写出 `fundamental_book.json`。文件里是排名，不是委托。 |
 | `fundamental_low_turnover.py` | 复制到 PTrade 后作为日线策略运行。盘前读上面的 JSON，只做整手调仓、止损和涨跌停保护。 |
+| `hs300_tenths_ladder.py` | 沪深300ETF 的日线成数阶梯。复制到 PTrade 后运行，研究进程不下单。 |
 
 导出：
 
