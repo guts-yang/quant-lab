@@ -7,9 +7,9 @@ from pathlib import Path
 
 import pandas as pd
 
-_WEB_DIR = Path(__file__).resolve().parent
-if str(_WEB_DIR) not in sys.path:
-    sys.path.insert(0, str(_WEB_DIR))
+_WEB_DIR = str(Path(__file__).resolve().parent)
+sys.path[:] = [path for path in sys.path if path != _WEB_DIR]
+sys.path.insert(0, _WEB_DIR)
 
 from chains import matches, segment_label
 

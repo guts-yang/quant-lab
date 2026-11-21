@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 import json
 import sys
 from pathlib import Path
@@ -10,9 +11,9 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-_HERE = Path(__file__).resolve().parent
-if str(_HERE) not in sys.path:
-    sys.path.insert(0, str(_HERE))
+_HERE = str(Path(__file__).resolve().parent)
+sys.path[:] = [path for path in sys.path if path != _HERE]
+sys.path.insert(0, _HERE)
 
 from chains import available_chains, available_segments, matches
 from charts import (
@@ -47,6 +48,12 @@ from load import (
     outside_holdings,
     visible_snapshots,
 )
+
+
+def _supported(widget, **wanted):
+    """只传入当前 Streamlit 版本真正接受的控件参数。"""
+    accepted = inspect.signature(widget).parameters
+    return {key: value for key, value in wanted.items() if key in accepted}
 
 
 def _render_holdings(snapshot: Snapshot) -> None:
@@ -366,9 +373,11 @@ def _render_valuations() -> None:
         "大类",
         chains,
         default=chains[0],
-        required=True,
         key="valuation_chain",
+        **_supported(st.segmented_control, required=True),
     )
+    if not selected_chain:
+        selected_chain = chains[0]
     segments = available_segments((item.code for item in runs), selected_chain)
     selected_segment = None
     if segments:
@@ -377,7 +386,7 @@ def _render_valuations() -> None:
             segments,
             default=None,
             key=f"valuation_segment_{selected_chain}",
-            wrap=True,
+            **_supported(st.pills, wrap=True),
         )
         st.caption("未点环节时，排名和股票列表是这个大类里的全部已发布股票。再点一次已选环节，可以回到全部。")
     ranking = chain_valuation_ranking(runs, chain=selected_chain, segment=selected_segment)
